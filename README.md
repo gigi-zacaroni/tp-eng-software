@@ -11,7 +11,7 @@
 | Turma/semestre | Engenharia de Software — 2026/2 |
 | Professor | Prof. Johnatan Oliveira |
 | Link do GitHub Project | `[COLAR LINK]` |
-| Link da aplicação publicada | `[COLAR LINK ou justificar ausência]` |
+| Link da aplicação publicada | `[COLAR LINK ]` |
 | Link do vídeo final | `[PREENCHER NA ENTREGA FINAL]` |
 
 ### Integrantes
