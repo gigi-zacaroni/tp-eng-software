@@ -1,4 +1,4 @@
-# Trabalho Final de Engenharia de Software — Modelo Oficial 2026/2
+# Trabalho Final de Engenharia de Software - Modelo Oficial 2026/2
 
 > **Use este repositório como estrutura de trabalho.** Substitua os exemplos e campos marcados com `[PREENCHER]` pelas informações reais do grupo. O professor corrigirá a versão registrada na tag de cada sprint.
 
