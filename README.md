@@ -18,10 +18,10 @@
 
 | Nome completo                 | Usuário no GitHub | Responsabilidade principal       | Outras contribuições                              |
 | ----------------------------- | ----------------- | -------------------------------- | ------------------------------------------------- |
-| **Geovana Oliveira Zacaroni** | `@gigi-zacaroni  | Desenvolvimento da aplicação     | Levantamento de requisitos, documentação e testes |
-| **Maria Luiza Pestana**       | `@Malupestana       | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
-| **Karol Guimarães**           | `@KarolGSMiranda       | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
-| **Arthur Veiga**              | `@usuario`        | Analista de qualidade            | Desenvolvimento, análise e testes                 |
+| **Geovana Oliveira Zacaroni** | @gigi-zacaroni  | Desenvolvimento da aplicação     | Levantamento de requisitos, documentação e testes |
+| **Maria Luiza Pestana**       | @Malupestana       | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
+| **Karol Guimarães**           | @KarolGSMiranda       | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
+| **Arthur Veiga**              | @ArtJamis1208     | Analista de qualidade            | Desenvolvimento, análise e testes                 |
      |
 
 > As responsabilidades podem ser alteradas de acordo com a divisão real do grupo.
