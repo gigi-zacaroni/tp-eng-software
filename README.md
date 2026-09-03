@@ -20,7 +20,7 @@
 | ----------------------------- | ----------------- | -------------------------------- | ------------------------------------------------- |
 | **Geovana Oliveira Zacaroni** | `@gigi-zacaroni  | Desenvolvimento da aplicação     | Levantamento de requisitos, documentação e testes |
 | **Maria Luiza Pestana**       | `@Malupestana       | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
-| **Karol Guimarães**           | `@KarolIGSGuimares       | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
+| **Karol Guimarães**           | `@KarolIGSMiranda       | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
 | **Arthur Veiga**              | `@usuario`        | Analista de qualidade            | Desenvolvimento, análise e testes                 |
      |
 
