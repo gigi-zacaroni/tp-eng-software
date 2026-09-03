@@ -1,4 +1,3 @@
-Sim. Como você pediu para usar **as Issues da tabela anterior**, podemos montar o backlog inicial da Sprint 1 com aquelas oito Issues. Como os números reais do GitHub ainda não foram informados, vou manter `#XX` para você substituir pelos números que aparecerem no seu repositório.
 
 # Product Backlog
 
