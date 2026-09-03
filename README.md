@@ -14,14 +14,15 @@
 | Link do vídeo final         | `[PREENCHER NA ENTREGA FINAL]`                                                                               |
 
 ### Integrantes
+         Claro! Corrigindo a formatação e mantendo exatamente as informações que você passou:
 
-| Nome completo | Usuário no GitHub | Responsabilidade principal       | Outras contribuições                              |
-| ------------- | ----------------- | -------------------------------- | ------------------------------------------------- |
-| **Geovana Oliveira Zacaroni**  | @gigi-zacaroni     | Desenvolvimento da aplicação     | Levantamento de requisitos, documentação e testes |
-| **Maria Luiza Pestana**  | `@usuario`        | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
-| **Karol Guimarães**  | `@usuario`        | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
-
-| **Arthur Veiga*  | `@usuario`        | Analista de qualidade | Desenvolvimento, análise e testes              |
+| Nome completo                 | Usuário no GitHub | Responsabilidade principal       | Outras contribuições                              |
+| ----------------------------- | ----------------- | -------------------------------- | ------------------------------------------------- |
+| **Geovana Oliveira Zacaroni** | `@gigi-zacaroni`  | Desenvolvimento da aplicação     | Levantamento de requisitos, documentação e testes |
+| **Maria Luiza Pestana**       | `@usuario`        | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
+| **Karol Guimarães**           | `@usuario`        | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
+| **Arthur Veiga**              | `@usuario`        | Analista de qualidade            | Desenvolvimento, análise e testes                 |
+     |
 
 > As responsabilidades podem ser alteradas de acordo com a divisão real do grupo.
 
