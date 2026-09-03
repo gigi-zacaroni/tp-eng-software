@@ -14,7 +14,7 @@
 | Link do vídeo final         | `[PREENCHER NA ENTREGA FINAL]`                                                                               |
 
 ### Integrantes
-         Claro! Corrigindo a formatação e mantendo exatamente as informações que você passou:
+         
 
 | Nome completo                 | Usuário no GitHub | Responsabilidade principal       | Outras contribuições                              |
 | ----------------------------- | ----------------- | -------------------------------- | ------------------------------------------------- |
