@@ -33,10 +33,10 @@ A priorização dos itens será realizada considerando principalmente o **valor 
 | `T-02` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Identificar o público principal e os stakeholders envolvidos no sistema.                    | Alta       | —         | 1      | Concluído    |
 | `D-01` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Documentação | Criar a visão geral do produto, incluindo problema, público, proposta de valor e objetivos. | Alta       | —         | 1      | Concluído    |
 | `T-03` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Definir o nome do projeto e sua proposta de valor.                                          | Média      | —         | 1      | Concluído    |
-| `T-04` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar e configurar o GitHub Project para gerenciamento do projeto.                          | Alta       | —         | 1      | Concluído    |
-| `T-05` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar o backlog inicial com as principais funcionalidades e atividades do projeto.          | Alta       | —         | 1      | Andamento    |
-| `T-06` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Definir os integrantes e suas responsabilidades dentro do projeto.                          | Média      | —         | 1      | Andamento   |
-| `T-07` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar o protótipo inicial da interface da aplicação.                                        | Média      | —         | 1      | Andamento   |
+| `T-04` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar e configurar o GitHub Project para gerenciamento do projeto.                          | Alta       | —         | 1      | Em andamento   |
+| `T-05` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar o backlog inicial com as principais funcionalidades e atividades do projeto.          | Alta       | —         | 1      | Em andamento    |
+| `T-06` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Definir os integrantes e suas responsabilidades dentro do projeto.                          | Média      | —         | 1      | Em andamento   |
+| `T-07` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar o protótipo inicial da interface da aplicação.                                        | Média      | —         | 1      | Em andamento   |
 
 
 
