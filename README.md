@@ -1,41 +1,46 @@
-# Trabalho Final de Engenharia de Software - Modelo Oficial 2026/2
 
-> **Use este repositório como estrutura de trabalho.** Substitua os exemplos e campos marcados com `[PREENCHER]` pelas informações reais do grupo. O professor corrigirá a versão registrada na tag de cada sprint.
+# Trabalho Final de Engenharia de Software - Modelo Oficial 2026/2
 
 ## 1. Identificação do projeto
 
-| Campo | Informação |
-|---|---|
-| Nome do projeto | `[PREENCHER]` |
-| Problema escolhido | `[PREENCHER]` |
-| Turma/semestre | Engenharia de Software — 2026/2 |
-| Professor | Prof. Johnatan Oliveira |
-| Link do GitHub Project | `[COLAR LINK]` |
-| Link da aplicação publicada | `[COLAR LINK ]` |
-| Link do vídeo final | `[PREENCHER NA ENTREGA FINAL]` |
+| Campo                       | Informação                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Nome do projeto             | **ConectaAção**                                                                                              |
+| Problema escolhido          | **Dificuldade de conexão entre pessoas dispostas a ajudar e instituições de caridade que precisam de apoio** |
+| Turma/semestre              | Engenharia de Software — 2026/2                                                                              |
+| Professor                   | Prof. Johnatan Oliveira                                                                                      |
+| Link do GitHub Project      | `[COLAR LINK DO GITHUB PROJECT]`                                                                             |
+| Link da aplicação publicada | `[COLAR LINK DA APLICAÇÃO]`                                                                                  |
+| Link do vídeo final         | `[PREENCHER NA ENTREGA FINAL]`                                                                               |
 
 ### Integrantes
 
-| Nome completo | Usuário no GitHub | Responsabilidade principal | Outras contribuições |
-|---|---|---|---|
-| `[Nome 1]` | `@usuario` | `[PREENCHER]` | `[PREENCHER]` |
-| `[Nome 2]` | `@usuario` | `[PREENCHER]` | `[PREENCHER]` |
-| `[Nome 3]` | `@usuario` | `[PREENCHER]` | `[PREENCHER]` |
+| Nome completo | Usuário no GitHub | Responsabilidade principal       | Outras contribuições                              |
+| ------------- | ----------------- | -------------------------------- | ------------------------------------------------- |
+| **Geovana Oliveira Zacaroni**  | @gigi-zacaroni     | Desenvolvimento da aplicação     | Levantamento de requisitos, documentação e testes |
+| **Maria Luiza Pestana**  | `@usuario`        | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
+| **Karol Guimarães**  | `@usuario`        | Gestão do projeto e documentação | Desenvolvimento, requisitos e testes              |
 
-> O grupo deve ter de 3 a 5 integrantes. A atribuição de uma responsabilidade principal não dispensa a participação colaborativa nas demais atividades.
+| **Arthur Veiga*  | `@usuario`        | Analista de qualidade | Desenvolvimento, análise e testes              |
+
+> As responsabilidades podem ser alteradas de acordo com a divisão real do grupo.
 
 ## 2. Resumo da solução
 
-**Problema:** `[Explique em 3 a 5 linhas o problema real que será tratado.]`
+**Problema:**
+Muitas pessoas têm interesse em ajudar instituições de caridade, mas não sabem quais organizações existem, quais são suas necessidades ou como podem contribuir. Ao mesmo tempo, instituições de caridade podem ter dificuldade para divulgar suas necessidades e alcançar pessoas dispostas a ajudar. A falta de uma plataforma centralizada dificulta essa conexão e pode fazer com que oportunidades de ajuda sejam perdidas.
 
-**Solução proposta:** `[Explique em 3 a 5 linhas qual aplicação web será desenvolvida.]`
+**Solução proposta:**
+O **ConectaAção** será uma aplicação web que funcionará como uma ponte entre pessoas que desejam ajudar e instituições de caridade que precisam de apoio. A plataforma permitirá que instituições divulguem informações sobre seu trabalho e suas necessidades, enquanto os usuários poderão pesquisar organizações e identificar diferentes formas de contribuir. Dessa forma, a aplicação busca tornar o processo de encontrar e oferecer ajuda mais simples e acessível.
 
-**Público principal:** `[Quem utilizará ou será beneficiado pelo sistema?]`
+**Público principal:**
+Pessoas interessadas em realizar doações ou contribuir com instituições de caridade e instituições que buscam divulgar suas necessidades e encontrar pessoas dispostas a ajudar.
 
 **Funcionalidades prioritárias:**
-- `[Funcionalidade 1]`
-- `[Funcionalidade 2]`
-- `[Funcionalidade 3]`
+
+* Cadastro e visualização de instituições de caridade.
+* Busca e consulta das necessidades das instituições.
+* Divulgação de formas de contribuição e contato com as instituições.
 
 ## 3. Comece por aqui
 
@@ -48,29 +53,29 @@
 
 ## 4. Cronograma e pontuação
 
-| Etapa | Data | Entrega central | Pontos | Tag obrigatória |
-|---|---:|---|---:|---|
-| Sprint 1 | 24/08/2026 | Problema, visão do produto, Scrum, GitHub e backlog inicial | 2,5 | `sprint-01` |
-| Sprint 2 | 14/09/2026 | Requisitos verificáveis e escopo da aplicação | 2,5 | `sprint-02` |
-| Sprint 3 | 28/09/2026 | Modelagem e rastreabilidade | 2,5 | `sprint-03` |
-| Sprint 4 | 13/10/2026 | Princípios de projeto e decisões locais | 2,5 | `sprint-04` |
-| Sprint 5 | 26/10/2026 | Padrões de projeto aplicados ao código | 2,5 | `sprint-05` |
-| Sprint 6 | 09/11/2026 | Arquitetura global da aplicação | 2,5 | `sprint-06` |
-| Sprint 7 | 16/11/2026 | Plano de testes e primeiras execuções | 2,5 | `sprint-07` |
-| Sprint 8 | 23/11/2026 | Validação final e estabilização | 2,5 | `sprint-08` |
-| Entrega final | 30/11/2026 | GitHub consolidado, slides e vídeo no YouTube | 5,0 | `versao-final` |
-| **Total** |  |  | **25,0** |  |
+| Etapa         |       Data | Entrega central                                             |   Pontos | Tag obrigatória |
+| ------------- | ---------: | ----------------------------------------------------------- | -------: | --------------- |
+| Sprint 1      | 24/08/2026 | Problema, visão do produto, Scrum, GitHub e backlog inicial |      2,5 | `sprint-01`     |
+| Sprint 2      | 14/09/2026 | Requisitos verificáveis e escopo da aplicação               |      2,5 | `sprint-02`     |
+| Sprint 3      | 28/09/2026 | Modelagem e rastreabilidade                                 |      2,5 | `sprint-03`     |
+| Sprint 4      | 13/10/2026 | Princípios de projeto e decisões locais                     |      2,5 | `sprint-04`     |
+| Sprint 5      | 26/10/2026 | Padrões de projeto aplicados ao código                      |      2,5 | `sprint-05`     |
+| Sprint 6      | 09/11/2026 | Arquitetura global da aplicação                             |      2,5 | `sprint-06`     |
+| Sprint 7      | 16/11/2026 | Plano de testes e primeiras execuções                       |      2,5 | `sprint-07`     |
+| Sprint 8      | 23/11/2026 | Validação final e estabilização                             |      2,5 | `sprint-08`     |
+| Entrega final | 30/11/2026 | GitHub consolidado, slides e vídeo no YouTube               |      5,0 | `versao-final`  |
+| **Total**     |            |                                                             | **25,0** |                 |
 
 ## 5. Como cada sprint é avaliada
 
 Cada sprint vale **2,5 pontos**:
 
-| Dimensão | Pontos | O que deve estar verificável |
-|---|---:|---|
-| Artefato central da disciplina | 0,75 | Documento específico da etapa, tecnicamente consistente e completo |
-| Incremento da aplicação web | 0,75 | Código, protótipo, teste ou funcionalidade que demonstre evolução concreta |
-| Scrum e gestão do trabalho | 0,50 | Issues, Sprint Backlog, responsáveis, critérios de aceitação e revisão |
-| GitHub, documentação e rastreabilidade | 0,50 | Commits, links, tag, organização e relação entre artefatos e código |
+| Dimensão                               | Pontos | O que deve estar verificável                                               |
+| -------------------------------------- | -----: | -------------------------------------------------------------------------- |
+| Artefato central da disciplina         |   0,75 | Documento específico da etapa, tecnicamente consistente e completo         |
+| Incremento da aplicação web            |   0,75 | Código, protótipo, teste ou funcionalidade que demonstre evolução concreta |
+| Scrum e gestão do trabalho             |   0,50 | Issues, Sprint Backlog, responsáveis, critérios de aceitação e revisão     |
+| GitHub, documentação e rastreabilidade |   0,50 | Commits, links, tag, organização e relação entre artefatos e código        |
 
 > Criar apenas o arquivo `docs/sprints/sprint-0X.md` não caracteriza a entrega. Ele deve funcionar como **índice**, contendo links para tudo que foi realmente produzido.
 
@@ -132,14 +137,14 @@ A tabela central desse vínculo deve ser mantida em [`docs/rastreabilidade.md`](
 
 Até **30/11/2026**, o repositório deve estar consolidado na tag `versao-final` e conter:
 
-- código-fonte e instruções de execução;
-- todos os artefatos atualizados;
-- slides utilizados, dentro de `slides/`;
-- link do vídeo no YouTube, público ou não listado;
-- vídeo de no máximo **10 minutos**;
-- explicação inicial da documentação e da organização do repositório;
-- demonstração das principais funcionalidades;
-- compartilhamento legível da tela com a execução do sistema;
-- pelo menos um aluno visível no vídeo. Não é necessário que todos apresentem.
+* código-fonte e instruções de execução;
+* todos os artefatos atualizados;
+* slides utilizados, dentro de `slides/`;
+* link do vídeo no YouTube, público ou não listado;
+* vídeo de no máximo **10 minutos**;
+* explicação inicial da documentação e da organização do repositório;
+* demonstração das principais funcionalidades;
+* compartilhamento legível da tela com a execução do sistema;
+* pelo menos um aluno visível no vídeo. Não é necessário que todos apresentem.
 
 Leia os detalhes em [`docs/entrega-final.md`](docs/entrega-final.md).
