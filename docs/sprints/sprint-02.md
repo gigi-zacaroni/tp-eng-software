@@ -68,11 +68,11 @@
 
 | Tipo de evidência | Link | O que comprova |
 |---|---|---|
-| Issue | `[link]` | `[PREENCHER]` |
-| Pull Request | `[link]` | `[PREENCHER]` |
-| Commit | `[link]` | `[PREENCHER]` |
-| Código/arquivo | `[link]` | `[PREENCHER]` |
-| Teste/captura/relatório | `[link]` | `[PREENCHER]` |
+| Issue | Ainda não aplicável | Os itens do backlog seguem registrados em [`docs/backlog-produto.md`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/backlog-produto.md); a migração para Issues do GitHub Project está prevista para a próxima sprint. |
+| Pull Request | https://github.com/gigi-zacaroni/tp-eng-software/pull/1 | Entrega do documento de requisitos submetida à revisão do grupo, conforme o fluxo definido em `CONTRIBUTING.md`. |
+| Commit | https://github.com/gigi-zacaroni/tp-eng-software/commit/69b636f | Escrita dos requisitos funcionais, não funcionais, regras de negócio e histórias a partir da visão do produto e do protótipo. |
+| Código/arquivo | https://github.com/gigi-zacaroni/tp-eng-software/blob/docs/requisitos-sprint-02/docs/requisitos/requisitos.md | Artefato central da sprint: 27 requisitos funcionais, 10 não funcionais, 8 regras de negócio e 11 histórias com critérios de aceitação. |
+| Teste/captura/relatório | Ainda não aplicável | O plano de testes é o artefato central da Sprint 7; o diretório `tests/` ainda não possui testes automatizados. |
 
 ### Rastreabilidade resumida
 
