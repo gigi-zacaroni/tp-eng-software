@@ -21,15 +21,6 @@
 
 7. **Padronizar o estado das onze histórias como `Especificada`.** O objetivo da sprint foi especificar o escopo completo, e todas as histórias passaram pelo mesmo ciclo de refinamento e validação. O acompanhamento por sprint ficará no [GitHub Project](https://github.com/users/gigi-zacaroni/projects/1), e não em milestones — as Issues carregam o título, a história com os critérios de aceitação e a label de prioridade.
 
-## Tarefas e responsáveis
-
-| Tarefa/Issue | Responsável | Prazo |
-|---|---|---|
-| Finalizar `docs/requisitos/requisitos.md` com atores, RF, RNF, regras e histórias | @KarolGSMiranda | 13/09/2026 |
-| Concluir o protótipo navegável e documentar o vínculo tela → requisito | @gigi-zacaroni | 14/09/2026 |
-| Revisar os critérios de aceitação das onze Issues | @ArtJamis1208 | 13/09/2026 |
-| Atualizar `docs/visao-geral.md` e `docs/backlog-produto.md` com o escopo refinado | @Malupestana | 14/09/2026 |
-| Aplicar a label de prioridade e o bloco de demonstração no protótipo nas Issues [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2)–[#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) | @KarolGSMiranda | 14/09/2026 |
 
 ## Impedimentos
 
