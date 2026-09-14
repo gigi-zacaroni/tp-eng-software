@@ -19,7 +19,7 @@
 
 6. **Registrar as lacunas do protótipo em vez de corrigi-las.** Ao percorrer os critérios de aceitação contra o protótipo, quatro não passaram: o limite de quantidade na doação (`US-08` CA-2), a devolução do saldo ao cancelar (`US-09` CA-3), a ocultação da necessidade pausada (`US-05` CA-3) e o selo "Verificada" condicionado (`RF-11`). Como o protótipo é descartável, decidiu-se **documentá-las como pendências da implementação**, no corpo das Issues e na seção 7 do arquivo da sprint.
 
-7. **Alocar as onze histórias no milestone `Sprint 2`.** O objetivo da sprint foi especificar o escopo completo, e todas as histórias passaram pelo mesmo ciclo de refinamento e validação. O estado padronizado é `Especificada`.
+7. **Padronizar o estado das onze histórias como `Especificada`.** O objetivo da sprint foi especificar o escopo completo, e todas as histórias passaram pelo mesmo ciclo de refinamento e validação. O acompanhamento por sprint ficará no [GitHub Project](https://github.com/users/gigi-zacaroni/projects/1), e não em milestones — as Issues carregam o título, a história com os critérios de aceitação e a label de prioridade.
 
 ## Tarefas e responsáveis
 
@@ -29,7 +29,7 @@
 | Concluir o protótipo navegável e documentar o vínculo tela → requisito | @gigi-zacaroni | 14/09/2026 |
 | Revisar os critérios de aceitação das onze Issues | @ArtJamis1208 | 13/09/2026 |
 | Atualizar `docs/visao-geral.md` e `docs/backlog-produto.md` com o escopo refinado | @Malupestana | 14/09/2026 |
-| Aplicar milestone, labels e responsáveis nas Issues [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2)–[#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) | @KarolGSMiranda | 14/09/2026 |
+| Aplicar a label de prioridade e o bloco de demonstração no protótipo nas Issues [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2)–[#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) | @KarolGSMiranda | 14/09/2026 |
 
 ## Impedimentos
 
@@ -39,4 +39,4 @@
 
 - [`docs/requisitos/requisitos.md`](../requisitos/requisitos.md) — documento revisado nesta reunião
 - [`docs/prototipo/README.md`](../prototipo/README.md) — roteiro usado para percorrer os critérios de aceitação
-- [milestone `Sprint 2`](https://github.com/gigi-zacaroni/tp-eng-software/milestone/1) — alocação decidida no item 7
+- [GitHub Project — ConectaAção](https://github.com/users/gigi-zacaroni/projects/1) — acompanhamento decidido no item 7
