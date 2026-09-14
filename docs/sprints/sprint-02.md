@@ -55,7 +55,8 @@
 
 | Issue | Descrição | Responsável | Critério de aceitação/conclusão | Situação |
 |---|---|---|---|---|
-| `#XX` | `[PREENCHER]` | `@usuario` | `[PREENCHER]` | Concluída/Pendente |
+| [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) | `US-01` — Criar conta de doador (`RF-01`, `RNF-03`) | @gigi-zacaroni, @ArtJamis1208 | Os três critérios de aceitação descritos na Issue (cadastro válido, senhas divergentes e e-mail já cadastrado) implementados e verificáveis. | Pendente |
+| [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | `US-03` — Entrar e acesso protegido (`RF-03`, `RF-04`, `RF-05`, `RN-01`) | @gigi-zacaroni, @ArtJamis1208 | Os três critérios de aceitação descritos na Issue (login válido, bloqueio de acesso sem autenticação e logout) implementados e verificáveis. | Pendente |
 
 ### Acompanhamento
 
@@ -68,7 +69,7 @@
 
 | Tipo de evidência | Link | O que comprova |
 |---|---|---|
-| Issue | Ainda não aplicável | Os itens do backlog seguem registrados em [`docs/backlog-produto.md`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/backlog-produto.md); a migração para Issues do GitHub Project está prevista para a próxima sprint. |
+| Issue | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) · [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) · [milestone `Sprint 2`](https://github.com/gigi-zacaroni/tp-eng-software/milestone/1) | Histórias `US-01` e `US-03` registradas como Issues, com critérios de aceitação no corpo, responsáveis atribuídos e prioridade. |
 | Pull Request | https://github.com/gigi-zacaroni/tp-eng-software/pull/1 | Entrega do documento de requisitos submetida à revisão do grupo, conforme o fluxo definido em `CONTRIBUTING.md`. |
 | Commit | https://github.com/gigi-zacaroni/tp-eng-software/commit/69b636f | Escrita dos requisitos funcionais, não funcionais, regras de negócio e histórias a partir da visão do produto e do protótipo. |
 | Código/arquivo | https://github.com/gigi-zacaroni/tp-eng-software/blob/docs/requisitos-sprint-02/docs/requisitos/requisitos.md | Artefato central da sprint: 27 requisitos funcionais, 10 não funcionais, 8 regras de negócio e 11 histórias com critérios de aceitação. |
@@ -78,7 +79,10 @@
 
 | Requisito | Issue | Artefato/modelo/decisão | Código | Teste/evidência |
 |---|---|---|---|---|
-| `RF-XX` | `#XX` | `[link]` | `[link]` | `[link ou ainda não aplicável]` |
+| `RF-01` | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) | [`requisitos.md` — `RF-01` e `US-01`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/requisitos/requisitos.md) | Ainda não aplicável — implementação prevista para a próxima sprint | Ainda não aplicável — testes a partir da Sprint 7 |
+| `RF-03` | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | [`requisitos.md` — `RF-03` e `US-03`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/requisitos/requisitos.md) | Ainda não aplicável — implementação prevista para a próxima sprint | Ainda não aplicável — testes a partir da Sprint 7 |
+| `RF-04` | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | [`requisitos.md` — `RF-04` e `US-03`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/requisitos/requisitos.md) | Ainda não aplicável — implementação prevista para a próxima sprint | Ainda não aplicável — testes a partir da Sprint 7 |
+| `RF-05` | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | [`requisitos.md` — `RF-05`, `US-03` e `RN-01`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/requisitos/requisitos.md) | Ainda não aplicável — implementação prevista para a próxima sprint | Ainda não aplicável — testes a partir da Sprint 7 |
 
 ## 7. Revisão do incremento
 

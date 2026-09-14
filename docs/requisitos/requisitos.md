@@ -28,11 +28,11 @@ Prioridade: **Alta** (essencial à primeira versão), **Média** (importante), *
 
 | ID | Nome | Descrição verificável | Prioridade | História/Issue | Situação final |
 |---|---|---|---|---|---|
-| `RF-01` | Cadastro de doador | O sistema deve permitir que um visitante crie uma conta de doador informando nome, e-mail, senha e confirmação de senha. | Alta | `US-01 / #XX` | Planejado |
+| `RF-01` | Cadastro de doador | O sistema deve permitir que um visitante crie uma conta de doador informando nome, e-mail, senha e confirmação de senha. | Alta | [`US-01 / #2`](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) | Planejado |
 | `RF-02` | Cadastro de instituição | O sistema deve permitir que um visitante cadastre uma instituição em três seções: identificação/acesso, sobre a instituição e necessidades iniciais. | Alta | `US-02 / #XX` | Planejado |
-| `RF-03` | Autenticação (login) | O sistema deve permitir que doador e instituição acessem a conta com o e-mail e a senha cadastrados. | Alta | `US-03 / #XX` | Planejado |
-| `RF-04` | Encerrar sessão | O sistema deve permitir que o usuário autenticado encerre a sessão (logout). | Baixa | `US-03 / #XX` | Planejado |
-| `RF-05` | Acesso restrito a autenticados | O sistema deve exibir a lista de instituições, suas necessidades e seus dados de contato apenas para usuários autenticados. | Alta | `US-03 / #XX` | Planejado |
+| `RF-03` | Autenticação (login) | O sistema deve permitir que doador e instituição acessem a conta com o e-mail e a senha cadastrados. | Alta | [`US-03 / #3`](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | Planejado |
+| `RF-04` | Encerrar sessão | O sistema deve permitir que o usuário autenticado encerre a sessão (logout). | Baixa | [`US-03 / #3`](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | Planejado |
+| `RF-05` | Acesso restrito a autenticados | O sistema deve exibir a lista de instituições, suas necessidades e seus dados de contato apenas para usuários autenticados. | Alta | [`US-03 / #3`](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | Planejado |
 | `RF-06` | Landing page pública | O sistema deve apresentar uma página inicial pública com a proposta de valor, a explicação "Como funciona" e instituições em destaque. | Média | `US-04 / #XX` | Planejado |
 | `RF-07` | Listar instituições | O sistema deve listar as instituições cadastradas exibindo nome, causa, cidade, resumo e número de necessidades abertas. | Alta | `US-04 / #XX` | Planejado |
 | `RF-08` | Buscar instituições | O sistema deve permitir buscar instituições por texto (nome ou palavra-chave). | Média | `US-04 / #XX` | Planejado |
@@ -64,14 +64,14 @@ Evite termos vagos. Sempre que possível, inclua condição ou métrica.
 |---|---|---|---|---|
 | `RNF-01` | Usabilidade | O fluxo de prometer uma doação (`RF-19`) deve ser concluído em no máximo 3 passos: escolher item → definir quantidade → confirmar. | Teste de tarefa com contagem de passos no fluxo. | `#XX` |
 | `RNF-02` | Responsividade | A interface deve funcionar de 390 px (mobile) a 1440 px (desktop), com alvos de toque de no mínimo 44 px, em todas as telas dos `RF-06` a `RF-27`. | Inspeção com emulação de dispositivos no navegador. | `#XX` |
-| `RNF-03` | Segurança | As senhas cadastradas em `RF-01` e `RF-02` e verificadas em `RF-03` devem ser armazenadas com hash (ex.: bcrypt) e nunca em texto puro. | Inspeção do banco de dados e do código de autenticação. | `#XX` |
-| `RNF-04` | Privacidade | Os dados de contato das instituições exibidos em `RF-10` devem ser visíveis apenas a usuários autenticados, conforme `RF-05`. | Teste de acesso à página de detalhe sem estar logado. | `#XX` |
+| `RNF-03` | Segurança | As senhas cadastradas em `RF-01` e `RF-02` e verificadas em `RF-03` devem ser armazenadas com hash (ex.: bcrypt) e nunca em texto puro. | Inspeção do banco de dados e do código de autenticação. | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2), [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) |
+| `RNF-04` | Privacidade | Os dados de contato das instituições exibidos em `RF-10` devem ser visíveis apenas a usuários autenticados, conforme `RF-05`. | Teste de acesso à página de detalhe sem estar logado. | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) |
 | `RNF-05` | Restrição de negócio | A plataforma não deve coletar nem processar dados de pagamento em nenhum fluxo. | Revisão de escopo, telas e formulários. | `#XX` |
 | `RNF-06` | Integridade | A soma de quantidade prometida + recebida de uma necessidade nunca deve exceder a quantidade desejada (`RF-18`, `RF-19`). | Teste de limite no fluxo de doação, tentando doar acima do que falta. | `#XX` |
 | `RNF-07` | Consistência | Excluir uma necessidade (`RF-16`) não pode remover doações já registradas para ela. | Teste de exclusão de necessidade que possui doação associada. | `#XX` |
 | `RNF-08` | Desempenho | A listagem de instituições (`RF-07`) deve carregar em até 2 segundos para o volume esperado (dezenas de instituições). | Medição do tempo de carregamento no navegador. | `#XX` |
 | `RNF-09` | Compatibilidade | A aplicação deve funcionar nas versões atuais de Chrome, Firefox e Edge. | Teste manual multi-navegador dos fluxos prioritários. | `#XX` |
-| `RNF-10` | Acessibilidade | Os fluxos principais (`RF-01`, `RF-03`, `RF-19`) devem ter foco visível, contraste adequado e navegação completa por teclado. | Checklist WCAG básico e navegação sem mouse. | `#XX` |
+| `RNF-10` | Acessibilidade | Os fluxos principais (`RF-01`, `RF-03`, `RF-19`) devem ter foco visível, contraste adequado e navegação completa por teclado. | Checklist WCAG básico e navegação sem mouse. | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2), [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) |
 
 ## 5. Regras de negócio
 
@@ -100,7 +100,7 @@ Como **visitante**, quero **criar uma conta de doador**, para **poder ver as ins
 2. **Dado que** informo senha e confirmação diferentes, **quando** tento concluir, **então** o sistema exibe mensagem de erro e não cria a conta.
 3. **Dado que** informo um e-mail já cadastrado, **quando** tento concluir, **então** o sistema impede o cadastro e informa o motivo.
 
-**Issue:** `#XX`
+**Issue:** [#2 — US-01 — Criar conta de doador](https://github.com/gigi-zacaroni/tp-eng-software/issues/2)
 
 ### US-02 — Cadastrar instituição
 
@@ -129,7 +129,7 @@ Como **usuário cadastrado**, quero **entrar com e-mail e senha**, para **acessa
 3. **Dado que** não estou autenticado, **quando** tento acessar a lista de instituições ou uma página de detalhe, **então** o sistema solicita login antes de exibir os dados.
 4. **Dado que** estou autenticado, **quando** clico em "Sair", **então** a sessão é encerrada.
 
-**Issue:** `#XX`
+**Issue:** [#3 — US-03 — Entrar e acesso protegido](https://github.com/gigi-zacaroni/tp-eng-software/issues/3)
 
 ### US-04 — Encontrar instituições
 
@@ -262,7 +262,8 @@ Como **usuário autenticado**, quero **ser notificado sobre eventos relevantes**
 
 | Sprint | Requisito alterado | Alteração | Motivo | Issue/commit |
 |---|---|---|---|---|
-| Sprint 2 | `RF-01` a `RF-27`, `RNF-01` a `RNF-10`, `RN-01` a `RN-08` | Criação do documento de requisitos a partir da visão do produto e do protótipo navegável. | Transformar a visão da Sprint 1 em comportamento verificável, conforme a pergunta da Sprint 2. | `[link]` |
-| Sprint 2 | `RF-19`, `RF-20`, `RF-21` | Refino de "demonstrar interesse em ajudar" (Sprint 1) para "prometer doação e acompanhar até a entrega" (Prometida → A caminho → Entregue). | O protótipo detalhou o fluxo de doação, tornando o comportamento mensurável e testável. | `[link]` |
-| Sprint 2 | `RF-12`, `RF-13`, `RF-25`, `RF-26`, `RF-27` | Inclusão de favoritos e da central de notificações, que não constavam no escopo inicial da Sprint 1. | Funcionalidades identificadas no protótipo como apoio à recorrência de uso e ao acompanhamento das doações. | `[link]` |
-| Sprint 2 | `docs/visao-geral.md` | Necessidade de atualizar a seção 4 (escopo inicial) para refletir o fluxo de doação refinado e os novos requisitos. | Manter a visão do produto coerente com os requisitos definidos nesta sprint. | `[link]` |
+| Sprint 2 | `RF-01` a `RF-27`, `RNF-01` a `RNF-10`, `RN-01` a `RN-08` | Criação do documento de requisitos a partir da visão do produto e do protótipo navegável. | Transformar a visão da Sprint 1 em comportamento verificável, conforme a pergunta da Sprint 2. | [PR #1](https://github.com/gigi-zacaroni/tp-eng-software/pull/1) · [`69b636f`](https://github.com/gigi-zacaroni/tp-eng-software/commit/69b636f) |
+| Sprint 2 | `RF-19`, `RF-20`, `RF-21` | Refino de "demonstrar interesse em ajudar" (Sprint 1) para "prometer doação e acompanhar até a entrega" (Prometida → A caminho → Entregue). | O protótipo detalhou o fluxo de doação, tornando o comportamento mensurável e testável. | [PR #1](https://github.com/gigi-zacaroni/tp-eng-software/pull/1) |
+| Sprint 2 | `RF-12`, `RF-13`, `RF-25`, `RF-26`, `RF-27` | Inclusão de favoritos e da central de notificações, que não constavam no escopo inicial da Sprint 1. | Funcionalidades identificadas no protótipo como apoio à recorrência de uso e ao acompanhamento das doações. | [PR #1](https://github.com/gigi-zacaroni/tp-eng-software/pull/1) |
+| Sprint 2 | `RF-01`, `RF-03`, `RF-04`, `RF-05` | Vínculo dos requisitos às Issues [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) e [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3), abertas no milestone `Sprint 2`. | Fechar a rastreabilidade requisito → história → Issue exigida pela disciplina. | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) · [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) |
+| Sprint 2 | `docs/visao-geral.md` | Necessidade de atualizar a seção 4 (escopo inicial) para refletir o fluxo de doação refinado e os novos requisitos. | Manter a visão do produto coerente com os requisitos definidos nesta sprint. | Pendente |
