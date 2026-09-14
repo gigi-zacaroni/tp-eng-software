@@ -5,7 +5,7 @@
 
 ## 1. Link do GitHub Project
 
-`[COLAR LINK DO PROJECT]`
+[ConectaAção — Backlog](https://github.com/users/gigi-zacaroni/projects/1)
 
 ## 2. Campos obrigatórios no Project
 
@@ -37,6 +37,9 @@ A priorização dos itens será realizada considerando principalmente o **valor 
 | `T-05` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar o backlog inicial com as principais funcionalidades e atividades do projeto.          | Alta       | —         | 1      | Em andamento    |
 | `T-06` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Definir os integrantes e suas responsabilidades dentro do projeto.                          | Média      | —         | 1      | Em andamento   |
 | `T-07` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) | Tarefa       | Criar o protótipo inicial da interface da aplicação.                                        | Média      | —         | 1      | Em andamento   |
+| `D-02` | [Link](https://github.com/gigi-zacaroni/tp-eng-software/pull/1) | Documentação | Documentar os requisitos verificáveis do ConectaAção (atores, RF, RNF, regras de negócio e histórias). | Alta | `RF-01`–`RF-27`, `RNF-01`–`RNF-10`, `RN-01`–`RN-08` | 2 | Concluído |
+| `US-01` | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) | User story | Criar conta de doador informando nome, e-mail, senha e confirmação. | Alta | `RF-01`, `RNF-03` | 2 | Pendente |
+| `US-03` | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | User story | Entrar com e-mail e senha, encerrar sessão e restringir dados sensíveis a quem está autenticado. | Alta | `RF-03`, `RF-04`, `RF-05` | 2 | Pendente |
 
 
 
@@ -66,5 +69,6 @@ Um item está concluído quando:
 
 | Sprint   | Itens criados/divididos/removidos                                                                                                                           | Motivo                                                                                                   | Evidência |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------- |
-| Sprint 1 | Criação das tarefas de definição do problema, público, visão do produto, proposta de valor, GitHub Project, backlog, responsabilidades e protótipo inicial. | Estruturar o projeto, delimitar o problema e estabelecer as bases para o desenvolvimento do ConectaAção. | `#XX`     |
+| Sprint 1 | Criação das tarefas de definição do problema, público, visão do produto, proposta de valor, GitHub Project, backlog, responsabilidades e protótipo inicial. | Estruturar o projeto, delimitar o problema e estabelecer as bases para o desenvolvimento do ConectaAção. | [`docs/visao-geral.md`](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/visao-geral.md) |
+| Sprint 2 | Inclusão do item de documentação dos requisitos (`D-02`) e abertura das primeiras histórias como Issues: [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) (`US-01`) e [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) (`US-03`), ambas no milestone [`Sprint 2`](https://github.com/gigi-zacaroni/tp-eng-software/milestone/1). | Vincular os itens do backlog aos requisitos definidos em `docs/requisitos/requisitos.md` e migrar o acompanhamento para Issues. | [PR #1](https://github.com/gigi-zacaroni/tp-eng-software/pull/1) |
 

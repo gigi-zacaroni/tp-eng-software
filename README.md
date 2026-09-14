@@ -9,7 +9,7 @@
 | Problema escolhido          | **Dificuldade de conexão entre pessoas dispostas a ajudar e instituições de caridade que precisam de apoio** |
 | Turma/semestre              | Engenharia de Software — 2026/2                                                                              |
 | Professor                   | Prof. Johnatan Oliveira                                                                                      |
-| Link do GitHub Project      | `[COLAR LINK DO GITHUB PROJECT]`                                                                             |
+| Link do GitHub Project      | [ConectaAção — Backlog](https://github.com/users/gigi-zacaroni/projects/1)                                    |
 | Link da aplicação publicada | `[COLAR LINK DA APLICAÇÃO]`                                                                                  |
 | Link do vídeo final         | `[PREENCHER NA ENTREGA FINAL]`                                                                               |
 
