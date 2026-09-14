@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #FAF9F6; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #14201E; -webkit-font-smoothing: antialiased; }
+  a { color: #0F766E; text-decoration: none; }
+  a:hover { color: #F06A3F; }
+  * { box-sizing: border-box; }
+  input, select, button { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: #FAF9F6;">
+
+  <header style="position: sticky; top: 0; z-index: 30; background: #FFFFFF; border-bottom: 1px solid #E4E3DE;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+      <div onClick="{{ irLanding }}" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+        <div style="width: 30px; height: 30px; border-radius: 9px; background: #0F766E; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-weight: 700; font-size: 15px;">C</div>
+        <span style="font-size: 18px; font-weight: 700; letter-spacing: -0.01em;">ConectaAção</span>
+      </div>
+
+      <nav style="display: flex; align-items: center; gap: 6px; margin-right: auto;">
+        <span onClick="{{ irListagem }}" style="font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 9px; cursor: pointer; color: #5C6B68;" style-hover="background: #F2F1EC; color: #14201E;">Instituições</span>
+        <sc-if value="{{ ehDoador }}" hint-placeholder-val="{{ true }}">
+          <span onClick="{{ irFavoritos }}" style="font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 9px; cursor: pointer; color: #5C6B68;" style-hover="background: #F2F1EC; color: #14201E;">Favoritos</span>
+        </sc-if>
+        <sc-if value="{{ ehDoador }}" hint-placeholder-val="{{ true }}">
+          <span onClick="{{ irMinhasDoacoes }}" style="font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 9px; cursor: pointer; color: #5C6B68;" style-hover="background: #F2F1EC; color: #14201E;">Minhas doações</span>
+        </sc-if>
+        <sc-if value="{{ ehInstituicao }}" hint-placeholder-val="{{ true }}">
+          <span onClick="{{ irPainel }}" style="font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 9px; cursor: pointer; color: #5C6B68;" style-hover="background: #F2F1EC; color: #14201E;">Painel da instituição</span>
+        </sc-if>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 14px;">
+        
+
+        <div style="position: relative;">
+          <div onClick="{{ toggleSino }}" style="position: relative; width: 42px; height: 42px; border-radius: 12px; border: 1px solid #E4E3DE; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer;" style-hover="border-color: #0F766E;">
+            <span style="font-size: 18px; line-height: 1;">🔔</span>
+            <sc-if value="{{ temNaoLidas }}" hint-placeholder-val="{{ true }}">
+              <span style="position: absolute; top: -7px; right: -7px; min-width: 21px; height: 21px; border-radius: 999px; background: #F06A3F; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px; border: 2px solid #FFFFFF;">{{ naoLidas }}</span>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ sinoAberto }}" hint-placeholder-val="{{ false }}">
+            <div style="position: fixed; top: 72px; right: 16px; left: auto; width: min(380px, calc(100vw - 32px)); background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; box-shadow: 0 18px 40px rgba(20,32,30,0.14); overflow: hidden; z-index: 40;">
+              <div style="padding: 16px 18px; border-bottom: 1px solid #EFEEE9; display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 15px; font-weight: 700;">Notificações</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5C6B68;">{{ rotuloPerfil }}</span>
+              </div>
+              <div style="max-height: 360px; overflow-y: auto;">
+                <sc-for list="{{ notificacoes }}" as="n" hint-placeholder-count="3">
+                  <div style="{{ n.wrapStyle }}">
+                    <div style="display: flex; gap: 12px; align-items: flex-start;">
+                      <div style="width: 34px; height: 34px; flex: 0 0 auto; border-radius: 10px; background: #E6F2F0; display: flex; align-items: center; justify-content: center; font-size: 15px;">{{ n.icone }}</div>
+                      <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                        <div style="font-size: 14px; line-height: 1.5; color: #14201E;">{{ n.texto }}</div>
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9AA5A2;">{{ n.quando }}</span>
+                          <sc-if value="{{ n.naoLida }}" hint-placeholder-val="{{ true }}">
+                            <span onClick="{{ n.marcarLida }}" style="font-size: 12px; font-weight: 600; color: #0F766E; cursor: pointer;" style-hover="color: #F06A3F;">Marcar como lida</span>
+                          </sc-if>
+                          <sc-if value="{{ n.temAcao }}" hint-placeholder-val="{{ false }}">
+                            <span onClick="{{ n.abrirPainel }}" style="font-size: 12px; font-weight: 600; color: #F06A3F; cursor: pointer;" style-hover="color: #D9552B;">Ver no painel →</span>
+                          </sc-if>
+                        </div>
+                      </div>
+                      <sc-if value="{{ n.naoLida }}" hint-placeholder-val="{{ true }}">
+                        <span style="width: 8px; height: 8px; border-radius: 999px; background: #F06A3F; flex: 0 0 auto; margin-top: 6px;"></span>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ semNotificacoes }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding: 28px 18px; text-align: center; font-size: 14px; color: #5C6B68;">Entre como Doador ou Instituição para ver notificações.</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ deslogado }}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span onClick="{{ irLogin }}" style="font-size: 14px; font-weight: 600; color: #0F766E; cursor: pointer; padding: 8px 4px;" style-hover="color: #F06A3F;">Entrar</span>
+            <button onClick="{{ irEscolhaConta }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #115E56;">Criar conta</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ logado }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px; background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 999px; padding: 5px 14px 5px 6px;">
+              <span style="{{ avatarStyle }}">{{ usuarioInicial }}</span>
+              <span style="display: flex; flex-direction: column; line-height: 1.2;">
+                <span style="font-size: 13px; font-weight: 700;">{{ usuarioNome }}</span>
+                <span style="font-size: 11px; color: #5C6B68;">{{ usuarioPapel }}</span>
+              </span>
+            </div>
+            <span onClick="{{ sair }}" style="font-size: 13px; font-weight: 600; color: #5C6B68; cursor: pointer; padding: 8px;" style-hover="color: #14201E;">Sair</span>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </header>
+
+  <!-- LANDING -->
+  <sc-if value="{{ telaLanding }}" hint-placeholder-val="{{ true }}">
+    <main>
+      <section style="max-width: 1240px; margin: 0 auto; padding: 64px 28px 72px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 48px; align-items: center;">
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <span style="align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #0B5B54; background: #E6F2F0; padding: 7px 13px; border-radius: 999px;">5 instituições · {{ totalAbertas }} necessidades abertas</span>
+          <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 54px; line-height: 1.06; font-weight: 600; letter-spacing: -0.015em; text-wrap: pretty;">Quem quer ajudar, encontrando quem precisa.</h1>
+          <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #3D4A47; max-width: 520px;">Veja exatamente do que cada instituição precisa hoje, prometa a doação que você pode fazer e acompanhe até a entrega. Sem intermediação de dinheiro: a conexão é direta.</p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button onClick="{{ irListagem }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 12px; padding: 15px 26px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #115E56;">Conhecer instituições</button>
+            <button onClick="{{ irCadastroInstituicao }}" style="background: transparent; color: #0F766E; border: 1.5px solid #0F766E; border-radius: 12px; padding: 14px 24px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #E6F2F0;">Cadastrar instituição</button>
+          </div>
+        </div>
+        <div style="min-height: 380px; border-radius: 20px; background: repeating-linear-gradient(135deg, #E6F2F0 0 12px, #DCEBE8 12px 24px); border: 1px solid #D5E6E2; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C6B68; text-align: center; line-height: 1.7;">foto principal: voluntários<br>entregando doações</div>
+      </section>
+
+      <section style="background: #FFFFFF; border-top: 1px solid #E4E3DE; border-bottom: 1px solid #E4E3DE;">
+        <div style="max-width: 1240px; margin: 0 auto; padding: 64px 28px; display: flex; flex-direction: column; gap: 34px;">
+          <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px;">
+            <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 34px; font-weight: 600;">Como funciona</h2>
+            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5C6B68;">Três passos, do primeiro clique até a doação entregue.</p>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+            <div style="background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 16px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="width: 38px; height: 38px; border-radius: 11px; background: #0F766E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">1</div>
+              <div style="font-size: 19px; font-weight: 700;">Descobrir</div>
+              <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">Busque por causa, cidade ou tipo de necessidade e veja instituições com pedidos ativos.</p>
+            </div>
+            <div style="background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 16px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="width: 38px; height: 38px; border-radius: 11px; background: #0F766E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">2</div>
+              <div style="font-size: 19px; font-weight: 700;">Escolher como ajudar</div>
+              <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">Escolha o item da lista de necessidades e a quantidade que consegue doar. A instituição é avisada na hora.</p>
+            </div>
+            <div style="background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 16px; padding: 26px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="width: 38px; height: 38px; border-radius: 11px; background: #0F766E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;">3</div>
+              <div style="font-size: 19px; font-weight: 700;">Acompanhar</div>
+              <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">Siga sua doação de Prometida até Entregue, e veja a necessidade sendo preenchida.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="max-width: 1240px; margin: 0 auto; padding: 64px 28px 80px; display: flex; flex-direction: column; gap: 26px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px;">
+            <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 34px; font-weight: 600;">Instituições em destaque</h2>
+            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5C6B68;">Precisam de apoio nesta semana.</p>
+          </div>
+          <span onClick="{{ irListagem }}" style="font-size: 15px; font-weight: 600; color: #0F766E; cursor: pointer;" style-hover="color: #F06A3F;">Ver todas →</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+          <sc-for list="{{ destaques }}" as="inst" hint-placeholder-count="4">
+            <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: box-shadow 160ms, transform 160ms;" style-hover="box-shadow: 0 12px 28px rgba(20,32,30,0.09); transform: translateY(-3px);" onClick="{{ inst.abrir }}">
+              <div style="{{ inst.fotoStyle }}">{{ inst.fotoLegenda }}</div>
+              <div style="padding: 18px; display: flex; flex-direction: column; gap: 10px; flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                  <div>
+                    <div style="font-size: 16px; font-weight: 700; line-height: 1.3;">{{ inst.nome }}</div>
+                    <div style="font-size: 13px; color: #5C6B68;">{{ inst.subtitulo }}</div>
+                  </div>
+                  <span onClick="{{ inst.favoritar }}" style="{{ inst.coracaoStyle }}">{{ inst.coracao }}</span>
+                </div>
+                <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #3D4A47; flex: 1;">{{ inst.resumo }}</p>
+                <div style="padding-top: 10px; border-top: 1px solid #EFEEE9; font-size: 12px; font-weight: 600; color: #0B5B54;">{{ inst.abertasTexto }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <footer style="background: #14201E; color: #D9E2E0;">
+        <div style="max-width: 1240px; margin: 0 auto; padding: 36px 28px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div style="width: 26px; height: 26px; border-radius: 8px; background: #0F766E; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-weight: 700; font-size: 13px;">C</div>
+            <span style="font-size: 15px; font-weight: 700; color: #FFFFFF;">ConectaAção</span>
+            <span style="font-size: 13px; color: #93A29F; margin-left: 10px;">Conexão entre doadores e instituições. Não processamos pagamentos.</span>
+          </div>
+          <div style="display: flex; gap: 22px; font-size: 13px;">
+            <span onClick="{{ irListagem }}" style="cursor: pointer; color: #D9E2E0;" style-hover="color: #FFFFFF;">Instituições</span>
+            <span style="cursor: pointer; color: #D9E2E0;" style-hover="color: #FFFFFF;">Como funciona</span>
+            <span style="cursor: pointer; color: #D9E2E0;" style-hover="color: #FFFFFF;">Contato</span>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </sc-if>
+
+  <!-- LISTAGEM -->
+  <sc-if value="{{ telaListagem }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1240px; margin: 0 auto; padding: 40px 28px 80px; display: flex; flex-direction: column; gap: 28px; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 38px; font-weight: 600;">Instituições</h1>
+        <p style="margin: 0; font-size: 16px; color: #5C6B68;">{{ resultadoTexto }}</p>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; padding: 18px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 2 1 280px; display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 12px; font-weight: 600; color: #5C6B68;">Buscar</label>
+          <input type="text" value="{{ busca }}" onChange="{{ setBusca }}" placeholder="Nome, causa ou cidade" style="width: 100%; padding: 12px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 14px; background: #FFFFFF; color: #14201E; outline: none;" style-focus="border-color: #0F766E; box-shadow: 0 0 0 3px #E6F2F0;">
+        </div>
+        <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 12px; font-weight: 600; color: #5C6B68;">Causa</label>
+          <select value="{{ filtroCausa }}" onChange="{{ setCausa }}" style="width: 100%; padding: 12px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 14px; background: #FFFFFF; color: #14201E; outline: none;">
+            <sc-for list="{{ causas }}" as="c" hint-placeholder-count="4">
+              <option value="{{ c }}">{{ c }}</option>
+            </sc-for>
+          </select>
+        </div>
+        <div style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 12px; font-weight: 600; color: #5C6B68;">Tipo de necessidade</label>
+          <select value="{{ filtroTipo }}" onChange="{{ setTipo }}" style="width: 100%; padding: 12px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 14px; background: #FFFFFF; color: #14201E; outline: none;">
+            <sc-for list="{{ tipos }}" as="t" hint-placeholder-count="4">
+              <option value="{{ t }}">{{ t }}</option>
+            </sc-for>
+          </select>
+        </div>
+        <button onClick="{{ limparFiltros }}" style="background: transparent; color: #5C6B68; border: 1px solid #E4E3DE; border-radius: 10px; padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="color: #14201E; background: #F2F1EC;">Limpar</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <sc-for list="{{ listaFiltrada }}" as="inst" hint-placeholder-count="5">
+          <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 160ms, transform 160ms;" style-hover="box-shadow: 0 12px 28px rgba(20,32,30,0.09); transform: translateY(-3px);">
+            <div style="{{ inst.fotoStyle }}">{{ inst.fotoLegenda }}</div>
+            <div style="padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                <div>
+                  <div style="font-size: 17px; font-weight: 700; line-height: 1.3;">{{ inst.nome }}</div>
+                  <div style="font-size: 13px; color: #5C6B68;">{{ inst.subtitulo }}</div>
+                </div>
+                <span onClick="{{ inst.favoritar }}" style="{{ inst.coracaoBotaoStyle }}">{{ inst.coracao }}</span>
+              </div>
+              <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #3D4A47; flex: 1;">{{ inst.resumo }}</p>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <sc-for list="{{ inst.tags }}" as="tag" hint-placeholder-count="2">
+                  <span style="font-size: 11px; font-weight: 600; color: #5C6B68; background: #F2F1EC; padding: 5px 9px; border-radius: 999px;">{{ tag }}</span>
+                </sc-for>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #EFEEE9;">
+                <span style="font-size: 12px; font-weight: 600; color: #0B5B54;">{{ inst.abertasTexto }}</span>
+                <span onClick="{{ inst.abrir }}" style="font-size: 13px; font-weight: 600; color: #0F766E; cursor: pointer;" style-hover="color: #F06A3F;">Ver detalhe →</span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ listaVazia }}" hint-placeholder-val="{{ false }}">
+        <div style="background: #FFFFFF; border: 1px dashed #D8D7D1; border-radius: 16px; padding: 48px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+          <div style="font-size: 17px; font-weight: 700;">Nenhuma instituição com esses filtros</div>
+          <p style="margin: 0; font-size: 14px; color: #5C6B68; max-width: 380px;">Tente outra causa, outro tipo de necessidade ou limpe a busca.</p>
+          <button onClick="{{ limparFiltros }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">Limpar filtros</button>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- DETALHE -->
+  <sc-if value="{{ telaDetalhe }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1240px; margin: 0 auto; padding: 28px 28px 80px; display: flex; flex-direction: column; gap: 24px; width: 100%;">
+      <span onClick="{{ irListagem }}" style="font-size: 14px; font-weight: 600; color: #5C6B68; cursor: pointer; align-self: flex-start;" style-hover="color: #14201E;">← Voltar para instituições</span>
+
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 20px; overflow: hidden;">
+        <div style="{{ detalheFotoStyle }}">{{ detalheFotoLegenda }}</div>
+        <div style="padding: 26px; display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start;">
+          <div style="flex: 2 1 400px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 12px; font-weight: 600; color: #0B5B54; background: #E6F2F0; padding: 5px 11px; border-radius: 999px;">{{ detalhe.causa }}</span>
+              <span style="font-size: 12px; font-weight: 600; color: #5C6B68; background: #F2F1EC; padding: 5px 11px; border-radius: 999px;">Verificada</span>
+            </div>
+            <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1;">{{ detalhe.nome }}</h1>
+            <div style="font-size: 14px; color: #5C6B68;">{{ detalhe.cidade }}</div>
+            <p style="margin: 0; font-size: 16px; line-height: 1.65; color: #3D4A47; max-width: 620px;">{{ detalhe.sobre }}</p>
+          </div>
+          <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 12px; background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 16px; padding: 20px;">
+            <div style="font-size: 13px; font-weight: 700; color: #14201E;">Como contribuir</div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #3D4A47; line-height: 1.5;">
+              <div>Entrega no local: {{ detalhe.endereco }}</div>
+              <div>Retirada combinada para doações acima de 20 itens</div>
+              <div>{{ detalhe.contato }}</div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap;">
+              <button onClick="{{ favoritarDetalhe }}" style="{{ favDetalheStyle }}">{{ favDetalheTexto }}</button>
+              <button style="background: transparent; color: #0F766E; border: 1.5px solid #0F766E; border-radius: 10px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #E6F2F0;">Falar com a equipe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 600;">Necessidades</h2>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C6B68;">{{ detalheResumoNecessidades }}</span>
+        </div>
+
+        <sc-for list="{{ detalheNecessidades }}" as="nec" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; padding: 20px 22px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 2 1 280px; display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <span style="font-size: 17px; font-weight: 700;">{{ nec.item }}</span>
+                <span style="{{ nec.chipStyle }}">{{ nec.status }}</span>
+              </div>
+              <div style="font-size: 13px; color: #5C6B68;">{{ nec.tipo }} · desejado: {{ nec.desejadoTexto }}</div>
+            </div>
+            <div style="flex: 2 1 260px; display: flex; flex-direction: column; gap: 7px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; color: #5C6B68;">
+                <span>{{ nec.progressoTexto }}</span>
+                <span style="font-weight: 600; color: #14201E;">{{ nec.pctTexto }}</span>
+              </div>
+              <div style="height: 9px; border-radius: 999px; background: #EFEEE9; overflow: hidden; display: flex;">
+                <div style="{{ nec.barraRecebidaStyle }}"></div>
+                <div style="{{ nec.barraPrometidaStyle }}"></div>
+              </div>
+              <div style="display: flex; gap: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9AA5A2;">
+                <span>■ recebido {{ nec.recebido }}</span>
+                <span>■ prometido {{ nec.prometido }}</span>
+              </div>
+            </div>
+            <div style="flex: 0 1 auto;">
+              <button onClick="{{ nec.doar }}" style="{{ nec.botaoStyle }}" disabled="{{ nec.desabilitado }}">{{ nec.botaoTexto }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- FAVORITOS -->
+  <sc-if value="{{ telaFavoritos }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1240px; margin: 0 auto; padding: 40px 28px 80px; display: flex; flex-direction: column; gap: 24px; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 38px; font-weight: 600;">Favoritos</h1>
+        <p style="margin: 0; font-size: 16px; color: #5C6B68;">{{ favoritosTexto }}</p>
+      </div>
+
+      <sc-for list="{{ listaFavoritos }}" as="inst" hint-placeholder-count="2">
+        <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; padding: 18px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">
+          <div style="{{ inst.miniFotoStyle }}"></div>
+          <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="font-size: 17px; font-weight: 700;">{{ inst.nome }}</div>
+            <div style="font-size: 13px; color: #5C6B68;">{{ inst.subtitulo }} · {{ inst.abertasTexto }}</div>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onClick="{{ inst.favoritar }}" style="background: #FDEDE6; color: #A8431F; border: 1px solid #F3C9B6; border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #FAE0D4;">♥ Remover</button>
+            <button onClick="{{ inst.abrir }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">Ver necessidades</button>
+          </div>
+        </div>
+      </sc-for>
+
+      <sc-if value="{{ semFavoritos }}" hint-placeholder-val="{{ false }}">
+        <div style="background: #FFFFFF; border: 1px dashed #D8D7D1; border-radius: 16px; padding: 48px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+          <div style="font-size: 17px; font-weight: 700;">Você ainda não favoritou nenhuma instituição</div>
+          <p style="margin: 0; font-size: 14px; color: #5C6B68; max-width: 400px;">Toque no coração em qualquer card para guardar a instituição aqui.</p>
+          <button onClick="{{ irListagem }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">Explorar instituições</button>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- MINHAS DOAÇÕES -->
+  <sc-if value="{{ telaMinhasDoacoes }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1240px; margin: 0 auto; padding: 40px 28px 80px; display: flex; flex-direction: column; gap: 24px; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 38px; font-weight: 600;">Minhas doações</h1>
+        <p style="margin: 0; font-size: 16px; color: #5C6B68;">{{ minhasDoacoesTexto }}</p>
+      </div>
+
+      <sc-for list="{{ minhasDoacoes }}" as="d" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+            <div style="flex: 2 1 320px; display: flex; flex-direction: column; gap: 5px;">
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <span style="font-size: 17px; font-weight: 700;">{{ d.itemTexto }}</span>
+                <span style="{{ d.chipStyle }}">{{ d.status }}</span>
+              </div>
+              <div style="font-size: 14px; color: #5C6B68;">{{ d.instituicao }} · registrada em {{ d.data }}</div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto;">
+              <sc-if value="{{ d.podeAvancar }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ d.avancar }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">{{ d.avancarTexto }}</button>
+              </sc-if>
+              <sc-if value="{{ d.podeCancelar }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ d.cancelar }}" style="background: transparent; color: #8E342A; border: 1px solid #E6CFCB; border-radius: 10px; padding: 10px 15px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #F9EFED;">Cancelar</button>
+              </sc-if>
+              <sc-if value="{{ d.encerrada }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 13px; color: #9AA5A2; padding: 11px 0;">{{ d.encerradaTexto }}</span>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0; flex-wrap: wrap;">
+            <sc-for list="{{ d.etapas }}" as="e" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="{{ e.pontoStyle }}">{{ e.marcador }}</div>
+                <span style="{{ e.textoStyle }}">{{ e.rotulo }}</span>
+                <sc-if value="{{ e.temLinha }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ e.linhaStyle }}"></div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </main>
+  </sc-if>
+
+  <!-- PAINEL DA INSTITUIÇÃO -->
+  <sc-if value="{{ telaPainel }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1240px; margin: 0 auto; padding: 40px 28px 80px; display: flex; flex-direction: column; gap: 28px; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6B68;">Painel · {{ instAtiva.nome }}</span>
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 38px; font-weight: 600;">Painel da instituição</h1>
+        <p style="margin: 0; font-size: 16px; color: #5C6B68;">{{ painelResumoTexto }}</p>
+      </div>
+
+      <div style="display: flex; gap: 4px; border-bottom: 1px solid #E4E3DE;">
+        <span onClick="{{ abaReceber }}" style="{{ abaReceberStyle }}">Doações a receber</span>
+        <span onClick="{{ abaNecessidades }}" style="{{ abaNecessidadesStyle }}">Necessidades</span>
+      </div>
+
+      <sc-if value="{{ painelReceber }}" hint-placeholder-val="{{ true }}">
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 1.2fr 1.6fr 0.8fr 0.9fr 1fr; gap: 16px; padding: 14px 22px; background: #FAF9F6; border-bottom: 1px solid #E4E3DE; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5C6B68;">
+          <span>Doador</span><span>Item</span><span>Quantidade</span><span>Status</span><span>Ação</span>
+        </div>
+        <sc-for list="{{ aReceber }}" as="d" hint-placeholder-count="4">
+          <div style="{{ d.linhaStyle }}">
+            <div style="display: flex; flex-direction: column; gap: 3px;">
+              <span style="font-size: 15px; font-weight: 600;">{{ d.doador }}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9AA5A2;">{{ d.data }}</span>
+            </div>
+            <span style="font-size: 15px; color: #14201E;">{{ d.item }}</span>
+            <span style="font-size: 15px; font-weight: 600;">{{ d.qtdTexto }}</span>
+            <span><span style="{{ d.chipStyle }}">{{ d.status }}</span></span>
+            <span>
+              <sc-if value="{{ d.podeReceber }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ d.marcarRecebida }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 10px 15px; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">Marcar recebida</button>
+              </sc-if>
+              <sc-if value="{{ d.jaRecebida }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 13px; color: #1F5E42; font-weight: 600;">✓ Recebida</span>
+              </sc-if>
+            </span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ semAReceber }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 44px 22px; text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <div style="font-size: 16px; font-weight: 700;">Nenhuma doação prometida ainda</div>
+            <p style="margin: 0; font-size: 14px; color: #5C6B68; max-width: 400px; line-height: 1.6;">Assim que alguém prometer uma doação para as suas necessidades, ela aparece aqui e você recebe uma notificação.</p>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 600;">Resumo por necessidade</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+          <sc-for list="{{ resumoNecessidades }}" as="nec" hint-placeholder-count="4">
+            <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                <span style="font-size: 16px; font-weight: 700; line-height: 1.3;">{{ nec.item }}</span>
+                <span style="{{ nec.chipStyle }}">{{ nec.status }}</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #5C6B68;">
+                  <span>{{ nec.progressoTexto }}</span>
+                  <span style="font-weight: 600; color: #14201E;">{{ nec.pctTexto }}</span>
+                </div>
+                <div style="height: 9px; border-radius: 999px; background: #EFEEE9; overflow: hidden; display: flex;">
+                  <div style="{{ nec.barraRecebidaStyle }}"></div>
+                  <div style="{{ nec.barraPrometidaStyle }}"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 16px; font-size: 13px; color: #5C6B68; padding-top: 4px; border-top: 1px solid #EFEEE9;">
+                <span>Desejado <strong style="color: #14201E;">{{ nec.desejadoTexto }}</strong></span>
+                <span>Recebido <strong style="color: #1F5E42;">{{ nec.recebido }}</strong></span>
+                <span>Prometido <strong style="color: #A8431F;">{{ nec.prometido }}</strong></span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ painelNecessidades }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <h2 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 600;">Minhas necessidades</h2>
+              <p style="margin: 0; font-size: 15px; color: #5C6B68;">{{ crudResumoTexto }}</p>
+            </div>
+            <button onClick="{{ novaNecessidade }}" style="background: #F06A3F; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #D9552B;">Cadastrar necessidade</button>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 16px; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1.1fr 1.1fr; gap: 16px; padding: 14px 22px; background: #FAF9F6; border-bottom: 1px solid #E4E3DE; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #5C6B68;">
+              <span>Item</span><span>Desejado</span><span>Prometido / recebido</span><span>Situação</span><span>Gerenciar</span>
+            </div>
+            <sc-for list="{{ crudNecessidades }}" as="n" hint-placeholder-count="4">
+              <div style="{{ n.linhaStyle }}">
+                <div style="display: flex; flex-direction: column; gap: 3px;">
+                  <span style="font-size: 15px; font-weight: 600;">{{ n.item }}</span>
+                  <span style="font-size: 12px; color: #9AA5A2;">{{ n.tipo }}{{ n.obsTexto }}</span>
+                </div>
+                <span style="font-size: 15px;">{{ n.desejadoTexto }}</span>
+                <span style="font-size: 15px; color: #3D4A47;">{{ n.promRecTexto }}</span>
+                <span><span style="{{ n.chipStyle }}">{{ n.status }}</span></span>
+                <span style="display: flex; gap: 8px;">
+                  <span onClick="{{ n.editar }}" style="font-size: 13px; font-weight: 600; color: #0F766E; cursor: pointer; padding: 6px 0;" style-hover="color: #115E56;">Editar</span>
+                  <span onClick="{{ n.excluir }}" style="font-size: 13px; font-weight: 600; color: #A8392D; cursor: pointer; padding: 6px 0;" style-hover="color: #8E342A;">Excluir</span>
+                </span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ semNecessidades }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 48px 22px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                <div style="font-size: 16px; font-weight: 700;">Você ainda não cadastrou necessidades</div>
+                <p style="margin: 0; font-size: 14px; color: #5C6B68; max-width: 420px; line-height: 1.6;">Cadastre o que a instituição precisa receber. Cada item aparece na sua página com a quantidade desejada e o quanto já foi prometido.</p>
+                <button onClick="{{ novaNecessidade }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">Cadastrar primeira necessidade</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- FORMULÁRIO DE NECESSIDADE (criar / editar) -->
+  <sc-if value="{{ necFormAberto }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 65; background: rgba(20,32,30,0.5); display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto;">
+      <div style="width: 100%; max-width: 560px; background: #FFFFFF; border-radius: 20px; overflow: hidden; box-shadow: 0 30px 70px rgba(20,32,30,0.3);">
+        <div style="padding: 22px 26px; border-bottom: 1px solid #EFEEE9; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6B68;">{{ necFormModo }}</span>
+            <span style="font-size: 21px; font-weight: 700;">{{ necFormTitulo }}</span>
+          </div>
+          <span onClick="{{ fecharNecForm }}" style="font-size: 22px; color: #9AA5A2; cursor: pointer; line-height: 1;" style-hover="color: #14201E;">×</span>
+        </div>
+
+        <div style="padding: 22px 26px; display: flex; flex-direction: column; gap: 16px;">
+          <sc-if value="{{ necFormTemErro }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #F9EFED; border: 1px solid #E6CFCB; border-radius: 12px; padding: 14px; display: flex; gap: 10px; align-items: flex-start;">
+              <span style="width: 20px; height: 20px; flex: 0 0 auto; border-radius: 999px; background: #A8392D; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">!</span>
+              <span style="font-size: 13px; line-height: 1.5; color: #8E342A;">{{ necFormErroResumo }}</span>
+            </div>
+          </sc-if>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Item</label>
+            <input type="text" value="{{ necItem }}" onChange="{{ setNecItem }}" placeholder="Ex.: Leite em pó integral" style="{{ necItemStyle }}">
+            <sc-if value="{{ necErroItem }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ necErroItemTexto }}</span></sc-if>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 600;">Quantidade desejada</label>
+              <input type="number" value="{{ necQtd }}" onChange="{{ setNecQtd }}" placeholder="100" style="{{ necQtdStyle }}">
+              <sc-if value="{{ necErroQtd }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ necErroQtdTexto }}</span></sc-if>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 600;">Unidade</label>
+              <input type="text" value="{{ necUnidade }}" onChange="{{ setNecUnidade }}" placeholder="unidades, kg, pacotes" style="{{ necUnidadeStyle }}">
+              <sc-if value="{{ necErroUnidade }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ necErroUnidadeTexto }}</span></sc-if>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 600;">Tipo</label>
+              <select value="{{ necTipo }}" onChange="{{ setNecTipo }}" style="width: 100%; padding: 12px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 15px; background: #FFFFFF; outline: none;">
+                <sc-for list="{{ tiposNecessidade }}" as="t" hint-placeholder-count="5"><option value="{{ t }}">{{ t }}</option></sc-for>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Observação para o doador <span style="font-weight: 400; color: #9AA5A2;">(opcional)</span></label>
+            <textarea rows="2" value="{{ necObs }}" onChange="{{ setNecObs }}" placeholder="Ex.: aceitamos apenas embalagens fechadas, com validade acima de 3 meses." style="width: 100%; padding: 12px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 15px; font-family: inherit; line-height: 1.5; resize: vertical; outline: none;" style-focus="border-color: #0F766E; box-shadow: 0 0 0 3px #E6F2F0;"></textarea>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Situação da necessidade</label>
+            <div style="display: flex; gap: 10px;">
+              <div onClick="{{ setNecAberta }}" style="{{ necAbertaStyle }}">
+                <span style="font-size: 14px; font-weight: 700;">Aberta</span>
+                <span style="font-size: 12px; color: #5C6B68;">Visível e aceitando doações</span>
+              </div>
+              <div onClick="{{ setNecPausada }}" style="{{ necPausadaStyle }}">
+                <span style="font-size: 14px; font-weight: 700;">Pausada</span>
+                <span style="font-size: 12px; color: #5C6B68;">Some da página pública</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 18px 26px; background: #FAF9F6; border-top: 1px solid #EFEEE9; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <button onClick="{{ fecharNecForm }}" style="background: transparent; color: #5C6B68; border: 1px solid #E4E3DE; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="color: #14201E; background: #F2F1EC;">Descartar</button>
+          <button onClick="{{ salvarNecessidade }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 22px; font-size: 15px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">{{ necFormBotao }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CONFIRMAÇÃO DE EXCLUSÃO -->
+  <sc-if value="{{ exclusaoAberta }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 70; background: rgba(20,32,30,0.5); display: flex; align-items: center; justify-content: center; padding: 24px;">
+      <div style="width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 30px 70px rgba(20,32,30,0.3);">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 42px; height: 42px; flex: 0 0 auto; border-radius: 12px; background: #F9EFED; color: #8E342A; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700;">!</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.25;">Excluir esta necessidade?</h2>
+            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">{{ exclusaoTexto }}</p>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #5C6B68; background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 12px; padding: 14px;">O item sai da sua página pública. Doações já prometidas continuam registradas em Doações a receber.</p>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+          <button onClick="{{ manterNecessidade }}" style="background: transparent; color: #14201E; border: 1px solid #E4E3DE; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #F2F1EC;">Manter na lista</button>
+          <button onClick="{{ confirmarExclusao }}" style="background: #A8392D; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #8E342A;">Excluir definitivamente</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CONFIRMAÇÃO -->
+  <sc-if value="{{ telaConfirmacao }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 720px; margin: 0 auto; padding: 72px 28px 80px; width: 100%;">
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 20px; padding: 44px; display: flex; flex-direction: column; gap: 22px; align-items: center; text-align: center;">
+        <div style="width: 58px; height: 58px; border-radius: 999px; background: #E3F1E8; color: #1F5E42; display: flex; align-items: center; justify-content: center; font-size: 26px;">✓</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 34px; font-weight: 600; line-height: 1.15;">Doação registrada como Prometida</h1>
+          <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3D4A47;">{{ confirmacaoTexto }}</p>
+        </div>
+        <div style="width: 100%; background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
+          <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Item</span><span style="font-weight: 600;">{{ confirmacaoItem }}</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Quantidade</span><span style="font-weight: 600;">{{ confirmacaoQtd }}</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Instituição</span><span style="font-weight: 600;">{{ confirmacaoInst }}</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Status</span><span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #FDEDE6; color: #A8431F;">Prometida</span></div>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+          <button onClick="{{ irMinhasDoacoes }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 12px; padding: 14px 24px; font-size: 15px; font-weight: 600; cursor: pointer;" style-hover="background: #115E56;">Ver minhas doações</button>
+          <button onClick="{{ irListagem }}" style="background: transparent; color: #0F766E; border: 1.5px solid #0F766E; border-radius: 12px; padding: 13px 22px; font-size: 15px; font-weight: 600; cursor: pointer;" style-hover="background: #E6F2F0;">Ajudar outra instituição</button>
+        </div>
+        <p style="margin: 0; font-size: 13px; color: #9AA5A2; max-width: 460px; line-height: 1.6;">A instituição já recebeu a notificação. Combine a entrega pelos contatos da página dela e atualize o status quando a doação estiver a caminho.</p>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- LOGIN -->
+  <sc-if value="{{ telaLogin }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 1000px; margin: 0 auto; padding: 48px 28px 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 36px; align-items: center; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <span style="align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #0B5B54; background: #E6F2F0; padding: 7px 13px; border-radius: 999px;">Acesso necessário</span>
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 40px; font-weight: 600; line-height: 1.08;">Entre para ver as instituições</h1>
+        <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3D4A47; max-width: 460px;">A lista de instituições e suas necessidades é visível apenas para pessoas cadastradas. Isso protege os dados de contato das organizações e permite acompanhar cada doação prometida.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 6px;">
+          <div style="display: flex; gap: 10px; align-items: center; font-size: 15px; color: #3D4A47;"><span style="width: 22px; height: 22px; border-radius: 999px; background: #E6F2F0; color: #0B5B54; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">✓</span> Favoritar instituições e receber avisos</div>
+          <div style="display: flex; gap: 10px; align-items: center; font-size: 15px; color: #3D4A47;"><span style="width: 22px; height: 22px; border-radius: 999px; background: #E6F2F0; color: #0B5B54; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">✓</span> Acompanhar o status de cada doação</div>
+          <div style="display: flex; gap: 10px; align-items: center; font-size: 15px; color: #3D4A47;"><span style="width: 22px; height: 22px; border-radius: 999px; background: #E6F2F0; color: #0B5B54; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">✓</span> Cadastro gratuito, sem dados de pagamento</div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 21px; font-weight: 700;">Entrar</span>
+          <span style="font-size: 14px; color: #5C6B68;">Use o e-mail cadastrado na plataforma.</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">E-mail</label>
+          <input type="email" value="{{ loginEmail }}" onChange="{{ setLoginEmail }}" placeholder="voce@email.com" style="{{ loginEmailStyle }}">
+          <sc-if value="{{ loginErroEmail }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ loginErroEmailTexto }}</span>
+          </sc-if>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">Senha</label>
+          <input type="password" value="{{ loginSenha }}" onChange="{{ setLoginSenha }}" placeholder="••••••••" style="{{ loginSenhaStyle }}">
+          <sc-if value="{{ loginErroSenha }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ loginErroSenhaTexto }}</span>
+          </sc-if>
+        </div>
+        <button onClick="{{ fazerLogin }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #115E56;">Acessar minha conta</button>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px; border-top: 1px solid #EFEEE9;">
+          <span style="font-size: 13px; color: #5C6B68; padding-top: 10px;">Ainda não tem conta?</span>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <span onClick="{{ irCadastroDoador }}" style="font-size: 14px; font-weight: 600; color: #0F766E; cursor: pointer;" style-hover="color: #F06A3F;">Criar conta de doador →</span>
+            <span onClick="{{ irCadastroInstituicao }}" style="font-size: 14px; font-weight: 600; color: #0F766E; cursor: pointer;" style-hover="color: #F06A3F;">Cadastrar instituição →</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ESCOLHA DO TIPO DE CONTA -->
+  <sc-if value="{{ telaEscolhaConta }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 860px; margin: 0 auto; padding: 56px 28px 80px; display: flex; flex-direction: column; gap: 28px; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 620px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6B68;">Criar conta</span>
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 38px; font-weight: 600; line-height: 1.1;">Como você vai usar o ConectaAção?</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5C6B68;">Escolha o tipo de conta. Você pode mudar depois nas configurações do perfil.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div onClick="{{ irCadastroDoador }}" style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 14px; cursor: pointer; transition: box-shadow 160ms, transform 160ms, border-color 160ms;" style-hover="border-color: #0F766E; box-shadow: 0 12px 28px rgba(20,32,30,0.09); transform: translateY(-3px);">
+          <div style="width: 42px; height: 42px; border-radius: 12px; background: #E6F2F0; color: #0B5B54; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;">♥</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 21px; font-weight: 700;">Sou doador</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">Quero encontrar instituições, prometer doações e acompanhar a entrega.</p>
+          </div>
+          <span style="font-size: 13px; color: #9AA5A2;">Cadastro rápido: nome, e-mail e senha.</span>
+          <span style="font-size: 15px; font-weight: 600; color: #0F766E; margin-top: auto;">Criar conta de doador →</span>
+        </div>
+        <div onClick="{{ irCadastroInstituicao }}" style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 14px; cursor: pointer; transition: box-shadow 160ms, transform 160ms, border-color 160ms;" style-hover="border-color: #F06A3F; box-shadow: 0 12px 28px rgba(20,32,30,0.09); transform: translateY(-3px);">
+          <div style="width: 42px; height: 42px; border-radius: 12px; background: #FDEDE6; color: #A8431F; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;">◆</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 21px; font-weight: 700;">Sou instituição</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">Quero divulgar o trabalho da organização e o que ela precisa receber.</p>
+          </div>
+          <span style="font-size: 13px; color: #9AA5A2;">Perfil completo: sobre, público atendido e contato.</span>
+          <span style="font-size: 15px; font-weight: 600; color: #F06A3F; margin-top: auto;">Cadastrar instituição →</span>
+        </div>
+      </div>
+      <span onClick="{{ irLogin }}" style="font-size: 14px; font-weight: 600; color: #5C6B68; cursor: pointer; align-self: flex-start;" style-hover="color: #14201E;">Já tenho conta, quero entrar</span>
+    </main>
+  </sc-if>
+
+  <!-- CADASTRO DE DOADOR -->
+  <sc-if value="{{ telaCadDoador }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 560px; margin: 0 auto; padding: 48px 28px 80px; width: 100%;">
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6B68;">Conta de doador</span>
+          <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 32px; font-weight: 600; line-height: 1.12;">Criar conta de doador</h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #5C6B68;">Quatro campos e você já pode ver as necessidades das instituições.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">Nome completo</label>
+          <input type="text" value="{{ dNome }}" onChange="{{ setDNome }}" placeholder="Camila Souza" style="{{ dNomeStyle }}">
+          <sc-if value="{{ dErroNome }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ dErroNomeTexto }}</span></sc-if>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">E-mail</label>
+          <input type="email" value="{{ dEmail }}" onChange="{{ setDEmail }}" placeholder="voce@email.com" style="{{ dEmailStyle }}">
+          <sc-if value="{{ dErroEmail }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ dErroEmailTexto }}</span></sc-if>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Senha</label>
+            <input type="password" value="{{ dSenha }}" onChange="{{ setDSenha }}" placeholder="mínimo 6 caracteres" style="{{ dSenhaStyle }}">
+            <sc-if value="{{ dErroSenha }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ dErroSenhaTexto }}</span></sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Confirmar senha</label>
+            <input type="password" value="{{ dConf }}" onChange="{{ setDConf }}" placeholder="repita a senha" style="{{ dConfStyle }}">
+            <sc-if value="{{ dErroConf }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ dErroConfTexto }}</span></sc-if>
+          </div>
+        </div>
+        <button onClick="{{ salvarDoador }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #115E56;">Concluir cadastro de doador</button>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; padding-top: 4px; border-top: 1px solid #EFEEE9;">
+          <span onClick="{{ irLogin }}" style="font-weight: 600; color: #0F766E; cursor: pointer; padding-top: 10px;" style-hover="color: #F06A3F;">Já tenho conta, quero entrar</span>
+          <span onClick="{{ irCadastroInstituicao }}" style="font-weight: 600; color: #5C6B68; cursor: pointer; padding-top: 10px;" style-hover="color: #14201E;">Sou instituição</span>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- CADASTRO DE INSTITUIÇÃO -->
+  <sc-if value="{{ telaCadInst }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width: 880px; margin: 0 auto; padding: 40px 28px 80px; display: flex; flex-direction: column; gap: 20px; width: 100%;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6B68;">Cadastro de instituição · 2 seções</span>
+        <h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1;">Cadastrar instituição</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #5C6B68; max-width: 620px;">Quanto mais claro o perfil, mais fácil para um doador entender o seu trabalho e escolher como ajudar.</p>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 30px; height: 30px; border-radius: 999px; background: #0F766E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">1</div>
+          <h2 style="margin: 0; font-size: 20px; font-weight: 700;">Identificação e acesso</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Nome da instituição</label>
+            <input type="text" value="{{ iNome }}" onChange="{{ setINome }}" placeholder="Ex.: Casa de Apoio Aurora" style="{{ iNomeStyle }}">
+            <sc-if value="{{ iErroNome }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ iErroNomeTexto }}</span></sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Causa / categoria</label>
+            <select value="{{ iCausa }}" onChange="{{ setICausa }}" style="width: 100%; padding: 13px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 15px; background: #FFFFFF; outline: none;">
+              <sc-for list="{{ causasCadastro }}" as="c" hint-placeholder-count="5"><option value="{{ c }}">{{ c }}</option></sc-for>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">E-mail institucional</label>
+            <input type="email" value="{{ iEmail }}" onChange="{{ setIEmail }}" placeholder="contato@instituicao.org" style="{{ iEmailStyle }}">
+            <sc-if value="{{ iErroEmail }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ iErroEmailTexto }}</span></sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Senha</label>
+            <input type="password" value="{{ iSenha }}" onChange="{{ setISenha }}" placeholder="mínimo 6 caracteres" style="{{ iSenhaStyle }}">
+            <sc-if value="{{ iErroSenha }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ iErroSenhaTexto }}</span></sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Cidade e estado</label>
+            <input type="text" value="{{ iCidade }}" onChange="{{ setICidade }}" placeholder="Belo Horizonte, MG" style="{{ iCidadeStyle }}">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E4E3DE; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 30px; height: 30px; border-radius: 999px; background: #0F766E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">2</div>
+          <h2 style="margin: 0; font-size: 20px; font-weight: 700;">Sobre a instituição</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">O que a instituição faz</label>
+          <textarea rows="2" value="{{ iOQueFaz }}" onChange="{{ setIOQueFaz }}" placeholder="Ex.: acolhimento noturno, distribuição de refeições e apoio na emissão de documentos." style="{{ iOQueFazStyle }}"></textarea>
+          <sc-if value="{{ iErroOQueFaz }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ iErroOQueFazTexto }}</span></sc-if>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">Quem ela ajuda (público atendido)</label>
+          <input type="text" value="{{ iPublico }}" onChange="{{ setIPublico }}" placeholder="Ex.: 60 adultos em situação de rua, todas as noites" style="{{ iPublicoStyle }}">
+          <sc-if value="{{ iErroPublico }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; color: #A8392D;">{{ iErroPublicoTexto }}</span></sc-if>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 600;">Descrição completa</label>
+          <textarea rows="3" value="{{ iDescricao }}" onChange="{{ setIDescricao }}" placeholder="História, equipe, resultados do último ano e como as doações são usadas." style="{{ iDescricaoStyle }}"></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Contato para doadores</label>
+            <input type="text" value="{{ iContato }}" onChange="{{ setIContato }}" placeholder="(31) 99999-0000 · doacoes@instituicao.org" style="{{ iContatoStyle }}">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 13px; font-weight: 600;">Formas de contribuição</label>
+            <input type="text" value="{{ iFormas }}" onChange="{{ setIFormas }}" placeholder="Entrega no local, retirada combinada, voluntariado" style="{{ iFormasStyle }}">
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <button onClick="{{ salvarInstituicao }}" style="background: #0F766E; color: #FFFFFF; border: none; border-radius: 12px; padding: 15px 26px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 140ms;" style-hover="background: #115E56;">Publicar perfil da instituição</button>
+        <span onClick="{{ irLogin }}" style="font-size: 14px; font-weight: 600; color: #5C6B68; cursor: pointer;" style-hover="color: #14201E;">Já temos cadastro, quero entrar</span>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- AVISO DE CANCELAMENTO -->
+  <sc-if value="{{ cancelamentoAberto }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 70; background: rgba(20,32,30,0.5); display: flex; align-items: center; justify-content: center; padding: 24px;">
+      <div style="width: 100%; max-width: 440px; background: #FFFFFF; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 30px 70px rgba(20,32,30,0.3);">
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="width: 42px; height: 42px; flex: 0 0 auto; border-radius: 12px; background: #F9EFED; color: #8E342A; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700;">!</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700; line-height: 1.25;">Cancelar esta doação?</h2>
+            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3D4A47;">{{ cancelamentoTexto }}</p>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #5C6B68; background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 12px; padding: 14px;">A instituição será avisada e a quantidade volta a ficar pendente na necessidade. Essa ação não pode ser desfeita.</p>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+          <button onClick="{{ manterDoacao }}" style="background: transparent; color: #14201E; border: 1px solid #E4E3DE; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #F2F1EC;">Manter doação</button>
+          <button onClick="{{ confirmarCancelamento }}" style="background: #A8392D; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="background: #8E342A;">Sim, cancelar</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- MODAL QUERO DOAR -->
+  <sc-if value="{{ modalAberto }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 60; background: rgba(20,32,30,0.5); display: flex; align-items: center; justify-content: center; padding: 24px;">
+      <div style="width: 100%; max-width: 560px; background: #FFFFFF; border-radius: 20px; overflow: hidden; box-shadow: 0 30px 70px rgba(20,32,30,0.3); display: flex; flex-direction: column;">
+        <div style="padding: 22px 26px; border-bottom: 1px solid #EFEEE9; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C6B68;">{{ modalEtapaTexto }}</span>
+            <span style="font-size: 21px; font-weight: 700;">Quero doar</span>
+            <span style="font-size: 14px; color: #5C6B68;">{{ modalInstNome }}</span>
+          </div>
+          <span onClick="{{ fecharModal }}" style="font-size: 22px; color: #9AA5A2; cursor: pointer; line-height: 1;" style-hover="color: #14201E;">×</span>
+        </div>
+
+        <sc-if value="{{ modalEscolha }}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 22px 26px; display: flex; flex-direction: column; gap: 18px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <label style="font-size: 13px; font-weight: 600; color: #14201E;">Escolha o item</label>
+              <sc-for list="{{ modalItens }}" as="it" hint-placeholder-count="3">
+                <div onClick="{{ it.selecionar }}" style="{{ it.opcaoStyle }}">
+                  <div style="display: flex; flex-direction: column; gap: 3px;">
+                    <span style="font-size: 15px; font-weight: 600;">{{ it.item }}</span>
+                    <span style="font-size: 12px; color: #5C6B68;">falta {{ it.faltaTexto }} · {{ it.tipo }}</span>
+                  </div>
+                  <span style="{{ it.radioStyle }}"></span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 13px; font-weight: 600; color: #14201E;">Quantidade ({{ modalUnidade }})</label>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span onClick="{{ menosQtd }}" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid #D8D7D1; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; color: #14201E; background: #FFFFFF;" style-hover="border-color: #0F766E; background: #E6F2F0;">−</span>
+                <input type="number" value="{{ modalQtd }}" onChange="{{ setQtd }}" style="width: 110px; padding: 12px 14px; border: 1px solid #D8D7D1; border-radius: 10px; font-size: 15px; text-align: center; outline: none;" style-focus="border-color: #0F766E; box-shadow: 0 0 0 3px #E6F2F0;">
+                <span onClick="{{ maisQtd }}" style="width: 44px; height: 44px; border-radius: 10px; border: 1px solid #D8D7D1; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; color: #14201E; background: #FFFFFF;" style-hover="border-color: #0F766E; background: #E6F2F0;">+</span>
+                <span style="font-size: 13px; color: #5C6B68; margin-left: 4px;">{{ modalRestanteTexto }}</span>
+              </div>
+            </div>
+          </div>
+          <div style="padding: 18px 26px; background: #FAF9F6; border-top: 1px solid #EFEEE9; display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 13px; color: #5C6B68;">Nada de pagamento: você combina a entrega direto com a instituição.</span>
+            <button onClick="{{ irRevisao }}" style="{{ modalAvancarStyle }}" disabled="{{ modalAvancarDesabilitado }}">Revisar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ modalRevisao }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 22px 26px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: #FAF9F6; border: 1px solid #E4E3DE; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Item</span><span style="font-weight: 600;">{{ modalItemNome }}</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Quantidade</span><span style="font-weight: 600;">{{ modalQtdTexto }}</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Instituição</span><span style="font-weight: 600;">{{ modalInstNome }}</span></div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="color: #5C6B68;">Entrega</span><span style="font-weight: 600;">{{ modalEndereco }}</span></div>
+            </div>
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #3D4A47;">Ao confirmar, sua doação entra como <strong>Prometida</strong> e a instituição recebe uma notificação com seu nome, o item e a quantidade.</p>
+          </div>
+          <div style="padding: 18px 26px; background: #FAF9F6; border-top: 1px solid #EFEEE9; display: flex; justify-content: space-between; gap: 12px;">
+            <button onClick="{{ voltarEscolha }}" style="background: transparent; color: #5C6B68; border: 1px solid #E4E3DE; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer;" style-hover="color: #14201E; background: #F2F1EC;">Voltar</button>
+            <button onClick="{{ confirmarDoacao }}" style="background: #F06A3F; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 22px; font-size: 15px; font-weight: 600; cursor: pointer;" style-hover="background: #D9552B;">Confirmar doação</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;perfilInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;visitante&quot;,&quot;doador&quot;,&quot;instituicao&quot;],&quot;default&quot;:&quot;visitante&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ponto de vista&quot;},&quot;nomeDoador&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Camila Souza&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ponto de vista&quot;}}">
+const CHIPS = {
+  'Aberta': ['#E6F2F0', '#0B5B54'],
+  'Parcial': ['#FDEDE6', '#A8431F'],
+  'Atendida': ['#E3F1E8', '#1F5E42'],
+  'Prometida': ['#FDEDE6', '#A8431F'],
+  'A caminho': ['#E7EEF7', '#1F4C80'],
+  'Entregue': ['#E3F1E8', '#1F5E42'],
+  'Recebida': ['#E3F1E8', '#1F5E42'],
+  'Cancelada': ['#F3E8E6', '#8E342A'],
+  'Pausada': ['#F2F1EC', '#5C6B68']
+};
+
+const TIPOS_NEC = ['Alimentos', 'Higiene', 'Roupas e cobertas', 'Materiais', 'Saúde'];
+const CAUSAS_CAD = ['Proteção animal', 'Combate à fome', 'Apoio a idosos', 'Educação infantil', 'População em situação de rua', 'Saúde', 'Outra'];
+
+const FOTOS = {
+  patinhas: ['#E6F2F0', '#DCEBE8', 'foto do abrigo'],
+  maos: ['#FDEDE6', '#F8E2D8', 'foto do galpão'],
+  bemviver: ['#E7EEF7', '#DCE6F2', 'foto da casa'],
+  semear: ['#E3F1E8', '#D7EADE', 'foto da oficina'],
+  novarota: ['#F2F1EC', '#E8E6DF', 'foto da equipe']
+};
+
+const INSTITUICOES = [
+  { id: 'patinhas', nome: 'Patinhas Sem Teto', causa: 'Proteção animal', cidade: 'Campinas, SP',
+    resumo: '84 cães e gatos resgatados, com foco em castração e adoção responsável.',
+    sobre: 'Abrigo comunitário fundado em 2014, hoje com 84 animais resgatados. A equipe é formada por 6 funcionários e 40 voluntários, e mantém um programa permanente de castração e feiras de adoção nos fins de semana.',
+    endereco: 'Rua das Acácias, 212 — Campinas, SP', contato: 'contato@patinhassemteto.org · (19) 99812-4455',
+    necessidades: [
+      { id: 'p1', item: 'Ração seca para cães adultos', tipo: 'Alimentos', unidade: 'kg', desejado: 120, prometido: 60, recebido: 0 },
+      { id: 'p2', item: 'Areia sanitária para gatos', tipo: 'Higiene', unidade: 'sacos', desejado: 25, prometido: 10, recebido: 5 },
+      { id: 'p3', item: 'Antipulgas (dose única)', tipo: 'Saúde', unidade: 'unidades', desejado: 40, prometido: 0, recebido: 0 },
+      { id: 'p4', item: 'Mantas de tecido resistente', tipo: 'Roupas e cobertas', unidade: 'unidades', desejado: 30, prometido: 0, recebido: 30 }
+    ] },
+  { id: 'maos', nome: 'Banco de Alimentos Mãos Cheias', causa: 'Combate à fome', cidade: 'São Paulo, SP',
+    resumo: 'Monta 300 cestas básicas por mês para famílias da zona leste.',
+    sobre: 'Banco de alimentos que recebe, separa e distribui doações para 18 organizações parceiras na zona leste de São Paulo. Em 2025 distribuiu 41 toneladas de alimentos.',
+    endereco: 'Av. São Miguel, 4180 — São Paulo, SP', contato: 'doacoes@maoscheias.org.br · (11) 3355-8890',
+    necessidades: [
+      { id: 'm1', item: 'Arroz tipo 1 (pacote 5 kg)', tipo: 'Alimentos', unidade: 'pacotes', desejado: 200, prometido: 80, recebido: 20 },
+      { id: 'm2', item: 'Óleo de soja 900 ml', tipo: 'Alimentos', unidade: 'unidades', desejado: 150, prometido: 0, recebido: 0 },
+      { id: 'm3', item: 'Feijão carioca (pacote 1 kg)', tipo: 'Alimentos', unidade: 'pacotes', desejado: 180, prometido: 60, recebido: 0 },
+      { id: 'm4', item: 'Caixas plásticas para transporte', tipo: 'Materiais', unidade: 'unidades', desejado: 40, prometido: 12, recebido: 0 }
+    ] },
+  { id: 'bemviver', nome: 'Casa Bem Viver', causa: 'Apoio a idosos', cidade: 'Porto Alegre, RS',
+    resumo: 'Residência para 32 idosos em situação de vulnerabilidade social.',
+    sobre: 'Instituição de longa permanência com 32 residentes, equipe de enfermagem 24 horas e oficinas de memória três vezes por semana.',
+    endereco: 'Rua Teixeira Mendes, 77 — Porto Alegre, RS', contato: 'casabemviver@ong.org.br · (51) 3221-7744',
+    necessidades: [
+      { id: 'b1', item: 'Fralda geriátrica tamanho G', tipo: 'Higiene', unidade: 'unidades', desejado: 300, prometido: 120, recebido: 60 },
+      { id: 'b2', item: 'Cobertor solteiro', tipo: 'Roupas e cobertas', unidade: 'unidades', desejado: 40, prometido: 20, recebido: 0 },
+      { id: 'b3', item: 'Creme hidratante corporal', tipo: 'Higiene', unidade: 'unidades', desejado: 60, prometido: 0, recebido: 0 }
+    ] },
+  { id: 'semear', nome: 'Instituto Semear', causa: 'Educação infantil', cidade: 'Recife, PE',
+    resumo: 'Reforço escolar e oficinas de leitura para 120 crianças no contraturno.',
+    sobre: 'Organização de educação complementar que atende 120 crianças de 7 a 13 anos com reforço escolar, biblioteca comunitária e oficinas de leitura.',
+    endereco: 'Rua do Cupim, 45 — Recife, PE', contato: 'semear@institutosemear.org · (81) 3466-1220',
+    necessidades: [
+      { id: 's1', item: 'Caderno brochura 96 folhas', tipo: 'Materiais', unidade: 'unidades', desejado: 200, prometido: 50, recebido: 30 },
+      { id: 's2', item: 'Caixa de lápis de cor (12 cores)', tipo: 'Materiais', unidade: 'caixas', desejado: 80, prometido: 0, recebido: 0 },
+      { id: 's3', item: 'Livro infantil (6 a 12 anos)', tipo: 'Materiais', unidade: 'unidades', desejado: 150, prometido: 0, recebido: 150 }
+    ] },
+  { id: 'novarota', nome: 'Abrigo Nova Rota', causa: 'População em situação de rua', cidade: 'Curitiba, PR',
+    resumo: 'Acolhimento noturno para 60 pessoas, com banho, jantar e apoio social.',
+    sobre: 'Abrigo noturno com 60 vagas, serviço de banho, jantar e encaminhamento para documentação e emprego. Funciona todos os dias do ano.',
+    endereco: 'Rua Mateus Leme, 900 — Curitiba, PR', contato: 'novarota@abrigo.org.br · (41) 3078-5510',
+    necessidades: [
+      { id: 'n1', item: 'Kit de higiene pessoal', tipo: 'Higiene', unidade: 'kits', desejado: 100, prometido: 40, recebido: 10 },
+      { id: 'n2', item: 'Meia de algodão (par novo)', tipo: 'Roupas e cobertas', unidade: 'pares', desejado: 200, prometido: 0, recebido: 0 },
+      { id: 'n3', item: 'Marmita térmica reutilizável', tipo: 'Materiais', unidade: 'unidades', desejado: 50, prometido: 25, recebido: 0 }
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    perfil: 'visitante',
+    tela: 'landing',
+    instAtivaId: 'patinhas',
+    detalheId: 'patinhas',
+    busca: '',
+    causa: 'Todas as causas',
+    tipo: 'Todos os tipos',
+    favoritos: ['bemviver'],
+    sinoAberto: false,
+    usuario: null,
+    destinoPos: null,
+    cancelarId: null,
+    painelAba: 'receber',
+    login: { email: '', senha: '' },
+    errosLogin: {},
+    cadD: { nome: '', email: '', senha: '', conf: '' },
+    errosD: {},
+    cadI: { nome: '', causa: 'Proteção animal', email: '', senha: '', cidade: '', oQueFaz: '', publico: '', descricao: '', contato: '', formas: '',
+      necessidades: [{ item: '', qtd: '', unidade: '' }] },
+    errosI: {},
+    necForm: null,
+    excluirNecId: null,
+    instituicoes: JSON.parse(JSON.stringify(INSTITUICOES)),
+    seq: 100,
+    ultimaDoacao: null,
+    modal: null,
+    doacoes: [
+      { id: 'd1', doador: 'eu', instId: 'maos', necId: 'm1', item: 'Arroz tipo 1 (pacote 5 kg)', qtd: 10, unidade: 'pacotes', status: 'Prometida', data: '10 set 2026' },
+      { id: 'd2', doador: 'eu', instId: 'bemviver', necId: 'b2', item: 'Cobertor solteiro', qtd: 5, unidade: 'unidades', status: 'A caminho', data: '04 set 2026' },
+      { id: 'd3', doador: 'eu', instId: 'patinhas', necId: 'p1', item: 'Ração seca para cães adultos', qtd: 20, unidade: 'kg', status: 'Entregue', data: '22 ago 2026' },
+      { id: 'd4', doador: 'eu', instId: 'semear', necId: 's1', item: 'Caderno brochura 96 folhas', qtd: 15, unidade: 'unidades', status: 'Cancelada', data: '15 ago 2026' },
+      { id: 'r1', doador: 'Marina Alves', instId: 'patinhas', necId: 'p1', item: 'Ração seca para cães adultos', qtd: 40, unidade: 'kg', status: 'Prometida', data: '12 set 2026' },
+      { id: 'r2', doador: 'Rafael Lima', instId: 'patinhas', necId: 'p2', item: 'Areia sanitária para gatos', qtd: 10, unidade: 'sacos', status: 'A caminho', data: '11 set 2026' },
+      { id: 'r3', doador: 'Joana Prado', instId: 'patinhas', necId: 'p2', item: 'Areia sanitária para gatos', qtd: 5, unidade: 'sacos', status: 'Recebida', data: '02 set 2026' }
+    ],
+    notificacoes: [
+      { id: 'ni1', para: 'instituicao', instId: 'patinhas', icone: '🔔', texto: 'Marina Alves quer doar 40 kg de Ração seca para cães adultos.', quando: 'há 2 horas', lida: false, acao: true },
+      { id: 'ni2', para: 'instituicao', instId: 'patinhas', icone: '🚚', texto: 'Rafael Lima marcou a doação de areia sanitária como A caminho.', quando: 'há 1 dia', lida: false, acao: true },
+      { id: 'ni3', para: 'instituicao', instId: 'patinhas', icone: '✓', texto: 'A necessidade "Mantas de tecido resistente" foi atendida.', quando: 'há 3 dias', lida: false, acao: false },
+      { id: 'nd1', para: 'doador', icone: '✓', texto: 'Casa Bem Viver confirmou o recebimento de 60 fraldas geriátricas.', quando: 'há 5 horas', lida: false, acao: false },
+      { id: 'nd2', para: 'doador', icone: '📦', texto: 'Patinhas Sem Teto registrou sua doação de ração como Entregue.', quando: 'há 4 dias', lida: true, acao: false }
+    ]
+  };
+
+  componentDidMount() {
+    const p = this.props.perfilInicial;
+    if (p && p !== this.state.perfil) this.setPerfil(p);
+  }
+
+  componentDidUpdate(prevProps) {
+    const p = this.props.perfilInicial;
+    if (p && p !== prevProps.perfilInicial && p !== this.state.perfil) this.setPerfil(p);
+  }
+
+  chip(status) {
+    const c = CHIPS[status] || ['#F2F1EC', '#5C6B68'];
+    return 'font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: ' + c[0] + '; color: ' + c[1] + ';';
+  }
+  foto(id, altura, raio) {
+    const f = FOTOS[id] || FOTOS.patinhas;
+    return 'height: ' + altura + 'px; ' + (raio || '') + ' background: repeating-linear-gradient(135deg, ' + f[0] + ' 0 10px, ' + f[1] + ' 10px 20px); display: flex; align-items: center; justify-content: center; font-family: \'IBM Plex Mono\', monospace; font-size: 11px; color: #5C6B68;';
+  }
+  statusNec(n) {
+    if (n.situacao === 'Pausada') return 'Pausada';
+    if (n.recebido >= n.desejado) return 'Atendida';
+    if (n.prometido + n.recebido > 0) return 'Parcial';
+    return 'Aberta';
+  }
+  inst(id) { return this.state.instituicoes.find(i => i.id === id); }
+  abertas(inst) { return inst.necessidades.filter(n => this.statusNec(n) !== 'Atendida').length; }
+
+  aba(ativo) {
+    return ativo
+      ? 'font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; background: #FFFFFF; color: #0F766E; box-shadow: 0 1px 2px rgba(20,32,30,0.08); cursor: pointer;'
+      : 'font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; color: #5C6B68; cursor: pointer;';
+  }
+
+  abaPainel(ativa) {
+    return 'font-size: 15px; font-weight: 600; padding: 12px 18px; cursor: pointer; border-bottom: 2px solid ' + (ativa ? '#0F766E' : 'transparent') + '; color: ' + (ativa ? '#0F766E' : '#5C6B68') + '; margin-bottom: -1px;';
+  }
+
+  papelStyle(sel) {
+    return 'flex: 1; display: flex; flex-direction: column; gap: 3px; padding: 14px; border-radius: 12px; cursor: pointer; border: 1.5px solid ' + (sel ? '#0F766E' : '#E4E3DE') + '; background: ' + (sel ? '#E6F2F0' : '#FFFFFF') + ';';
+  }
+
+  setPerfil(p) {
+    this.setState(s => {
+      let tela = s.tela;
+      if (p !== 'doador' && (tela === 'favoritos' || tela === 'minhasDoacoes' || tela === 'confirmacao')) tela = 'landing';
+      if (p !== 'instituicao' && tela === 'painel') tela = 'landing';
+      if (p === 'instituicao' && tela === 'landing') tela = 'painel';
+      if (p === 'visitante' && ['listagem', 'detalhe', 'favoritos', 'minhasDoacoes', 'painel', 'confirmacao'].indexOf(tela) >= 0) tela = 'landing';
+      const usuario = p === 'visitante' ? null : { nome: p === 'instituicao' ? this.inst(s.instAtivaId).nome : (this.props.nomeDoador || 'Camila Souza'), papel: p };
+      return { perfil: p, tela: tela, usuario: usuario, sinoAberto: false, modal: null, cancelarId: null };
+    });
+  }
+  logado() { return this.state.perfil !== 'visitante'; }
+
+  campo(erro) {
+    return 'width: 100%; padding: 13px 14px; border: 1.5px solid ' + (erro ? '#C97E72' : '#D8D7D1') + '; border-radius: 10px; font-size: 15px; font-family: inherit; background: ' + (erro ? '#FDF7F6' : '#FFFFFF') + '; color: #14201E; outline: none;';
+  }
+  area(erro) { return this.campo(erro) + ' line-height: 1.5; resize: vertical;'; }
+
+  exigirLogin(destino) {
+    this.setState({ tela: 'login', destinoPos: destino || 'listagem', sinoAberto: false, modal: null });
+  }
+
+  entrarComo(perfil, nome, destino) {
+    this.setState({ perfil: perfil, usuario: { nome: nome, papel: perfil }, tela: destino, sinoAberto: false, destinoPos: null, errosLogin: {}, errosD: {}, errosI: {} });
+  }
+
+  fazerLogin() {
+    const l = this.state.login;
+    const papel = /org|ong|instit|abrigo|casa|banco/i.test(l.email) ? 'instituicao' : 'doador';
+    const nome = papel === 'instituicao' ? this.inst(this.state.instAtivaId).nome : (this.props.nomeDoador || 'Camila Souza');
+    this.entrarComo(papel, nome, papel === 'instituicao' ? 'painel' : (this.state.destinoPos || 'listagem'));
+  }
+
+  salvarDoador() {
+    const d = this.state.cadD;
+    this.entrarComo('doador', d.nome.trim() || (this.props.nomeDoador || 'Camila Souza'), this.state.destinoPos || 'listagem');
+  }
+
+  salvarInstituicao() {
+    const i = this.state.cadI;
+    const necs = i.necessidades.filter(n => n.item.trim());
+    const id = 'inst' + (this.state.seq + 1);
+    const nova = {
+      id: id, nome: i.nome.trim() || 'Minha instituição', causa: i.causa, cidade: i.cidade.trim() || 'Brasil',
+      resumo: i.oQueFaz.trim() || 'Perfil recém-criado. Complete a descrição no painel.',
+      sobre: i.descricao.trim() || i.oQueFaz.trim() || 'Perfil recém-criado. Complete a descrição e o público atendido no painel.',
+      endereco: i.cidade.trim() || 'Endereço a combinar', contato: i.contato.trim() || i.email.trim(),
+      necessidades: necs.map((n, k) => ({ id: id + 'n' + k, item: n.item.trim(), tipo: 'Materiais',
+        unidade: n.unidade.trim() || 'unidades', desejado: parseInt(n.qtd, 10) > 0 ? parseInt(n.qtd, 10) : 1, prometido: 0, recebido: 0, situacao: 'Aberta' }))
+    };
+    this.setState(s => ({
+      seq: s.seq + 1, instituicoes: s.instituicoes.concat([nova]), instAtivaId: id,
+      perfil: 'instituicao', usuario: { nome: nova.nome, papel: 'instituicao' },
+      tela: 'painel', painelAba: 'necessidades', errosI: {}, destinoPos: null
+    }));
+  }
+
+  abrirNecForm(nec) {
+    this.setState({
+      necForm: nec
+        ? { id: nec.id, item: nec.item, qtd: String(nec.desejado), unidade: nec.unidade, tipo: nec.tipo, obs: nec.obs || '', situacao: nec.situacao || 'Aberta', erros: {} }
+        : { id: null, item: '', qtd: '', unidade: '', tipo: 'Alimentos', obs: '', situacao: 'Aberta', erros: {} }
+    });
+  }
+
+  salvarNecessidade() {
+    const f = this.state.necForm;
+    const qtd = parseInt(f.qtd, 10) > 0 ? parseInt(f.qtd, 10) : 1;
+    const instId = this.state.instAtivaId;
+    this.setState(s => ({
+      necForm: null,
+      seq: s.seq + 1,
+      instituicoes: s.instituicoes.map(i => i.id !== instId ? i : Object.assign({}, i, {
+        necessidades: f.id
+          ? i.necessidades.map(n => n.id !== f.id ? n : Object.assign({}, n, { item: f.item.trim() || n.item, desejado: qtd, unidade: f.unidade.trim() || n.unidade, tipo: f.tipo, obs: f.obs.trim(), situacao: f.situacao }))
+          : i.necessidades.concat([{ id: 'nv' + (s.seq + 1), item: f.item.trim() || 'Novo item', desejado: qtd, unidade: f.unidade.trim() || 'unidades', tipo: f.tipo, obs: f.obs.trim(), situacao: f.situacao, prometido: 0, recebido: 0 }])
+      }))
+    }));
+  }
+
+  excluirNecessidade() {
+    const id = this.state.excluirNecId;
+    const instId = this.state.instAtivaId;
+    this.setState(s => ({
+      excluirNecId: null,
+      instituicoes: s.instituicoes.map(i => i.id !== instId ? i : Object.assign({}, i, {
+        necessidades: i.necessidades.filter(n => n.id !== id)
+      }))
+    }));
+  }
+
+  ir(tela) {
+    const protegidas = ['listagem', 'detalhe', 'favoritos', 'minhasDoacoes', 'painel'];
+    if (!this.logado() && protegidas.indexOf(tela) >= 0) return this.exigirLogin(tela);
+    this.setState({ tela: tela, sinoAberto: false });
+  }
+
+  toggleFav(id) {
+    if (!this.logado()) return this.exigirLogin('favoritos');
+    this.setState(s => ({
+      favoritos: s.favoritos.indexOf(id) >= 0 ? s.favoritos.filter(f => f !== id) : s.favoritos.concat([id])
+    }));
+  }
+
+  abrirDetalhe(id) {
+    if (!this.logado()) return this.exigirLogin('detalhe');
+    this.setState({ detalheId: id, tela: 'detalhe', sinoAberto: false });
+  }
+
+  abrirModal(instId, necId) {
+    if (!this.logado()) return this.exigirLogin('detalhe');
+    this.setState(s => ({
+      modal: { instId: instId, necId: necId, qtd: 10, etapa: 'escolha' },
+      sinoAberto: false
+    }));
+  }
+
+  autenticarComo() {
+    const papel = this.state.authPapel;
+    const destino = papel === 'instituicao' ? 'painel' : (this.state.destinoPos || 'listagem');
+    this.setState({ perfil: papel, tela: destino, sinoAberto: false, destinoPos: null });
+  }
+
+  confirmar() {
+    const m = this.state.modal;
+    if (!m) return;
+    const inst = this.inst(m.instId);
+    const nec = inst.necessidades.find(n => n.id === m.necId);
+    const qtd = Math.max(1, parseInt(m.qtd, 10) || 1);
+    const nome = this.props.nomeDoador || 'Camila Souza';
+    this.setState(s => {
+      const insts = s.instituicoes.map(i => i.id !== m.instId ? i : Object.assign({}, i, {
+        necessidades: i.necessidades.map(n => n.id !== m.necId ? n : Object.assign({}, n, { prometido: n.prometido + qtd }))
+      }));
+      const id = 'd' + (s.seq + 1);
+      return {
+        seq: s.seq + 1,
+        instituicoes: insts,
+        modal: null,
+        tela: 'confirmacao',
+        ultimaDoacao: { item: nec.item, qtd: qtd, unidade: nec.unidade, inst: inst.nome },
+        doacoes: [{ id: id, doador: 'eu', instId: m.instId, necId: m.necId, item: nec.item, qtd: qtd, unidade: nec.unidade, status: 'Prometida', data: 'hoje' }].concat(s.doacoes),
+        notificacoes: [{ id: 'n' + id, para: 'instituicao', icone: '🔔', instId: m.instId,
+          texto: nome + ' quer doar ' + qtd + ' ' + nec.unidade + ' de ' + nec.item + '.', quando: 'agora', lida: false, acao: true }].concat(s.notificacoes)
+      };
+    });
+  }
+
+  mudarStatus(id, novo) {
+    this.setState(s => ({
+      doacoes: s.doacoes.map(d => d.id === id ? Object.assign({}, d, { status: novo }) : d)
+    }));
+  }
+
+  receber(id) {
+    const d = this.state.doacoes.find(x => x.id === id);
+    this.setState(s => ({
+      doacoes: s.doacoes.map(x => x.id === id ? Object.assign({}, x, { status: 'Recebida' }) : x),
+      instituicoes: s.instituicoes.map(i => i.id !== d.instId ? i : Object.assign({}, i, {
+        necessidades: i.necessidades.map(n => n.id !== d.necId ? n : Object.assign({}, n, {
+          prometido: Math.max(0, n.prometido - d.qtd), recebido: n.recebido + d.qtd
+        }))
+      }))
+    }));
+  }
+
+  barras(n) {
+    const rec = Math.min(100, Math.round(n.recebido / n.desejado * 100));
+    const prom = Math.min(100 - rec, Math.round(n.prometido / n.desejado * 100));
+    return [
+      'width: ' + rec + '%; height: 100%; background: #1F5E42;',
+      'width: ' + prom + '%; height: 100%; background: #F06A3F;',
+      rec + prom
+    ];
+  }
+
+  necVals(n, instId) {
+    const b = this.barras(n);
+    const st = this.statusNec(n);
+    const atendida = st === 'Atendida';
+    return {
+      id: n.id, item: n.item, tipo: n.tipo, status: st, chipStyle: this.chip(st),
+      desejadoTexto: n.desejado + ' ' + n.unidade,
+      progressoTexto: (n.prometido + n.recebido) + ' de ' + n.desejado + ' ' + n.unidade,
+      pctTexto: b[2] + '%', recebido: n.recebido, prometido: n.prometido,
+      barraRecebidaStyle: b[0], barraPrometidaStyle: b[1],
+      botaoTexto: atendida ? 'Necessidade atendida' : 'Quero doar',
+      desabilitado: atendida,
+      botaoStyle: atendida
+        ? 'background: #E4E3DE; color: #9AA5A2; border: none; border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: not-allowed;'
+        : 'background: #F06A3F; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 140ms;',
+      doar: atendida ? null : () => this.abrirModal(instId, n.id)
+    };
+  }
+
+  instVals(inst) {
+    const fav = this.state.favoritos.indexOf(inst.id) >= 0;
+    const ab = this.abertas(inst);
+    const tags = [];
+    inst.necessidades.forEach(n => { if (tags.indexOf(n.tipo) < 0) tags.push(n.tipo); });
+    return {
+      id: inst.id, nome: inst.nome, subtitulo: inst.causa + ' · ' + inst.cidade.split(',')[0],
+      resumo: inst.resumo, tags: tags.slice(0, 3),
+      abertasTexto: ab === 1 ? '1 necessidade aberta' : ab + ' necessidades abertas',
+      fotoStyle: this.foto(inst.id, 130), fotoLegenda: (FOTOS[inst.id] || FOTOS.patinhas)[2],
+      miniFotoStyle: 'width: 76px; height: 76px; border-radius: 14px; flex: 0 0 auto; ' + this.foto(inst.id, 76).replace('height: 76px;', ''),
+      coracao: fav ? '♥' : '♡',
+      coracaoStyle: 'font-size: 19px; cursor: pointer; color: ' + (fav ? '#F06A3F' : '#C3CCC9') + ';',
+      coracaoBotaoStyle: 'width: 38px; height: 38px; flex: 0 0 auto; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; border: 1px solid ' + (fav ? '#F3C9B6' : '#E4E3DE') + '; background: ' + (fav ? '#FDEDE6' : '#FFFFFF') + '; color: ' + (fav ? '#F06A3F' : '#9AA5A2') + ';',
+      favoritar: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.toggleFav(inst.id); },
+      abrir: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.abrirDetalhe(inst.id); }
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const perfil = s.perfil;
+    const detalhe = this.inst(s.detalheId);
+    const instAtiva = this.inst(s.instAtivaId);
+    const favIds = s.favoritos;
+
+    const causas = ['Todas as causas'].concat(s.instituicoes.map(i => i.causa));
+    const tiposSet = ['Todos os tipos'];
+    s.instituicoes.forEach(i => i.necessidades.forEach(n => { if (tiposSet.indexOf(n.tipo) < 0) tiposSet.push(n.tipo); }));
+
+    const q = s.busca.trim().toLowerCase();
+    const filtrada = s.instituicoes.filter(i => {
+      const okQ = !q || (i.nome + ' ' + i.causa + ' ' + i.cidade + ' ' + i.resumo).toLowerCase().indexOf(q) >= 0;
+      const okC = s.causa === 'Todas as causas' || i.causa === s.causa;
+      const okT = s.tipo === 'Todos os tipos' || i.necessidades.some(n => n.tipo === s.tipo && this.statusNec(n) !== 'Atendida');
+      return okQ && okC && okT;
+    });
+
+    const notifs = s.notificacoes.filter(n => n.para === perfil && (perfil !== 'instituicao' || n.instId === s.instAtivaId));
+    const naoLidas = notifs.filter(n => !n.lida).length;
+
+    const minhas = s.doacoes.filter(d => d.doador === 'eu');
+    const ordemEtapas = ['Prometida', 'A caminho', 'Entregue'];
+
+    const aReceber = s.doacoes.filter(d => d.instId === s.instAtivaId && d.doador !== 'eu' && d.status !== 'Cancelada');
+
+    const m = s.modal;
+    const mInst = m ? this.inst(m.instId) : null;
+    const mNec = m && mInst ? mInst.necessidades.find(n => n.id === m.necId) : null;
+    const mFalta = mNec ? Math.max(0, mNec.desejado - mNec.prometido - mNec.recebido) : 0;
+    const mQtd = m ? m.qtd : 0;
+
+    const ult = s.ultimaDoacao;
+
+    return {
+      // navegação de perfil
+      ehDoador: perfil === 'doador',
+      ehInstituicao: perfil === 'instituicao',
+      rotuloPerfil: perfil === 'doador' ? 'Perfil Doador' : (perfil === 'instituicao' ? 'Perfil Instituição' : 'Perfil Visitante'),
+      abaVisitante: this.aba(perfil === 'visitante'),
+      abaDoador: this.aba(perfil === 'doador'),
+      abaInstituicao: this.aba(perfil === 'instituicao'),
+      setVisitante: () => this.setPerfil('visitante'),
+      setDoador: () => this.setPerfil('doador'),
+      setInstituicao: () => this.setPerfil('instituicao'),
+
+      irLanding: () => this.ir('landing'),
+      irListagem: () => this.ir('listagem'),
+      irFavoritos: () => this.ir('favoritos'),
+      irMinhasDoacoes: () => { if (!this.logado()) return this.exigirLogin('minhasDoacoes'); this.setState({ perfil: 'doador', tela: 'minhasDoacoes', sinoAberto: false }); },
+      irCadastroInstituicao: () => this.setState({ tela: 'cadInst', destinoPos: 'painel', sinoAberto: false }),
+      irPainel: () => this.ir('painel'),
+
+      telaLanding: s.tela === 'landing',
+      telaListagem: s.tela === 'listagem',
+      telaDetalhe: s.tela === 'detalhe',
+      telaFavoritos: s.tela === 'favoritos',
+      telaMinhasDoacoes: s.tela === 'minhasDoacoes',
+      telaPainel: s.tela === 'painel',
+      telaConfirmacao: s.tela === 'confirmacao',
+      telaLogin: s.tela === 'login',
+      telaCadDoador: s.tela === 'cadDoador',
+      telaEscolhaConta: s.tela === 'escolhaConta',
+      irEscolhaConta: () => this.setState({ tela: 'escolhaConta', sinoAberto: false }),
+      telaCadInst: s.tela === 'cadInst',
+
+      // sessão no topo
+      logado: this.logado(),
+      deslogado: !this.logado(),
+      usuarioNome: s.usuario ? s.usuario.nome : (perfil === 'instituicao' ? instAtiva.nome : (this.props.nomeDoador || 'Camila Souza')),
+      usuarioPapel: perfil === 'instituicao' ? 'Instituição' : 'Doador',
+      usuarioInicial: (s.usuario ? s.usuario.nome : (perfil === 'instituicao' ? instAtiva.nome : 'C')).trim().charAt(0).toUpperCase(),
+      avatarStyle: 'width: 30px; height: 30px; border-radius: 999px; background: ' + (perfil === 'instituicao' ? '#F06A3F' : '#0F766E') + '; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;',
+      sair: () => this.setState({ perfil: 'visitante', usuario: null, tela: 'landing', sinoAberto: false, modal: null, painelAba: 'receber' }),
+      irLogin: () => this.setState({ tela: 'login', sinoAberto: false }),
+      irCadastroDoador: () => this.setState({ tela: 'cadDoador', sinoAberto: false }),
+
+      // login
+      loginEmail: s.login.email,
+      loginSenha: s.login.senha,
+      setLoginEmail: (e) => this.setState({ login: Object.assign({}, s.login, { email: e.target.value }) }),
+      setLoginSenha: (e) => this.setState({ login: Object.assign({}, s.login, { senha: e.target.value }) }),
+      loginEmailStyle: this.campo(s.errosLogin.email),
+      loginSenhaStyle: this.campo(s.errosLogin.senha),
+      loginErroEmail: !!s.errosLogin.email, loginErroEmailTexto: s.errosLogin.email || '',
+      loginErroSenha: !!s.errosLogin.senha, loginErroSenhaTexto: s.errosLogin.senha || '',
+      fazerLogin: () => this.fazerLogin(),
+
+      // cadastro doador
+      dNome: s.cadD.nome, dEmail: s.cadD.email, dSenha: s.cadD.senha, dConf: s.cadD.conf,
+      setDNome: (e) => this.setState({ cadD: Object.assign({}, s.cadD, { nome: e.target.value }) }),
+      setDEmail: (e) => this.setState({ cadD: Object.assign({}, s.cadD, { email: e.target.value }) }),
+      setDSenha: (e) => this.setState({ cadD: Object.assign({}, s.cadD, { senha: e.target.value }) }),
+      setDConf: (e) => this.setState({ cadD: Object.assign({}, s.cadD, { conf: e.target.value }) }),
+      dNomeStyle: this.campo(s.errosD.nome), dEmailStyle: this.campo(s.errosD.email),
+      dSenhaStyle: this.campo(s.errosD.senha), dConfStyle: this.campo(s.errosD.conf),
+      dErroNome: !!s.errosD.nome, dErroNomeTexto: s.errosD.nome || '',
+      dErroEmail: !!s.errosD.email, dErroEmailTexto: s.errosD.email || '',
+      dErroSenha: !!s.errosD.senha, dErroSenhaTexto: s.errosD.senha || '',
+      dErroConf: !!s.errosD.conf, dErroConfTexto: s.errosD.conf || '',
+      salvarDoador: () => this.salvarDoador(),
+
+      // cadastro instituição
+      causasCadastro: CAUSAS_CAD,
+      iNome: s.cadI.nome, iCausa: s.cadI.causa, iEmail: s.cadI.email, iSenha: s.cadI.senha, iCidade: s.cadI.cidade,
+      iOQueFaz: s.cadI.oQueFaz, iPublico: s.cadI.publico, iDescricao: s.cadI.descricao, iContato: s.cadI.contato, iFormas: s.cadI.formas,
+      setINome: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { nome: e.target.value }) }),
+      setICausa: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { causa: e.target.value }) }),
+      setIEmail: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { email: e.target.value }) }),
+      setISenha: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { senha: e.target.value }) }),
+      setICidade: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { cidade: e.target.value }) }),
+      setIOQueFaz: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { oQueFaz: e.target.value }) }),
+      setIPublico: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { publico: e.target.value }) }),
+      setIDescricao: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { descricao: e.target.value }) }),
+      setIContato: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { contato: e.target.value }) }),
+      setIFormas: (e) => this.setState({ cadI: Object.assign({}, s.cadI, { formas: e.target.value }) }),
+      iNomeStyle: this.campo(s.errosI.nome), iEmailStyle: this.campo(s.errosI.email), iSenhaStyle: this.campo(s.errosI.senha),
+      iCidadeStyle: this.campo(false), iContatoStyle: this.campo(false), iFormasStyle: this.campo(false),
+      iOQueFazStyle: this.area(s.errosI.oQueFaz), iPublicoStyle: this.campo(s.errosI.publico), iDescricaoStyle: this.area(false),
+      iErroNome: !!s.errosI.nome, iErroNomeTexto: s.errosI.nome || '',
+      iErroEmail: !!s.errosI.email, iErroEmailTexto: s.errosI.email || '',
+      iErroSenha: !!s.errosI.senha, iErroSenhaTexto: s.errosI.senha || '',
+      iErroOQueFaz: !!s.errosI.oQueFaz, iErroOQueFazTexto: s.errosI.oQueFaz || '',
+      iErroPublico: !!s.errosI.publico, iErroPublicoTexto: s.errosI.publico || '',
+      iErroNec: !!s.errosI.nec, iErroNecTexto: s.errosI.nec || '',
+      iNecessidades: s.cadI.necessidades.map((n, i) => ({
+        numero: i + 1, item: n.item, qtd: n.qtd, unidade: n.unidade,
+        itemStyle: this.campo(s.errosI.nec && !n.item.trim() && i === 0), qtdStyle: this.campo(false), unidadeStyle: this.campo(false),
+        removerStyle: 'width: 44px; height: 44px; border-radius: 10px; border: 1px solid #E4E3DE; display: flex; align-items: center; justify-content: center; font-size: 20px; color: ' + (s.cadI.necessidades.length > 1 ? '#8E342A' : '#D8D7D1') + '; cursor: ' + (s.cadI.necessidades.length > 1 ? 'pointer' : 'not-allowed') + '; background: #FFFFFF;',
+        setItem: (e) => { const v = e.target.value; this.setState(st => ({ cadI: Object.assign({}, st.cadI, { necessidades: st.cadI.necessidades.map((x, k) => k === i ? Object.assign({}, x, { item: v }) : x) }) })); },
+        setQtd: (e) => { const v = e.target.value; this.setState(st => ({ cadI: Object.assign({}, st.cadI, { necessidades: st.cadI.necessidades.map((x, k) => k === i ? Object.assign({}, x, { qtd: v }) : x) }) })); },
+        setUnidade: (e) => { const v = e.target.value; this.setState(st => ({ cadI: Object.assign({}, st.cadI, { necessidades: st.cadI.necessidades.map((x, k) => k === i ? Object.assign({}, x, { unidade: v }) : x) }) })); },
+        remover: () => this.setState(st => st.cadI.necessidades.length > 1 ? ({ cadI: Object.assign({}, st.cadI, { necessidades: st.cadI.necessidades.filter((x, k) => k !== i) }) }) : null)
+      })),
+      addNecCadastro: () => this.setState(st => ({ cadI: Object.assign({}, st.cadI, { necessidades: st.cadI.necessidades.concat([{ item: '', qtd: '', unidade: '' }]) }) })),
+      salvarInstituicao: () => this.salvarInstituicao(),
+
+      // painel: abas e CRUD
+      painelReceber: s.painelAba === 'receber',
+      painelNecessidades: s.painelAba === 'necessidades',
+      abaReceber: () => this.setState({ painelAba: 'receber' }),
+      abaNecessidades: () => this.setState({ painelAba: 'necessidades' }),
+      abaReceberStyle: this.abaPainel(s.painelAba === 'receber'),
+      abaNecessidadesStyle: this.abaPainel(s.painelAba === 'necessidades'),
+      semAReceber: aReceber.length === 0,
+      crudResumoTexto: instAtiva.necessidades.length === 0 ? 'Nenhum item cadastrado' : instAtiva.necessidades.length + (instAtiva.necessidades.length === 1 ? ' item cadastrado' : ' itens cadastrados') + ' · ' + this.abertas(instAtiva) + ' em aberto',
+      semNecessidades: instAtiva.necessidades.length === 0,
+      crudNecessidades: instAtiva.necessidades.map((n, i) => {
+        const st = this.statusNec(n);
+        return {
+          item: n.item, tipo: n.tipo, obsTexto: n.obs ? ' · ' + n.obs : '',
+          desejadoTexto: n.desejado + ' ' + n.unidade,
+          promRecTexto: n.prometido + ' / ' + n.recebido,
+          status: st, chipStyle: this.chip(st),
+          linhaStyle: 'display: grid; grid-template-columns: 2fr 1fr 1fr 1.1fr 1.1fr; gap: 16px; align-items: center; padding: 16px 22px; ' + (i > 0 ? 'border-top: 1px solid #EFEEE9;' : ''),
+          editar: () => this.abrirNecForm(n),
+          excluir: () => this.setState({ excluirNecId: n.id })
+        };
+      }),
+      novaNecessidade: () => this.abrirNecForm(null),
+
+      // formulário de necessidade
+      necFormAberto: !!s.necForm,
+      necFormModo: s.necForm && s.necForm.id ? 'Editar necessidade' : 'Nova necessidade',
+      necFormTitulo: s.necForm && s.necForm.id ? 'Editar o que vocês precisam' : 'Cadastrar necessidade',
+      necFormBotao: s.necForm && s.necForm.id ? 'Salvar alterações' : 'Publicar necessidade',
+      necFormTemErro: !!(s.necForm && Object.keys(s.necForm.erros).length),
+      necFormErroResumo: 'Revise os campos destacados para publicar esta necessidade.',
+      necItem: s.necForm ? s.necForm.item : '',
+      necQtd: s.necForm ? s.necForm.qtd : '',
+      necUnidade: s.necForm ? s.necForm.unidade : '',
+      necTipo: s.necForm ? s.necForm.tipo : 'Alimentos',
+      necObs: s.necForm ? s.necForm.obs : '',
+      tiposNecessidade: TIPOS_NEC,
+      necItemStyle: this.campo(s.necForm && s.necForm.erros.item),
+      necQtdStyle: this.campo(s.necForm && s.necForm.erros.qtd),
+      necUnidadeStyle: this.campo(s.necForm && s.necForm.erros.unidade),
+      necErroItem: !!(s.necForm && s.necForm.erros.item), necErroItemTexto: s.necForm ? (s.necForm.erros.item || '') : '',
+      necErroQtd: !!(s.necForm && s.necForm.erros.qtd), necErroQtdTexto: s.necForm ? (s.necForm.erros.qtd || '') : '',
+      necErroUnidade: !!(s.necForm && s.necForm.erros.unidade), necErroUnidadeTexto: s.necForm ? (s.necForm.erros.unidade || '') : '',
+      setNecItem: (e) => { const v = e.target.value; this.setState(st => ({ necForm: Object.assign({}, st.necForm, { item: v }) })); },
+      setNecQtd: (e) => { const v = e.target.value; this.setState(st => ({ necForm: Object.assign({}, st.necForm, { qtd: v }) })); },
+      setNecUnidade: (e) => { const v = e.target.value; this.setState(st => ({ necForm: Object.assign({}, st.necForm, { unidade: v }) })); },
+      setNecTipo: (e) => { const v = e.target.value; this.setState(st => ({ necForm: Object.assign({}, st.necForm, { tipo: v }) })); },
+      setNecObs: (e) => { const v = e.target.value; this.setState(st => ({ necForm: Object.assign({}, st.necForm, { obs: v }) })); },
+      necAbertaStyle: this.papelStyle(!!s.necForm && s.necForm.situacao === 'Aberta'),
+      necPausadaStyle: this.papelStyle(!!s.necForm && s.necForm.situacao === 'Pausada'),
+      setNecAberta: () => this.setState(st => ({ necForm: Object.assign({}, st.necForm, { situacao: 'Aberta' }) })),
+      setNecPausada: () => this.setState(st => ({ necForm: Object.assign({}, st.necForm, { situacao: 'Pausada' }) })),
+      fecharNecForm: () => this.setState({ necForm: null }),
+      salvarNecessidade: () => this.salvarNecessidade(),
+
+      // exclusão de necessidade
+      exclusaoAberta: !!s.excluirNecId,
+      exclusaoTexto: (() => {
+        const n = instAtiva.necessidades.find(x => x.id === s.excluirNecId);
+        return n ? '“' + n.item + '” — ' + n.desejado + ' ' + n.unidade + ' desejados, ' + n.prometido + ' já prometidos.' : '';
+      })(),
+      manterNecessidade: () => this.setState({ excluirNecId: null }),
+      confirmarExclusao: () => this.excluirNecessidade(),
+
+      // aviso de cancelamento
+      cancelamentoAberto: !!s.cancelarId,
+      cancelamentoTexto: (() => {
+        const d = s.doacoes.find(x => x.id === s.cancelarId);
+        if (!d) return '';
+        return 'Você prometeu ' + d.qtd + ' ' + d.unidade + ' de ' + d.item + ' para ' + this.inst(d.instId).nome + '.';
+      })(),
+      manterDoacao: () => this.setState({ cancelarId: null }),
+      confirmarCancelamento: () => { const id = s.cancelarId; this.setState({ cancelarId: null }); this.mudarStatus(id, 'Cancelada'); },
+
+      // sino
+      sinoAberto: s.sinoAberto,
+      toggleSino: () => this.setState(st => ({ sinoAberto: !st.sinoAberto })),
+      temNaoLidas: naoLidas > 0,
+      naoLidas: naoLidas,
+      semNotificacoes: notifs.length === 0,
+      notificacoes: notifs.map((n, i) => ({
+        icone: n.icone, texto: n.texto, quando: n.quando, naoLida: !n.lida,
+        temAcao: n.acao && perfil === 'instituicao',
+        wrapStyle: 'padding: 16px 18px; ' + (i > 0 ? 'border-top: 1px solid #EFEEE9; ' : '') + 'background: ' + (n.lida ? '#FFFFFF' : '#FDFBF8') + ';',
+        marcarLida: () => this.setState(st => ({ notificacoes: st.notificacoes.map(x => x.id === n.id ? Object.assign({}, x, { lida: true }) : x) })),
+        abrirPainel: () => this.setState(st => ({ notificacoes: st.notificacoes.map(x => x.id === n.id ? Object.assign({}, x, { lida: true }) : x), tela: 'painel', sinoAberto: false }))
+      })),
+
+      // landing
+      totalAbertas: s.instituicoes.reduce((a, i) => a + this.abertas(i), 0),
+      destaques: s.instituicoes.slice(0, 4).map(i => this.instVals(i)),
+
+      // listagem
+      busca: s.busca,
+      setBusca: (e) => this.setState({ busca: e.target.value }),
+      causas: causas,
+      tipos: tiposSet,
+      filtroCausa: s.causa,
+      filtroTipo: s.tipo,
+      setCausa: (e) => this.setState({ causa: e.target.value }),
+      setTipo: (e) => this.setState({ tipo: e.target.value }),
+      limparFiltros: () => this.setState({ busca: '', causa: 'Todas as causas', tipo: 'Todos os tipos' }),
+      listaFiltrada: filtrada.map(i => this.instVals(i)),
+      listaVazia: filtrada.length === 0,
+      resultadoTexto: filtrada.length + (filtrada.length === 1 ? ' instituição encontrada' : ' instituições encontradas') + ' · busque por nome, causa ou cidade',
+
+      // detalhe
+      detalhe: { nome: detalhe.nome, causa: detalhe.causa, cidade: detalhe.cidade, sobre: detalhe.sobre, endereco: detalhe.endereco, contato: detalhe.contato },
+      detalheFotoStyle: this.foto(detalhe.id, 200),
+      detalheFotoLegenda: (FOTOS[detalhe.id] || FOTOS.patinhas)[2],
+      detalheNecessidades: detalhe.necessidades.map(n => this.necVals(n, detalhe.id)),
+      detalheResumoNecessidades: this.abertas(detalhe) + ' abertas de ' + detalhe.necessidades.length,
+      favDetalheTexto: favIds.indexOf(detalhe.id) >= 0 ? '♥ Remover dos favoritos' : '♡ Favoritar',
+      favDetalheStyle: favIds.indexOf(detalhe.id) >= 0
+        ? 'background: #FDEDE6; color: #A8431F; border: 1px solid #F3C9B6; border-radius: 10px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;'
+        : 'background: #FFFFFF; color: #5C6B68; border: 1px solid #E4E3DE; border-radius: 10px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;',
+      favoritarDetalhe: () => this.toggleFav(detalhe.id),
+
+      // favoritos
+      listaFavoritos: s.instituicoes.filter(i => favIds.indexOf(i.id) >= 0).map(i => this.instVals(i)),
+      semFavoritos: favIds.length === 0,
+      favoritosTexto: favIds.length === 0 ? 'Nenhuma instituição salva ainda' : favIds.length + (favIds.length === 1 ? ' instituição salva' : ' instituições salvas'),
+
+      // minhas doações
+      minhasDoacoesTexto: minhas.filter(d => d.status === 'Prometida' || d.status === 'A caminho').length + ' em andamento · ' + minhas.filter(d => d.status === 'Entregue' || d.status === 'Recebida').length + ' concluídas',
+      minhasDoacoes: minhas.map(d => {
+        const inst = this.inst(d.instId);
+        const idx = ordemEtapas.indexOf(d.status);
+        const cancelada = d.status === 'Cancelada';
+        const concluida = d.status === 'Entregue' || d.status === 'Recebida';
+        const atual = cancelada ? -1 : (concluida ? 2 : idx);
+        return {
+          itemTexto: d.qtd + ' ' + d.unidade + ' de ' + d.item,
+          instituicao: inst.nome, data: d.data, status: d.status, chipStyle: this.chip(d.status),
+          podeAvancar: d.status === 'Prometida' || d.status === 'A caminho',
+          avancarTexto: d.status === 'Prometida' ? 'Marcar como A caminho' : 'Marcar como Entregue',
+          avancar: () => this.mudarStatus(d.id, d.status === 'Prometida' ? 'A caminho' : 'Entregue'),
+          podeCancelar: d.status === 'Prometida' || d.status === 'A caminho',
+          cancelar: () => this.setState({ cancelarId: d.id }),
+          encerrada: cancelada || concluida,
+          encerradaTexto: cancelada ? 'Doação cancelada' : 'Concluída, obrigado!',
+          etapas: ordemEtapas.map((et, i) => {
+            const feita = !cancelada && i <= atual;
+            const ativa = !cancelada && i === atual;
+            return {
+              rotulo: et, marcador: feita ? '✓' : (i + 1), temLinha: i < 2,
+              pontoStyle: 'width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex: 0 0 auto; ' + (feita ? 'background: #0F766E; color: #FFFFFF;' : (cancelada ? 'background: #F3E8E6; color: #8E342A;' : 'background: #EFEEE9; color: #9AA5A2;')),
+              textoStyle: 'font-size: 13px; font-weight: ' + (ativa ? '700' : '500') + '; color: ' + (feita ? '#14201E' : '#9AA5A2') + ';',
+              linhaStyle: 'width: 48px; height: 2px; margin: 0 14px; background: ' + (i < atual ? '#0F766E' : '#E4E3DE') + ';'
+            };
+          })
+        };
+      }),
+
+      // painel instituição
+      instAtiva: { nome: instAtiva.nome, cidade: instAtiva.cidade },
+      painelResumoTexto: (() => {
+        const ag = aReceber.filter(d => d.status !== 'Recebida').length;
+        const ab = this.abertas(instAtiva);
+        return ag + (ag === 1 ? ' doação aguardando recebimento · ' : ' doações aguardando recebimento · ') + ab + (ab === 1 ? ' necessidade ainda aberta' : ' necessidades ainda abertas');
+      })(),
+      aReceber: aReceber.map((d, i) => ({
+        doador: d.doador, item: d.item, qtdTexto: d.qtd + ' ' + d.unidade, data: d.data,
+        status: d.status, chipStyle: this.chip(d.status),
+        linhaStyle: 'display: grid; grid-template-columns: 1.2fr 1.6fr 0.8fr 0.9fr 1fr; gap: 16px; align-items: center; padding: 16px 22px; ' + (i > 0 ? 'border-top: 1px solid #EFEEE9;' : ''),
+        podeReceber: d.status !== 'Recebida',
+        jaRecebida: d.status === 'Recebida',
+        marcarRecebida: () => this.receber(d.id)
+      })),
+      resumoNecessidades: instAtiva.necessidades.map(n => this.necVals(n, instAtiva.id)),
+
+      // modal
+      modalAberto: !!m,
+      modalEscolha: !!m && m.etapa === 'escolha',
+      modalRevisao: !!m && m.etapa === 'revisao',
+      modalEtapaTexto: m ? (m.etapa === 'escolha' ? 'Passo 1 de 2 · item e quantidade' : 'Passo 2 de 2 · revisão') : '',
+      modalInstNome: mInst ? mInst.nome : '',
+      modalEndereco: mInst ? mInst.endereco : '',
+      modalItemNome: mNec ? mNec.item : '',
+      modalUnidade: mNec ? mNec.unidade : '',
+      modalQtd: mQtd,
+      modalQtdTexto: mNec ? mQtd + ' ' + mNec.unidade : '',
+      modalRestanteTexto: mNec ? 'ainda faltam ' + mFalta + ' ' + mNec.unidade : '',
+      modalItens: mInst ? mInst.necessidades.filter(n => this.statusNec(n) !== 'Atendida').map(n => {
+        const sel = m.necId === n.id;
+        const falta = Math.max(0, n.desejado - n.prometido - n.recebido);
+        return {
+          item: n.item, tipo: n.tipo, faltaTexto: falta + ' ' + n.unidade,
+          opcaoStyle: 'display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; border-radius: 12px; cursor: pointer; border: 1.5px solid ' + (sel ? '#0F766E' : '#E4E3DE') + '; background: ' + (sel ? '#E6F2F0' : '#FFFFFF') + ';',
+          radioStyle: 'width: 18px; height: 18px; border-radius: 999px; flex: 0 0 auto; border: 5px solid ' + (sel ? '#0F766E' : '#D8D7D1') + '; background: #FFFFFF;',
+          selecionar: () => this.setState(st => ({ modal: Object.assign({}, st.modal, { necId: n.id }) }))
+        };
+      }) : [],
+      setQtd: (e) => this.setState(st => ({ modal: Object.assign({}, st.modal, { qtd: e.target.value }) })),
+      maisQtd: () => this.setState(st => ({ modal: Object.assign({}, st.modal, { qtd: (parseInt(st.modal.qtd, 10) || 0) + 5 }) })),
+      menosQtd: () => this.setState(st => ({ modal: Object.assign({}, st.modal, { qtd: Math.max(1, (parseInt(st.modal.qtd, 10) || 1) - 5) }) })),
+      modalAvancarDesabilitado: !(parseInt(mQtd, 10) > 0),
+      modalAvancarStyle: (parseInt(mQtd, 10) > 0)
+        ? 'background: #0F766E; color: #FFFFFF; border: none; border-radius: 10px; padding: 12px 22px; font-size: 15px; font-weight: 600; cursor: pointer;'
+        : 'background: #E4E3DE; color: #9AA5A2; border: none; border-radius: 10px; padding: 12px 22px; font-size: 15px; font-weight: 600; cursor: not-allowed;',
+      irRevisao: () => this.setState(st => ({ modal: Object.assign({}, st.modal, { etapa: 'revisao' }) })),
+      voltarEscolha: () => this.setState(st => ({ modal: Object.assign({}, st.modal, { etapa: 'escolha' }) })),
+      fecharModal: () => this.setState({ modal: null }),
+      confirmarDoacao: () => this.confirmar(),
+
+      // confirmação
+      confirmacaoTexto: ult ? 'A ' + ult.inst + ' foi avisada e vai combinar a entrega com você.' : 'A instituição foi avisada e vai combinar a entrega com você.',
+      confirmacaoItem: ult ? ult.item : '',
+      confirmacaoQtd: ult ? ult.qtd + ' ' + ult.unidade : '',
+      confirmacaoInst: ult ? ult.inst : ''
+    };
+  }
+}
+</script>
+</body>
+</html>
