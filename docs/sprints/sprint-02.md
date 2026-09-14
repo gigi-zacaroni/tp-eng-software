@@ -60,7 +60,7 @@
 
 ### Acompanhamento
 
-- **GitHub Project:** `[link filtrado ou visão da sprint]`
+- **GitHub Project:** [ConectaAção — Backlog](https://github.com/users/gigi-zacaroni/projects/1) · itens da sprint filtrados pelo milestone [`Sprint 2`](https://github.com/gigi-zacaroni/tp-eng-software/milestone/1)
 - **Reuniões/decisões:** `[links para docs/reunioes/]`
 - **Impedimentos:** `[PREENCHER ou Nenhum]`
 - **Mudanças de escopo:** `[PREENCHER ou Nenhuma]`

@@ -5,7 +5,7 @@
 
 ## 1. Link do GitHub Project
 
-`[COLAR LINK DO PROJECT]`
+[ConectaAção — Backlog](https://github.com/users/gigi-zacaroni/projects/1)
 
 ## 2. Campos obrigatórios no Project
 
