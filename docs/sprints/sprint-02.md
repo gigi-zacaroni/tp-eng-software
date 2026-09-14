@@ -3,7 +3,7 @@
 - **Data de entrega:** 14/09/2026
 - **Pontuação:** 2,5 pontos
 - **Tag obrigatória:** `sprint-02`
-- **Responsável por conferir este arquivo:** `[PREENCHER]`
+- **Responsável por conferir este arquivo:** Karol Guimarães
 
 ## 1. Pergunta que esta sprint deve responder
 
