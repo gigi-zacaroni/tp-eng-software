@@ -22,7 +22,7 @@ Muitas pessoas têm interesse em realizar doações ou ajudar instituições de 
 
 | Stakeholder                  | Necessidade/interesse                                                                          | Como será envolvido ou representado                                                           |
 | ---------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| **Usuário/doador**           | Encontrar instituições confiáveis e descobrir quais tipos de ajuda ou doações são necessários. | Poderá consultar instituições, visualizar suas necessidades e demonstrar interesse em ajudar. |
+| **Usuário/doador**           | Encontrar instituições confiáveis e descobrir quais tipos de ajuda ou doações são necessários. | Poderá consultar instituições, visualizar suas necessidades, prometer doações e acompanhar o status até a entrega. |
 | **Instituições de caridade** | Divulgar seu trabalho e suas necessidades para alcançar mais pessoas dispostas a ajudar.       | Poderão possuir um perfil com informações sobre a instituição e cadastrar suas necessidades.  |
 | **Administrador do sistema** | Garantir a organização e o funcionamento adequado da plataforma.                               | Será responsável pelo gerenciamento e pela moderação das informações cadastradas.             |
 
@@ -48,14 +48,19 @@ Criar uma plataforma que facilite a conexão entre pessoas dispostas a ajudar e 
 
 ### Dentro do escopo
 
-* Cadastro e gerenciamento de usuários.
-* Cadastro e gerenciamento de instituições de caridade.
-* Perfil das instituições contendo informações básicas sobre seu trabalho.
-* Divulgação das necessidades das instituições.
-* Busca e visualização de instituições.
-* Identificação dos tipos de ajuda ou doações solicitadas.
-* Funcionalidade para o usuário demonstrar interesse em ajudar.
-* Informações de contato e formas de contribuição das instituições.
+> **Atualizado na Sprint 2.** O escopo abaixo foi revisado após a definição dos requisitos e a construção do protótipo navegável. A correspondência item a item com os requisitos identificados está em [`docs/requisitos/requisitos.md`](requisitos/requisitos.md).
+
+* Cadastro e gerenciamento de usuários (doador e instituição) — `RF-01`, `RF-02`.
+* Autenticação e restrição do conteúdo sensível a usuários logados — `RF-03` a `RF-05`.
+* Perfil das instituições contendo informações básicas sobre seu trabalho — `RF-10`.
+* Divulgação e gerenciamento das necessidades das instituições, com quantidade desejada e progresso — `RF-14` a `RF-18`.
+* Busca, filtro e visualização de instituições — `RF-06` a `RF-09`.
+* Identificação dos tipos de ajuda ou doações solicitadas — `RF-14`, `RF-18`.
+* **Fluxo de doação:** o usuário promete uma doação para uma necessidade específica e acompanha o status até a entrega (Prometida → A caminho → Entregue), podendo cancelá-la enquanto não for entregue — `RF-19` a `RF-21`.
+* Confirmação do recebimento pela instituição, atualizando o progresso da necessidade — `RF-22` a `RF-24`.
+* Favoritar instituições para reencontrá-las depois — `RF-12`, `RF-13`.
+* Notificações sobre os eventos relevantes das doações — `RF-25` a `RF-27`.
+* Informações de contato e formas de contribuição das instituições — `RF-10`.
 
 ### Fora do escopo
 
@@ -87,8 +92,11 @@ A plataforma organiza as instituições e suas necessidades de forma que o usuá
 
 | Data/sprint | Mudança                                                                 | Motivo                                                                                                   | Issue/decisão relacionada |
 | ----------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Sprint 1    | Criação da visão inicial do produto.                                    | Definição do problema, público e proposta inicial da solução.                                            | `#XX`                     |
-| Sprint 1    | Definição do foco na conexão entre usuários e instituições de caridade. | Delimitação do problema para evitar que o projeto se tornasse apenas uma plataforma genérica de doações. | `#XX`                     |
-| Sprint 1    | Definição do escopo inicial e das funcionalidades principais.           | Estabelecer quais funcionalidades serão desenvolvidas na primeira versão.                                | `#XX`                     |
+| Sprint 1    | Criação da visão inicial do produto.                                    | Definição do problema, público e proposta inicial da solução.                                            | Item `D-01` do [backlog](backlog-produto.md) · commit [`32c0ac7`](https://github.com/gigi-zacaroni/tp-eng-software/commit/32c0ac7) |
+| Sprint 1    | Definição do foco na conexão entre usuários e instituições de caridade. | Delimitação do problema para evitar que o projeto se tornasse apenas uma plataforma genérica de doações. | Item `T-01` do [backlog](backlog-produto.md) · [`sprint-01.md`](sprints/sprint-01.md) |
+| Sprint 1    | Definição do escopo inicial e das funcionalidades principais.           | Estabelecer quais funcionalidades serão desenvolvidas na primeira versão.                                | Item `T-05` do [backlog](backlog-produto.md) · [`sprint-01.md`](sprints/sprint-01.md) |
+| Sprint 2    | Revisão da seção 4 (escopo): "demonstrar interesse em ajudar" passou a **prometer doação e acompanhar até a entrega**. | A ação do usuário estava descrita de forma vaga, sem comportamento verificável. O protótipo detalhou o ciclo de vida da doação, tornando-a mensurável. | `RF-19`–`RF-21` · [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10), [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) · [ata de 12/09](reunioes/2026-09-12-refinamento-requisitos.md) |
+| Sprint 2    | Inclusão de favoritos e da central de notificações no escopo.           | Funcionalidades identificadas no protótipo como apoio à recorrência de uso e ao acompanhamento das doações. | `RF-12`, `RF-13`, `RF-25`–`RF-27` · [#8](https://github.com/gigi-zacaroni/tp-eng-software/issues/8), [#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) |
+| Sprint 2    | Separação entre landing page pública (`RF-06`) e listagem protegida (`RF-07`). | A landing precisa ser pública para atrair doadores, mas os dados de contato das instituições permanecem restritos a usuários autenticados. | `RN-01`, `RNF-04` · [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3), [#6](https://github.com/gigi-zacaroni/tp-eng-software/issues/6) |
 
 

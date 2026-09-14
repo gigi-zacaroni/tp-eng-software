@@ -3,32 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Projeto de Engenharia de Software</title>
+  <title>ConectaAção — Engenharia de Software 2026/2</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="container">
-    <p class="tag">Exemplo da Sprint 1</p>
-    <h1>[Nome da aplicação]</h1>
+    <p class="tag">Sprint 2 — requisitos e escopo validável</p>
+    <h1>ConectaAção</h1>
     <p>
-      Esta página comprova que o repositório possui uma estrutura executável desde
-      a primeira sprint. Substitua-a pela aplicação web real do grupo.
+      Plataforma que conecta pessoas dispostas a ajudar às instituições de caridade
+      que precisam de apoio. Esta página é a estrutura executável do repositório; a
+      aplicação real será construída em Next.js/React e Java/Spring Boot, a partir
+      das decisões técnicas das Sprints 3 e 4.
     </p>
     <section>
       <h2>Problema tratado</h2>
-      <p>[Descreva resumidamente o problema.]</p>
+      <p>
+        Muitas pessoas querem doar, mas não sabem quais instituições existem, do que
+        elas precisam ou como contribuir. As instituições, por sua vez, têm dificuldade
+        de divulgar suas necessidades. O problema não é a falta de quem queira ajudar,
+        e sim a <strong>dificuldade de conectar essas pessoas a quem precisa</strong>.
+      </p>
     </section>
     <section>
-      <h2>Primeiro fluxo previsto</h2>
-      <p>[Indique a funcionalidade prioritária ligada a uma Issue e a um requisito.]</p>
-      <button type="button" id="demo">Executar demonstração mínima</button>
+      <h2>Funcionalidade prioritária — prometer uma doação</h2>
+      <p>
+        Requisito <code>RF-19</code>, história <code>US-08</code>
+        (<a href="https://github.com/gigi-zacaroni/tp-eng-software/issues/10">Issue #10</a>),
+        com a condição verificável do <code>RNF-01</code>: a doação deve ser concluída
+        em no máximo três passos.
+      </p>
+      <button type="button" id="demo">Contar os passos do fluxo de doação</button>
       <p id="resultado" aria-live="polite"></p>
+      <p>
+        O fluxo completo pode ser percorrido no
+        <a href="../docs/prototipo/README.md">protótipo navegável</a>, que relaciona
+        cada tela aos seus requisitos e critérios de aceitação.
+      </p>
+    </section>
+    <section>
+      <h2>Documentação</h2>
+      <ul>
+        <li><a href="../docs/visao-geral.md">Visão geral do produto</a></li>
+        <li><a href="../docs/requisitos/requisitos.md">Requisitos (27 RF, 10 RNF, 8 regras de negócio)</a></li>
+        <li><a href="../docs/rastreabilidade.md">Matriz de rastreabilidade</a></li>
+        <li><a href="../docs/prototipo/README.md">Protótipo navegável</a></li>
+      </ul>
     </section>
   </main>
   <script>
+    const PASSOS = ['Escolher o item', 'Definir a quantidade', 'Confirmar a doação'];
     document.querySelector('#demo').addEventListener('click', () => {
       document.querySelector('#resultado').textContent =
-        'Estrutura inicial executada. Agora implemente o comportamento real do projeto.';
+        PASSOS.map((p, i) => `${i + 1}. ${p}`).join('  →  ') +
+        `  (${PASSOS.length} passos — RNF-01 exige no máximo 3)`;
     });
   </script>
 </body>

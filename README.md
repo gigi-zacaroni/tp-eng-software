@@ -22,7 +22,6 @@
 | **Maria Luiza Pestana**       | @Malupestana       | Modelagem e banco de dados       | Desenvolvimento, documentação e testes            |
 | **Karol Guimarães**           | @KarolGSMiranda       | Gestão do projeto e documentação |Levantamento de requisitos, documentação e testes|
 | **Arthur Veiga**              | @ArtJamis1208     | Analista de qualidade            | Desenvolvimento, análise e testes                 |
-     |
 
 > As responsabilidades podem ser alteradas de acordo com a divisão real do grupo.
 
@@ -39,9 +38,21 @@ Pessoas interessadas em realizar doações ou contribuir com instituições de c
 
 **Funcionalidades prioritárias:**
 
-* Cadastro e visualização de instituições de caridade.
-* Busca e consulta das necessidades das instituições.
-* Divulgação de formas de contribuição e contato com as instituições.
+* Cadastro e visualização de instituições de caridade — `RF-01`, `RF-02`, `RF-07`, `RF-10`.
+* Busca e consulta das necessidades das instituições — `RF-08`, `RF-09`, `RF-14`, `RF-18`.
+* Promessa e acompanhamento de doações até a entrega — `RF-19` a `RF-24`.
+* Divulgação de formas de contribuição e contato com as instituições — `RF-10`.
+
+Os requisitos identificados estão em [`docs/requisitos/requisitos.md`](docs/requisitos/requisitos.md) e a matriz completa em [`docs/rastreabilidade.md`](docs/rastreabilidade.md).
+
+**Tecnologias definidas pelo grupo:**
+
+| Camada | Tecnologia |
+|---|---|
+| Front-end | Next.js / React |
+| Back-end | Java / Spring Boot |
+
+> O [protótipo navegável](docs/prototipo/README.md) entregue na Sprint 2 foi construído em HTML/CSS/JS apenas para validar fluxos e a visão do produto. Ele **não** é a versão final nem define o stack da aplicação.
 
 ## 3. Comece por aqui
 
@@ -114,15 +125,23 @@ Cada sprint vale **2,5 pontos**:
 └── scripts/validar_repositorio.py
 ```
 
-## 7. Execução da aplicação de exemplo
+## 7. Execução
 
-A pasta `src/` contém uma página estática mínima apenas para demonstrar que, desde a Sprint 1, o repositório deve possuir uma aplicação executável.
+### Protótipo navegável (incremento da Sprint 2)
+
+```bash
+python -m http.server 8000 --directory docs/prototipo
+```
+
+Abra `http://localhost:8000/ConectaAcao%20Prototipo.dc.html`. O protótipo cobre as dez telas das funcionalidades prioritárias; o mapa tela → requisito → critério de aceitação está em [`docs/prototipo/README.md`](docs/prototipo/README.md).
+
+### Aplicação
 
 ```bash
 python -m http.server 8000 --directory src
 ```
 
-Abra `http://localhost:8000`. O grupo deverá substituir esse exemplo pela tecnologia e pelo código reais do projeto.
+A pasta `src/` contém a página inicial estática do projeto. A aplicação real, em Next.js/React e Java/Spring Boot, será construída a partir das decisões técnicas das Sprints 3 e 4.
 
 ## 8. Regra de ouro da rastreabilidade
 
