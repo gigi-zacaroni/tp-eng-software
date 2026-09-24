@@ -31,6 +31,9 @@ sequenceDiagram
 
 ## 3. modelo estrutural em Mermaid
 
+## 3. Modelo estrutural em Mermaid
+
+```mermaid
 erDiagram
     USUARIO ||--o| DOADOR : "pode ser"
     USUARIO ||--o| INSTITUICAO : "pode ser"
@@ -74,6 +77,10 @@ erDiagram
         string status
         datetime dataPromessa
     }
+```
+
+**Descrição e decisões representadas:**  
+O modelo representa as principais entidades do sistema e seus relacionamentos. Um `USUARIO` pode atuar como `DOADOR` ou `INSTITUICAO`. Uma instituição pode possuir várias necessidades, enquanto um doador pode realizar várias doações. Cada `DOACAO` relaciona um doador a uma necessidade específica e registra a quantidade, o status e a data da promessa.
 
 **Descrição e decisões representadas:** `[PREENCHER]`
 
