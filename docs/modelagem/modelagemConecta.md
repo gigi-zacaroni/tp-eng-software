@@ -31,53 +31,49 @@ sequenceDiagram
 
 ## 3. modelo estrutural em Mermaid
 
-<pre>
-```mermaid
-classDiagram
-    class Usuario {
-        &lt;&lt;Abstract&gt;&gt;
-        +int id
-        +String email
-        +String senha
-        +autenticar()
+erDiagram
+    USUARIO ||--o| DOADOR : "pode ser"
+    USUARIO ||--o| INSTITUICAO : "pode ser"
+    INSTITUICAO ||--|{ NECESSIDADE : possui
+    DOADOR ||--o{ DOACAO : realiza
+    NECESSIDADE ||--o{ DOACAO : recebe
+
+    USUARIO {
+        int id PK
+        string email
+        string senha
     }
 
-    class Doador {
-        +String nome
-        +criarConta()
+    DOADOR {
+        int id PK
+        int usuario_id FK
+        string nome
     }
 
-    class Instituicao {
-        +String nome
-        +String descricao
-        +boolean verificada
-        +publicarPerfil()
-        +validarPerfil()
+    INSTITUICAO {
+        int id PK
+        int usuario_id FK
+        string nome
+        string descricao
+        boolean verificada
     }
 
-    class Necessidade {
-        +int id
-        +String item
-        +int quantidadeTotal
-        +int quantidadeFaltante
-        +atualizarProgresso()
+    NECESSIDADE {
+        int id PK
+        int instituicao_id FK
+        string item
+        int quantidadeTotal
+        int quantidadeFaltante
     }
 
-    class Doacao {
-        +int id
-        +int quantidade
-        +String status
-        +Date dataPromessa
-        +prometer()
-        +validarQuantidade()
+    DOACAO {
+        int id PK
+        int doador_id FK
+        int necessidade_id FK
+        int quantidade
+        string status
+        datetime dataPromessa
     }
-
-    Usuario &lt;|-- Doador
-    Usuario &lt;|-- Instituicao
-    Instituicao "1" *-- "1..*" Necessidade : possui
-    Doador "1" --&gt; "0..*" Doacao : realiza
-    Necessidade "1" &lt;-- "0..*" Doacao : atende a
-
 
 **Descrição e decisões representadas:** `[PREENCHER]`
 
