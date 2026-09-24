@@ -29,8 +29,6 @@ sequenceDiagram
 
 **Descrição e decisões representadas:** `[PREENCHER]`
 
-## 3. modelo estrutural em Mermaid
-
 ## 3. Modelo estrutural em Mermaid
 
 ```mermaid
