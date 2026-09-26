@@ -11,8 +11,7 @@
 
 ## 2. modelo comportamental em Mermaid
 
-> Substitua pelo modelo real. O Mermaid é renderizado pelo GitHub e permanece versionado junto ao projeto.
-
+>
 ```mermaid
 ---
 config:
@@ -54,7 +53,14 @@ flowchart LR
     BE -.->|"11. Salva intenção"| B
 ```
 
-**Descrição e decisões representadas:** `[PREENCHER]`
+**Descrição e decisões representadas:** 
+O modelo representa o funcionamento de uma aplicação web responsável por conectar doadores a instituições de caridade de acordo com o tipo de doação que desejam realizar. O fluxo demonstra a comunicação entre o usuário, o front-end, a API, o back-end e o banco de dados.
+
+Inicialmente, o usuário/doador acessa a interface do front-end, realiza seu cadastro ou login e informa o tipo de doação que deseja fazer. O front-end envia essa informação para a API REST, que recebe a requisição e a encaminha para o back-end.
+
+No back-end, são aplicadas as regras de negócio da aplicação. O sistema consulta o banco de dados, onde estão armazenadas informações sobre usuários, instituições e doações. A partir do tipo de doação informado pelo usuário, o back-end identifica as instituições compatíveis e retorna os resultados pela API até o front-end, que apresenta essas instituições ao usuário.
+
+Após visualizar as opções, o usuário pode selecionar uma instituição. Essa ação gera uma nova requisição, que passa novamente pelo front-end e pela API até chegar ao back-end. O back-end então registra a intenção de doação no banco de dados, mantendo o registro da interação realizada pelo usuário.
 
 ## 3. Modelo estrutural em Mermaid
 
