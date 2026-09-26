@@ -6,8 +6,8 @@
 
 | Modelo | Tipo | Pergunta que ele ajuda a responder | Requisitos relacionados |
 |---|---|---|---|
-| `[Nome]` | Comportamental | `[Como um fluxo acontece?]` | `RF-XX` |
-| `Diagramade classes de Domínio` | Estrutural | `Como as entidades do sistema se relacionam para conectar doadores e necessidades?` | `RF-01, RF-02, RF-18, RF-19` |
+| `Diagrama de Comportamento e Fluxo de Doações da Aplicação` | Comportamental | `Como ocorre o fluxo de uma doação entre o doador, o sistema e a instituição?` | `RF-19, RF-20, RF-21, RF-22, RF-23, RF-24` |
+| `Diagrama de Classes de Domínio` | Estrutural | `Como as entidades do sistema se relacionam para conectar doadores e necessidades?` | `RF-01, RF-02, RF-18, RF-19` |
 
 ## 2. modelo comportamental em Mermaid
 
