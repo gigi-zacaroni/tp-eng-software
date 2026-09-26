@@ -19,10 +19,11 @@ config:
 ---
 flowchart LR
 
-    U["USUÁRIO / DOADOR"]
+    %% s12
+    D["DOADOR"]
 
     subgraph FRONT["FRONT-END"]
-        FE["Interface Web<br/><br/>Cadastro / Login<br/>Escolha do tipo de doação<br/>Visualização das instituições"]
+        FE["Interface Web<br/><br/>Cadastro / Login<br/>Escolha da necessidade<br/>Promessa de doação<br/>Acompanhamento"]
     end
 
     subgraph API["API"]
@@ -30,37 +31,50 @@ flowchart LR
     end
 
     subgraph BACK["BACK-END"]
-        BE["Regras de Negócio<br/><br/>Processa a solicitação<br/>Busca instituições compatíveis<br/>Registra a intenção de doação"]
+        BE["Regras de Negócio<br/><br/>Busca necessidades<br/>Registra doações<br/>Atualiza status<br/>Controla quantidades"]
     end
 
     subgraph BD["BANCO DE DADOS"]
-        B["USUÁRIOS<br/><br/>INSTITUIÇÕES<br/><br/>DOAÇÕES"]
+        B["DOADORES<br/><br/>INSTITUIÇÕES<br/><br/>NECESSIDADES<br/><br/>DOAÇÕES"]
     end
 
-    U -->|"1. Escolhe o tipo de doação"| FE
-    FE -->|"2. Envia requisição"| AP
-    AP -->|"3. Encaminha solicitação"| BE
-    BE -->|"4. Consulta dados"| B
+    subgraph INST["PAINEL DA INSTITUIÇÃO"]
+        I["Doações a receber<br/><br/>Confirmar recebimento<br/>Resumo das necessidades"]
+    end
 
-    B -->|"5. Retorna instituições compatíveis"| BE
-    BE -->|"6. Retorna resultados"| AP
-    AP -->|"7. Envia resposta"| FE
-    FE -->|"8. Exibe instituições"| U
+    D -->|"1. Escolhe necessidade, item e quantidade"| FE
+    FE -->|"2. Envia solicitação"| AP
+    AP -->|"3. Encaminha"| BE
+    BE -->|"4. Consulta necessidade"| B
+    B -->|"5. Retorna quantidade disponível"| BE
 
-    U -.->|"9. Seleciona instituição"| FE
-    FE -.->|"10. Registra intenção"| AP
+    BE -->|"6. Registra doação como Prometida"| B
+    BE -->|"7. Retorna confirmação"| AP
+    AP -->|"8. Exibe doação"| FE
+    FE -->|"9. Acompanha status"| D
+
+    I -->|"10. Consulta doações"| AP
+    AP -->|"11. Solicita dados"| BE
+    BE -->|"12. Consulta"| B
+    B -->|"13. Retorna doações"| BE
+    BE -->|"14. Exibe doações"| AP
+    AP --> I
+
+    D -.->|"15. Atualiza status"| FE
+    FE -.-> AP
     AP -.-> BE
-    BE -.->|"11. Salva intenção"| B
+    BE -.->|"Atualiza doação"| B
+
+    I -.->|"16. Confirma recebimento"| AP
+    AP -.-> BE
+    BE -.->|"Atualiza recebimento"| B
 ```
 
 **Descrição e decisões representadas:** 
-O modelo representa o funcionamento de uma aplicação web responsável por conectar doadores a instituições de caridade de acordo com o tipo de doação que desejam realizar. O fluxo demonstra a comunicação entre o usuário, o front-end, a API, o back-end e o banco de dados.
-
-Inicialmente, o usuário/doador acessa a interface do front-end, realiza seu cadastro ou login e informa o tipo de doação que deseja fazer. O front-end envia essa informação para a API REST, que recebe a requisição e a encaminha para o back-end.
-
-No back-end, são aplicadas as regras de negócio da aplicação. O sistema consulta o banco de dados, onde estão armazenadas informações sobre usuários, instituições e doações. A partir do tipo de doação informado pelo usuário, o back-end identifica as instituições compatíveis e retorna os resultados pela API até o front-end, que apresenta essas instituições ao usuário.
-
-Após visualizar as opções, o usuário pode selecionar uma instituição. Essa ação gera uma nova requisição, que passa novamente pelo front-end e pela API até chegar ao back-end. O back-end então registra a intenção de doação no banco de dados, mantendo o registro da interação realizada pelo usuário.
+O diagrama representa o modelo comportamental da aplicação web, demonstrando como ocorre a comunicação entre o doador, front-end, API, back-end, banco de dados e instituição de caridade durante o processo de doação.
+O fluxo começa com o doador, que acessa o front-end da aplicação para escolher uma necessidade, o item que deseja doar e a quantidade. Essas informações são enviadas pela API REST ao back-end, responsável por aplicar as regras de negócio do sistema e consultar o banco de dados para verificar a quantidade que ainda é necessária.Após a validação, o back-end registra a doação no banco de dados com o status "Prometida" e retorna a confirmação ao doador. O sistema também permite que o doador acompanhe a evolução da doação, que pode passar pelos estados "Prometida" → "A caminho" → "Entregue". Caso necessário, a doação também pode ser cancelada enquanto estiver nos estados permitidos, devolvendo a quantidade à necessidade.
+Paralelamente, a instituição de caridade possui um painel próprio para consultar as doações que estão a caminho. Nesse painel, são apresentadas informações como doador, item, quantidade e status da doação. Após receber uma doação, a instituição pode confirmar o recebimento, fazendo com que o back-end atualize os dados no banco de dados.
+O sistema também utiliza essas informações para apresentar à instituição um resumo de cada necessidade, contendo a quantidade desejada, prometida, recebida e o percentual de atendimento.
 
 ## 3. Modelo estrutural em Mermaid
 
