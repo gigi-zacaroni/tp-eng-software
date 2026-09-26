@@ -146,18 +146,16 @@ O modelo representa as principais entidades do sistema e seus relacionamentos. U
 | **RF-23** | Fluxo `Instituição → API → Back-end → Banco de Dados` | A instituição confirma o recebimento da doação. O back-end atualiza o status e a quantidade recebida da necessidade no banco de dados. | Issue: Implementar endpoint para confirmação de recebimento e atualizar os dados da doação e da necessidade após a confirmação. |
 | **RF-24** | `Resumo das necessidades` no `Painel da Instituição` | O painel apresenta, para cada necessidade, a quantidade **desejada, prometida, recebida e o percentual atendido**, utilizando os dados armazenados no banco. | Issue: Criar endpoint para gerar o resumo das necessidades e desenvolver a visualização com os valores desejados, prometidos, recebidos e percentual atendido. |
 
-## 5. Correspondência entre modelo e código
+### 5. Correspondência entre modelo e código
 
 | Elemento modelado | Arquivo/diretório correspondente | Observação |
-|---|---|---|
-| `[Entidade/componente/fluxo]` | `[link relativo]` | `[PREENCHER]` |
+| :--- | :--- | :--- |
+| **Diagrama de Classes de Domínio** (Entidades: `Usuario`, `Doador`, `Instituicao`, `Necessidade`, `Doacao`) | `database/schema.sql` | Contém o script SQL (DDL) com a criação estrutural das tabelas relacionais, definição de tipos primitivos equivalentes aos do diagrama e configuração de chaves estrangeiras. |
+| **Diagrama de Comportamento** (Regras de negócio, registro e validação de doações) | `src/server.js` | Implementação da API REST em Node.js (Express). Contém a conexão com o banco de dados e os endpoints (ex: `POST /doacoes`) que refletem o comportamento modelado. |
+| **Fluxo do Banco de Dados** (Segurança e Conexão) | `.env` / `.gitignore` | Arquivos de configuração de ambiente criados para garantir que as credenciais do banco de dados não fossem expostas no repositório público. |
 
-## 6. Refinamentos identificados
-
-- `[Requisito dividido, regra descoberta, entidade adicionada etc.]`
-
-## 7. Histórico de atualização
+### 7. Histórico de atualização
 
 | Sprint | Modelo alterado | Motivo | Evidência |
-|---|---|---|---|
-| Sprint 3 | `[PREENCHER]` | `[PREENCHER]` | `[link]` |
+| :--- | :--- | :--- | :--- |
+| Sprint 3 | **Mapeamento Objeto-Relacional (Diagrama de Classes)** | Tradução do modelo conceitual para modelo físico no MySQL, ajustando tipos de dados abstratos para DDL específico e implementando a API. | `https://github.com/johnatan-si/tp-eng-software/commit/26b7fd135624e5c47428425a190b44c7a0420c23` |
