@@ -14,17 +14,44 @@
 > Substitua pelo modelo real. O Mermaid é renderizado pelo GitHub e permanece versionado junto ao projeto.
 
 ```mermaid
-sequenceDiagram
-    actor Usuario
-    participant Web as Aplicação Web
-    participant API
-    participant DB as Banco de dados
-    Usuario->>Web: Solicita operação
-    Web->>API: Envia dados validados
-    API->>DB: Consulta ou persiste dados
-    DB-->>API: Retorna resultado
-    API-->>Web: Retorna resposta
-    Web-->>Usuario: Exibe resultado
+---
+config:
+  theme: default
+---
+flowchart LR
+
+    U["USUÁRIO / DOADOR"]
+
+    subgraph FRONT["FRONT-END"]
+        FE["Interface Web<br/><br/>Cadastro / Login<br/>Escolha do tipo de doação<br/>Visualização das instituições"]
+    end
+
+    subgraph API["API"]
+        AP["API REST<br/><br/>Recebe e envia requisições"]
+    end
+
+    subgraph BACK["BACK-END"]
+        BE["Regras de Negócio<br/><br/>Processa a solicitação<br/>Busca instituições compatíveis<br/>Registra a intenção de doação"]
+    end
+
+    subgraph BD["BANCO DE DADOS"]
+        B["USUÁRIOS<br/><br/>INSTITUIÇÕES<br/><br/>DOAÇÕES"]
+    end
+
+    U -->|"1. Escolhe o tipo de doação"| FE
+    FE -->|"2. Envia requisição"| AP
+    AP -->|"3. Encaminha solicitação"| BE
+    BE -->|"4. Consulta dados"| B
+
+    B -->|"5. Retorna instituições compatíveis"| BE
+    BE -->|"6. Retorna resultados"| AP
+    AP -->|"7. Envia resposta"| FE
+    FE -->|"8. Exibe instituições"| U
+
+    U -.->|"9. Seleciona instituição"| FE
+    FE -.->|"10. Registra intenção"| AP
+    AP -.-> BE
+    BE -.->|"11. Salva intenção"| B
 ```
 
 **Descrição e decisões representadas:** `[PREENCHER]`
