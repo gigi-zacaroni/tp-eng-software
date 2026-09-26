@@ -8,6 +8,14 @@
 |---|---|---|---|
 | `Diagrama de Comportamento e Fluxo de Doações da Aplicação` | Comportamental | `Como ocorre o fluxo de uma doação entre o doador, o sistema e a instituição?` | `RF-19, RF-20, RF-21, RF-22, RF-23, RF-24` |
 | `Diagrama de Classes de Domínio` | Estrutural | `Como as entidades do sistema se relacionam para conectar doadores e necessidades?` | `RF-01, RF-02, RF-18, RF-19` |
+| **Requisito** | **Elemento do modelo** | **Como está representado** | **Alteração provocada no backlog/código** |
+|---|---|---|---|
+| **RF-19** | Fluxo `Doador → Front-end → API → Back-end → Banco de Dados` | O doador escolhe uma necessidade, informa o item e a quantidade. O back-end valida a quantidade disponível e registra a doação com o status **"Prometida"** no banco de dados. | Issue: Implementar endpoint `POST /doacoes`, validar a quantidade disponível e registrar a doação como **"Prometida"**, atualizando a quantidade da necessidade. |
+| **RF-20** | Fluxo de acompanhamento da `Doação` | O doador acompanha a doação pelo front-end, enquanto o back-end consulta e atualiza o status da doação entre **"Prometida"**, **"A caminho"** e **"Entregue"**. | Issue: Implementar endpoint para consulta e atualização do status da doação e criar interface para o doador acompanhar seu progresso. |
+| **RF-21** | Fluxo de atualização da `Doação` e `Necessidade` | O doador pode cancelar uma doação enquanto ela estiver nos status **"Prometida"** ou **"A caminho"**. O back-end atualiza a doação e devolve a quantidade para a necessidade. | Issue: Implementar endpoint `DELETE /doacoes/:id` ou equivalente, permitindo o cancelamento nos status permitidos e restaurando a quantidade disponível da necessidade. |
+| **RF-22** | `Painel da Instituição → API → Back-end → Banco de Dados` | A instituição consulta as doações a receber por meio do painel, visualizando **doador, item, quantidade e status** da doação. | Issue: Criar endpoint para listar as doações destinadas à instituição e desenvolver a tela de **Doações a receber** no painel da instituição. |
+| **RF-23** | Fluxo `Instituição → API → Back-end → Banco de Dados` | A instituição confirma o recebimento da doação. O back-end atualiza o status e a quantidade recebida da necessidade no banco de dados. | Issue: Implementar endpoint para confirmação de recebimento e atualizar os dados da doação e da necessidade após a confirmação. |
+| **RF-24** | `Resumo das necessidades` no `Painel da Instituição` | O painel apresenta, para cada necessidade, a quantidade **desejada, prometida, recebida e o percentual atendido**, utilizando os dados armazenados no banco. | Issue: Criar endpoint para gerar o resumo das necessidades e desenvolver a visualização com os valores desejados, prometidos, recebidos e percentual atendido. |
 
 ## 2. modelo comportamental em Mermaid
 
