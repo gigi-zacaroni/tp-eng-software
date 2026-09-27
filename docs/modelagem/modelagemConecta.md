@@ -162,4 +162,13 @@ O modelo representa as principais entidades do sistema e seus relacionamentos. U
 | Sprint | Modelo alterado | Motivo | Evidência |
 | :--- | :--- | :--- | :--- |
 | Sprint 3 | **Mapeamento Objeto-Relacional (Diagrama de Classes)** | Tradução do modelo conceitual para modelo físico no MySQL, ajustando tipos de dados abstratos para DDL específico e implementando a API. | `https://github.com/johnatan-si/tp-eng-software/commit/26b7fd135624e5c47428425a190b44c7a0420c23` |
-| Sprint 3 | **Diagrama de Comportamento (etapa de acesso)** | Implementação isolada de RF-01 a RF-04 (`Cadastro_back.js`, `autenticação.js`, `db.js`) para validar cadastro e login separadamente, antes de integrar o fluxo completo de doação. |  | `https://github.com/johnatan-si/tp-eng-software/commit/a8c2ff26f4425aa24d986e1c4e7efe630b5d5ff7 ; https://github.com/johnatan-si/tp-eng-software/commit/a8c2ff26f4425aa24d986e1c4e7efe630b5d5ff7 ; https://github.com/johnatan-si/tp-eng-software/commit/0a852902cb4954238172f966bcd244479d22fbf6 ; https://github.com/johnatan-si/tp-eng-software/commit/f8a059ce6edf8a187866540f09f167f8134ebca2`
+| Sprint 3 | **Diagrama de Comportamento (etapa de acesso)** | Implementação isolada de RF-01 a RF-04 (`Cadastro_back.js`, `autenticação.js`, `db.js`) para validar cadastro e login separadamente, antes de integrar o fluxo completo de doação. |  | 
+
+[Commit a8c2ff2](https://github.com/johnatan-si/tp-eng-software/commit/a8c2ff26f4425aa24d986e1c4e7efe630b5d5ff7)
+
+[Commit 0a85290](https://github.com/johnatan-si/tp-eng-software/commit/0a852902cb4954238172f966bcd244479d22fbf6)
+
+[Commit f8a059c](https://github.com/johnatan-si/tp-eng-software/commit/f8a059ce6edf8a187866540f09f167f8134ebca2)
+
+[Commit 2e888a1](https://github.com/johnatan-si/tp-eng-software/commit/2e888a12a801469910edb78800ee6c6f49f32392)
+ |
