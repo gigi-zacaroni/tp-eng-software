@@ -153,9 +153,13 @@ O modelo representa as principais entidades do sistema e seus relacionamentos. U
 | **Diagrama de Classes de Domínio** (Entidades: `Usuario`, `Doador`, `Instituicao`, `Necessidade`, `Doacao`) | `database/schema.sql` | Contém o script SQL (DDL) com a criação estrutural das tabelas relacionais, definição de tipos primitivos equivalentes aos do diagrama e configuração de chaves estrangeiras. |
 | **Diagrama de Comportamento** (Regras de negócio, registro e validação de doações) | `src/server.js` | Implementação da API REST em Node.js (Express). Contém a conexão com o banco de dados e os endpoints (ex: `POST /doacoes`) que refletem o comportamento modelado. |
 | **Fluxo do Banco de Dados** (Segurança e Conexão) | `.env` / `.gitignore` | Arquivos de configuração de ambiente criados para garantir que as credenciais do banco de dados não fossem expostas no repositório público. |
+| **Diagrama de Comportamento** — etapa implícita de acesso (login/cadastro que precede o fluxo de doação) | `src/Cadastro_back.routes.js` | Implementa RF-01 (cadastro de doador), RF-02 (cadastro de instituição), RF-03 (login) e RF-04 (logout). Corresponde à condição de acesso que antecede o passo 1 do fluxograma ("Doador escolhe necessidade"). |
+| **Diagrama de Comportamento** — restrição de acesso a autenticados (RF-05) | `src/autenticação.js` | Middleware `autenticar`/`exigirTipo` que valida o token JWT antes de liberar qualquer rota protegida; ainda não aplicado a rotas de necessidade/doação porque elas não foram subidas. |
+| **Diagrama de Comportamento** — nó "BANCO DE DADOS" | `src/db.js` | Pool de conexão MySQL usado por `auth.routes.js` para persistir usuários, doadores e instituições. |
 
 ### 7. Histórico de atualização
 
 | Sprint | Modelo alterado | Motivo | Evidência |
 | :--- | :--- | :--- | :--- |
 | Sprint 3 | **Mapeamento Objeto-Relacional (Diagrama de Classes)** | Tradução do modelo conceitual para modelo físico no MySQL, ajustando tipos de dados abstratos para DDL específico e implementando a API. | `https://github.com/johnatan-si/tp-eng-software/commit/26b7fd135624e5c47428425a190b44c7a0420c23` |
+| Sprint 3 | **Diagrama de Comportamento (etapa de acesso)** | Implementação isolada de RF-01 a RF-04 (`Cadastro_back.js`, `autenticação.js`, `db.js`) para validar cadastro e login separadamente, antes de integrar o fluxo completo de doação. |  |
