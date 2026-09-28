@@ -45,7 +45,7 @@ Foi implementado no backend (Node.js + Express + MySQL) o fluxo **cadastro → l
 - **Logout (RF-04):** como o token não fica guardado no servidor, o endpoint orienta o cliente a descartá-lo.
 - **Prometer doação (RF-19):** `POST /doacoes` só aceita doador autenticado e usa o doador do token, nunca um id enviado no corpo. Em uma transação com `SELECT ... FOR UPDATE`, confere se a necessidade existe e se a quantidade cabe no que falta. Depois grava a doação como `Prometida` e reduz `quantidadeFaltante`. Se qualquer passo falhar, nada é alterado.
 
-**Estrutura de dados** (`src/back/sql/schema.sql`): cinco tabelas ligadas por chaves estrangeiras. `usuarios` se relaciona com `doadores` e com `instituicoes` (um perfil por usuário); `instituicoes` tem várias `necessidades`; e `doacoes` liga `doadores` a `necessidades`. Um `UNIQUE` em `usuarios.email` e um `CHECK (quantidadeFaltante <= quantidadeTotal)` reforçam as regras no próprio banco.
+**Estrutura de dados** (database/schema.sql): cinco tabelas ligadas por chaves estrangeiras. `usuarios` se relaciona com `doadores` e com `instituicoes` (um perfil por usuário); `instituicoes` tem várias `necessidades`; e `doacoes` liga `doadores` a `necessidades`. Um `UNIQUE` em `usuarios.email` e um `CHECK (quantidadeFaltante <= quantidadeTotal)` reforçam as regras no próprio banco.
 
 **Organização do código:** `config/` (conexão e transações), `middleware/` (autenticação e permissão por tipo), `routes/` (os fluxos) e `utils/` (validação e erros).
 
