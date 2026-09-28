@@ -31,7 +31,7 @@
 |---|---|---|
 | `[PREENCHER]` | `[link]` | `[PREENCHER]` |
 
-4. Incremento da aplicação web — 0,75 ponto
+## 4. Incremento da aplicação web — 0,75 ponto
 
 **Incremento mínimo esperado:** Evolução de um fluxo modelado, estrutura de dados/classes coerente e evidência de correspondência entre modelo e código.
 
