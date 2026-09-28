@@ -49,10 +49,13 @@ Os requisitos identificados estão em [`docs/requisitos/requisitos.md`](docs/req
 
 | Camada | Tecnologia |
 |---|---|
-| Front-end | Next.js / React |
-| Back-end | Java / Spring Boot |
+| Front-end | HTML / CSS |
+| Back-end | Node.js / Express |
+| Banco de dados | MySQL 8 |
 
-> O [protótipo navegável](docs/prototipo/README.md) entregue na Sprint 2 foi construído em HTML/CSS/JS apenas para validar fluxos e a visão do produto. Ele **não** é a versão final nem define o stack da aplicação.
+> **Mudança na Sprint 3.** Até a Sprint 2, o stack previsto era Next.js/React no front e Java/Spring Boot no back ([decisão 5 da ata de 12/09](docs/reunioes/2026-09-12-refinamento-requisitos.md)). Nenhuma linha havia sido escrita nesse stack. Ao iniciar a implementação, o grupo passou para Node.js/Express + MySQL, para entregar um fluxo verificável dentro do prazo da sprint. Nenhum requisito foi alterado. O registro está no [histórico de refinamento do backlog](docs/backlog-produto.md#7-histórico-de-refinamento).
+
+> O [protótipo navegável](docs/prototipo/README.md) entregue na Sprint 2 foi construído em HTML/CSS/JS apenas para validar fluxos e a visão do produto. Ele **não** é a versão final da aplicação.
 
 ## 3. Comece por aqui
 
@@ -137,11 +140,27 @@ Abra `http://localhost:8000/ConectaAcao%20Prototipo.dc.html`. O protótipo cobre
 
 ### Aplicação
 
+**Back-end** (incremento da Sprint 3) — API REST com os fluxos de cadastro, login e promessa de doação:
+
 ```bash
-python -m http.server 8000 --directory src
+# 1. No MySQL Workbench, execute src/back/sql/schema.sql (requer MySQL 8.0.16+)
+
+# 2. Dependências e configuração
+cd src/back
+npm install
+copy .env.example .env      # preencha DB_PASSWORD e JWT_SECRET
+
+# 3. Subir a API
+npm start                   # http://localhost:3000/teste-conexao
 ```
 
-A pasta `src/` contém a página inicial estática do projeto. A aplicação real, em Next.js/React e Java/Spring Boot, será construída a partir das decisões técnicas das Sprints 3 e 4.
+Os endpoints disponíveis e como verificá-los estão em [`docs/sprints/sprint-03.md` §4](docs/sprints/sprint-03.md#4-incremento-da-aplicação-web--075-ponto). A API ainda não expõe rotas de consulta — ver [#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20).
+
+**Front-end** — `src/front/` contém, por enquanto, apenas a página estática de apresentação do projeto; a integração com a API está prevista para as próximas sprints.
+
+```bash
+python -m http.server 8000 --directory src/front
+```
 
 ## 8. Regra de ouro da rastreabilidade
 
