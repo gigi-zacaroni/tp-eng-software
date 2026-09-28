@@ -3,7 +3,7 @@
 - **Data de entrega:** 28/09/2026
 - **Pontuação:** 2,5 pontos
 - **Tag obrigatória:** `sprint-03`
-- **Responsável por conferir este arquivo:** `[PREENCHER]`
+- **Responsável por conferir este arquivo:** Arthur Veiga (@ArtJamis1208)
 
 ## 1. Pergunta que esta sprint deve responder
 
@@ -11,9 +11,12 @@
 
 ## 2. Objetivo e resultado da sprint
 
-**Objetivo planejado:** `[PREENCHER]`
+**Objetivo planejado:** Elaborar e documentar os modelos comportamentais (fluxo de doações) e estruturais (Modelo ER relacional) do ConectaAção, mediante a 
+ferramenta Mermaid, estabelecendo a rastreabilidade completa e verificável entre Requisitos Funcionais (`RF-01` a `RF-24`), diagramas, código-fonte da API REST e 
+banco de dados MySQL.
 
-**Resultado efetivamente alcançado:** `[PREENCHER ao final da sprint]`
+**Resultado efetivamente alcançado:** Documento [`docs/modelagem/modelagemConecta.md`](docs/modelagem/modelagemConecta.md) finalizado com diagramas Mermaid versionados, matriz de rastreabilidade preenchida, 
+schema SQL do banco de dados instanciado e endpoints do fluxo de cadastro, login e promessa de doação testados e operacionais.
 
 ## 3. Checklist do artefato central — 0,75 ponto
 
@@ -29,7 +32,10 @@
 
 | Artefato criado/atualizado | Link na tag da sprint | O que mudou |
 |---|---|---|
-| `[PREENCHER]` | `[link]` | `[PREENCHER]` |
+| ``docs/modelagem/modelagemConecta.md`` | [ver na tag](docs/modelagem/modelagemConecta.md) | Criação do artefato central com diagramas Mermaid, explicações e matriz de rastreabilidade. |
+| ``src/back/sql/schema.sql`` | [ver na tag](database/schema.sql) | Criação das tabelas relacionais com PKs, FKs, `UNIQUE` e constraints para o Modelo Estrutural ER. |
+| ``docs/rastreabilidade.md`` | [ver na tag](docs/rastreabilidade.md) | Atualização do escopo e arquitetura técnica alinhada com as descobertas da modelagem. |
+| ``src/back/src e src/front`` | [ver na tag](src) | Refinamento das Issues técnicas de modelagem, endpoints e banco de dados. |
 
 ## 4. Incremento da aplicação web — 0,75 ponto
 
@@ -85,7 +91,7 @@ SELECT * FROM doacoes;
 | `RF-01` Cadastro de doador | [Abrir arquivo](../../src/back/src/routes/auth.js) |  [Abrir arquivo](../../docs/evidencias/cadastro_doador)
 | `RF-02` Cadastro de instituição |[Abrir arquivo ](../../src/back/src/routes/auth.js) |  [Abrir arquivo](../../docs/evidencias/cadastro_instituicao.png)
 | `RF-03` Login | [Abrir arquivo](../../src/back/src/routes/auth.js) |  [Abrir arquivo](../../docs/evidencias/login.png)
-| `RF-19` Prometer doação | [Abrir arquivo](../../src/back/src/routes/doacoes.js) ,[Abrir arquivo](../../src/back/src/middleware/autenticacao.js) | [Abrir arquivo](../../docs/evidencias/doacao)
+| `RF-19` Prometer doação | [Abrir arquivo](../../src/back/src/routes/doacoes.js) - [Abrir arquivo](../../src/back/src/middleware/autenticacao.js) | [Abrir arquivo](../../docs/evidencias/doacao)
 
 ## 5. Scrum e gestão do trabalho — 0,50 ponto
 
@@ -93,13 +99,16 @@ SELECT * FROM doacoes;
 
 | Issue | Descrição | Responsável | Critério de aceitação/conclusão | Situação |
 |---|---|---|---|---|
-| `#XX` | `[PREENCHER]` | `@usuario` | `[PREENCHER]` | Concluída/Pendente |
+| [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) | `Cadastro e autenticação de Doador` | `@Malupestana` | `Tabela doadores criada e rota POST /cadastro/doador funcional com JWT` | Concluída |
+| [#5](https://github.com/gigi-zacaroni/tp-eng-software/issues/5) | `Cadastro de Instituição e Necessidades` | `@Malupestana` | `Tabela instituicoes / necessidades com transação SQL` | Concluída |
+| [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) | `Modelo Comportamental do Fluxo de Doação` | `@KarolGSMiranda` | `Diagrama Mermaid do ciclo de doação no modelagem.md` | Concluída |
+| [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) | `Matriz de Rastreabilidade e Modelo ER` | `@ArtJamis1208` | `Mapeamento Requisito x Diagrama x Código-fonte no modelagem.md` | Concluída |
 
 ### Acompanhamento
 
-- **GitHub Project:** `[link filtrado ou visão da sprint]`
+- **GitHub Project:** [ConectaAção — Backlog](https://github.com/users/gigi-zacaroni/projects/1) — onde os itens da sprint são acompanhados
 - **Reuniões/decisões:** `[links para docs/reunioes/]`
-- **Impedimentos:** `[PREENCHER ou Nenhum]`
+- **Impedimentos:** Não houve nenhum impedimento externo durante a realização da Sprint 3.  
 - **Mudanças de escopo:** `[PREENCHER ou Nenhuma]`
 
 ## 6. GitHub, documentação e rastreabilidade — 0,50 ponto
@@ -120,17 +129,24 @@ SELECT * FROM doacoes;
 
 ## 7. Revisão do incremento
 
-- **O que foi demonstrado:** `[PREENCHER]`
-- **Critérios atendidos:** `[PREENCHER]`
-- **Itens não concluídos:** `[PREENCHER]`
-- **Motivo das pendências:** `[PREENCHER]`
-- **Feedback recebido e ajustes:** `[PREENCHER]`
+- **O que foi demonstrado:** A execução de ponta a ponta do fluxo backend do **ConectaAção** (Node.js + Express + MySQL), validando a arquitetura relacional e a lógica de negócios da aplicação web através da verificação prática dos endpoints de API via clientes HTTP (Thunder Client / Postman) e inspeção direta de estado no MySQL Workbench:
+  1. **Cadastro e Gestão de Contas (`RF-01`, `RF-02`):** Demonstração do registro idempotente de doadores e instituições em uma única transação SQL. Provou-se que senhas são armazenadas exclusivamente sob hash Bcrypt e que a tentativa de cadastrar e-mails duplicados resulta em bloqueio com status HTTP `409 Conflict`. No caso da instituição, comprovou-se a inserção atômica de suas necessidades iniciais vinculadas, além da atribuição automática do atributo `verificada = false`.
+  2. **Autenticação e Controle de Acesso (`RF-03`, `RF-04`, `RF-05`):** Demonstração do login com validação de credenciais, emissão do token JWT contendo `id`, `tipo` e `perfilId` no payload, e a atuação do middleware de segurança na rejeição de acessos não autorizados (status HTTP `401 Unauthorized` / `403 Forbidden`) em rotas restritas.
+  3. **Ciclo de Vida e Regra de Integridade da Doação (`RF-19`):** Execução do endpoint `POST /doacoes` utilizando o token do doador autenticado. Demonstrou-se a execução de transações SQL seguras (`START TRANSACTION` ... `SELECT ... FOR UPDATE` ... `COMMIT`), garantindo o bloqueio de concorrência. Comprovou-se que a gravação do registro em status `Prometida` decrementa o valor de `quantidadeFaltante` na tabela `necessidades` em tempo real e bloqueia tentativas de doação cujas quantidades excedam o saldo pendente.
+- **Critérios atendidos:** Todos os critérios de aceitação definidos para o artefato técnico da Sprint 3 e para as Issues de desenvolvimento backend foram 100% atendidos:
+  - **Requisitos de Negócio:** `RF-01`, `RF-02`, `RF-03`, `RF-04`, `RF-05` e `RF-19` totalmente operacionais no backend.
+  - **Integridade de Dados:** Validação do contrato do banco relacional com chaves primárias/estrangeiras e constraints ativas (`UNIQUE` em e-mails e `CHECK (quantidadeFaltante <= quantidadeTotal)` na tabela de necessidades).
+  - **Segurança de Código:** Autenticação via JWT, hashing de senha com Bcrypt e isolamento do ID do doador a partir das claims do token (impedindo *IDOR* / falsificação do ID do doador no payload da requisição).
+  - **Modelagem Rastreável:** Total correspondência entre o modelo ER, o diagrama comportamental em Mermaid no `docs/modelagem/modelagem.md` e os arquivos do código-fonte em `src/back/`.
+- **Itens não concluídos:** Nenhum item do escopo planejado para a Sprint 3 ficou pendente no back-end. A modelagem teórica, o schema físico e os endpoints prioritários do fluxo de doações foram concluídos e validados.
+- **Motivo das pendências:** Não houve pendências nesta Sprint 3.
+- **Feedback recebido e ajustes:** Durante os testes de estresse no fluxo de doação (`RF-19`), identificou-se o risco de *race condition* (condição de corrida) em acessos simultâneos de dois doadores para a mesma necessidade. Como ajuste arquitetural, adotou-se o isolamento por transação no comando (`SELECT ... FOR UPDATE`) no MySQL, garantindo a integridade matemática da quantidade pendente antes de efetivar o `COMMIT` ou realizar o `ROLLBACK` da transação.
 
 ## 8. Retrospectiva e próxima sprint
 
-- **Funcionou bem:** `[PREENCHER]`
-- **Precisa melhorar:** `[PREENCHER]`
-- **Ação concreta para a próxima sprint:** `[PREENCHER]`
+- **Funcionou bem:** A divisão clara de responsabilidades entre a documentação em Mermaid e a escrita das rotas no Node.js.
+- **Precisa melhorar:** Agilização nos testes locais de banco de dados por todos os membros da equipe.
+- **Ação concreta para a próxima sprint:** Aplicar princípios de projeto (modularização, coesão e baixo acoplamento) nos controladores do back-end na Sprint 4.
 
 ## 9. O que não será considerado suficiente
 
@@ -140,6 +156,6 @@ SELECT * FROM doacoes;
 
 ## 10. Links enviados no UFLA Virtual
 
-- **Tag `sprint-03`:** `[COLAR LINK]`
+- **Tag `sprint-03`:** https://github.com/johnatan-si/tp-eng-software/releases/tag/sprint-03
 - **Este arquivo na tag:** `[COLAR LINK]`
 - **Observação adicional:** `[quando necessária]`
