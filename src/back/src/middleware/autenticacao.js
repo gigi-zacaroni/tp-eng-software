@@ -7,7 +7,7 @@ function autenticar(req, res, next) {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     req.usuario = payload;
     next();
   } catch (erro) {
@@ -17,7 +17,7 @@ function autenticar(req, res, next) {
 
 function exigirTipo(tipo) {
   return (req, res, next) => {
-    if (req.usuario.tipo !== tipo) {
+    if (!req.usuario || req.usuario.tipo !== tipo) {
       return res.status(403).json({ erro: `Acesso permitido apenas para ${tipo}.` });
     }
     next();

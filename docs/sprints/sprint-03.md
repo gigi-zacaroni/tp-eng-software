@@ -31,23 +31,61 @@
 |---|---|---|
 | `[PREENCHER]` | `[link]` | `[PREENCHER]` |
 
-## 4. Incremento da aplicação web — 0,75 ponto
+4. Incremento da aplicação web — 0,75 ponto
 
 **Incremento mínimo esperado:** Evolução de um fluxo modelado, estrutura de dados/classes coerente e evidência de correspondência entre modelo e código.
 
 ### O que foi implementado ou evoluído
 
-`[Explique o comportamento demonstrável e relacione-o aos requisitos.]`
+Foi implementado no backend (Node.js + Express + MySQL) o fluxo **cadastro → login → promessa de doação**, em que cada etapa é um endpoint que pode ser chamado e verificado.
+
+- **Cadastro de doador (RF-01):** cria o usuário e o perfil de doador em uma única transação. Valida e normaliza o e-mail, exige confirmação de senha e bloqueia e-mail duplicado (409). A senha é guardada com hash bcrypt.
+- **Cadastro de instituição (RF-02):** cria o usuário, a instituição (`verificada = false`) e as necessidades iniciais na mesma transação. Rejeita necessidades com item vazio ou quantidade que não seja um inteiro maior que zero.
+- **Login (RF-03):** identifica se o usuário é doador ou instituição consultando as tabelas de perfil e devolve um token JWT com `id`, `tipo` e `perfilId`.
+- **Logout (RF-04):** como o token não fica guardado no servidor, o endpoint orienta o cliente a descartá-lo.
+- **Prometer doação (RF-19):** `POST /doacoes` só aceita doador autenticado e usa o doador do token, nunca um id enviado no corpo. Em uma transação com `SELECT ... FOR UPDATE`, confere se a necessidade existe e se a quantidade cabe no que falta. Depois grava a doação como `Prometida` e reduz `quantidadeFaltante`. Se qualquer passo falhar, nada é alterado.
+
+**Estrutura de dados** (`src/back/sql/schema.sql`): cinco tabelas ligadas por chaves estrangeiras. `usuarios` se relaciona com `doadores` e com `instituicoes` (um perfil por usuário); `instituicoes` tem várias `necessidades`; e `doacoes` liga `doadores` a `necessidades`. Um `UNIQUE` em `usuarios.email` e um `CHECK (quantidadeFaltante <= quantidadeTotal)` reforçam as regras no próprio banco.
+
+**Organização do código:** `config/` (conexão e transações), `middleware/` (autenticação e permissão por tipo), `routes/` (os fluxos) e `utils/` (validação e erros).
 
 ### Como executar e verificar
 
 ```bash
-[comandos reais]
+# 1. Banco: no MySQL Workbench, abra e execute src/back/sql/schema.sql
+
+# 2. Dependências e configuração
+cd src/back
+npm install
+copy .env.example .env      # preencha DB_PASSWORD e JWT_SECRET no .env
+
+# 3. Subir a API
+npm start
+
+# 4. Conferir a conexão com o banco
+#    abrir no navegador: http://localhost:3000/teste-conexao
+
+# 5. Verificação dos endpoints (Thunder Client / Postman), nesta ordem:
+#    POST /cadastro/instituicao  -> 201
+#    POST /cadastro/doador       -> 201
+#    POST /login                 -> 200 (retorna o token)
+#    POST /doacoes (header Authorization: Bearer <token>) -> 201
+#    body: { "necessidade_id": 1, "quantidade": 4 }
+```
+
+Conferência no banco (Workbench):
+
+```sql
+SELECT id, item, quantidadeTotal, quantidadeFaltante FROM necessidades;
+SELECT * FROM doacoes;
 ```
 
 | Requisito/Issue | Código ou protótipo | Evidência de execução |
 |---|---|---|
-| `RF-XX / #XX` | `[link]` | `[link]` |
+| `RF-01` Cadastro de doador | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /cadastro/doador`) | [print: 201 no Thunder Client](docs\evidencias\cadastro_doador) |
+| `RF-02` Cadastro de instituição | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /cadastro/instituicao`) | [print: 201 no Thunder Client](docs\evidencias\cadastro_instituicao.png) |
+| `RF-03` Login | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /login`) | [print: 200 com token](docs\evidencias\login.png) |
+| `RF-19` Prometer doação | [`routes/doacoes.js`](src/back/src/routes/doacoes.js), [`middleware/autenticacao.js`](src/back/src/middleware/autenticacao.js) | [print: 201 e tabelas no Workbench](docs\evidencias\doacao) |
 
 ## 5. Scrum e gestão do trabalho — 0,50 ponto
 
