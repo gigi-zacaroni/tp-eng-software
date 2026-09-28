@@ -84,7 +84,7 @@ SELECT * FROM doacoes;
 |---|---|---|
 | `RF-01` Cadastro de doador | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /cadastro/doador`) | [print: 201 no Thunder Client](docs\evidencias\cadastro_doador) |
 | `RF-02` Cadastro de instituição | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /cadastro/instituicao`) | [print: 201 no Thunder Client](docs\evidencias\cadastro_instituicao.png) |
-| `RF-03` Login | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /login`) | [print: 200 com token](docs\evidencias\login.png) |
+| `RF-03` Login | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /login`) | (docs\evidencias\login.png) |
 | `RF-19` Prometer doação | [`routes/doacoes.js`](src/back/src/routes/doacoes.js), [`middleware/autenticacao.js`](src/back/src/middleware/autenticacao.js) | [print: 201 e tabelas no Workbench](docs\evidencias\doacao) |
 
 ## 5. Scrum e gestão do trabalho — 0,50 ponto
