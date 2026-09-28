@@ -82,9 +82,12 @@ SELECT * FROM doacoes;
 
 | Requisito/Issue | Código ou protótipo | Evidência de execução |
 |---|---|---|
-| `RF-01` Cadastro de doador | src/back/src/routes (`POST /cadastro/doador`) | (docs\evidencias\cadastro_doador) |
-| `RF-02` Cadastro de instituição | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /cadastro/instituicao`) | (docs\evidencias\cadastro_instituicao.png) |
-| `RF-03` Login | [`routes/auth.js`](src/back/src/routes/auth.js) (`POST /login`) | (docs\evidencias\login.png) |
+| `RF-01` Cadastro de doador | [Abrir arquivo](../../src/back/src/routes/auth.js)
+ (`POST /cadastro/doador`) | (docs\evidencias\cadastro_doador) |
+| `RF-02` Cadastro de instituição |[Abrir arquivo ](../../src/back/src/routes/auth.js)
+ (`POST /cadastro/instituicao`) | (docs\evidencias\cadastro_instituicao.png) |
+| `RF-03` Login | [Abrir arquivo de Autenticação](../../src/back/src/routes/auth.js)
+ (`POST /login`) | (docs\evidencias\login.png) |
 | `RF-19` Prometer doação | [`routes/doacoes.js`](src/back/src/routes/doacoes.js), [`middleware/autenticacao.js`](src/back/src/middleware/autenticacao.js) | (docs\evidencias\doacao) |
 
 ## 5. Scrum e gestão do trabalho — 0,50 ponto
