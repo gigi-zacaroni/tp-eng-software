@@ -10,7 +10,7 @@
 | `Diagrama de Classes de Domínio` | Estrutural | `Como as entidades do sistema se relacionam para conectar doadores e necessidades?` | `RF-01, RF-02, RF-18, RF-19` |
 
 
-## 2. modelo comportamental em Mermaid
+## 2. Modelo Comportamental em Mermaid
 
 >
 ```mermaid
@@ -72,12 +72,24 @@ flowchart LR
 ```
 
 **Descrição e decisões representadas:** 
-O diagrama representa o modelo comportamental da aplicação web, demonstrando como ocorre a comunicação entre o doador, front-end, API, back-end, banco de dados e instituição de caridade durante o processo de doação.
-O fluxo começa com o doador, que acessa o front-end da aplicação para escolher uma necessidade, o item que deseja doar e a quantidade. Essas informações são enviadas pela API REST ao back-end, responsável por aplicar as regras de negócio do sistema e consultar o banco de dados para verificar a quantidade que ainda é necessária.Após a validação, o back-end registra a doação no banco de dados com o status "Prometida" e retorna a confirmação ao doador. O sistema também permite que o doador acompanhe a evolução da doação, que pode passar pelos estados "Prometida" → "A caminho" → "Entregue". Caso necessário, a doação também pode ser cancelada enquanto estiver nos estados permitidos, devolvendo a quantidade à necessidade.
-Paralelamente, a instituição de caridade possui um painel próprio para consultar as doações que estão a caminho. Nesse painel, são apresentadas informações como doador, item, quantidade e status da doação. Após receber uma doação, a instituição pode confirmar o recebimento, fazendo com que o back-end atualize os dados no banco de dados.
-O sistema também utiliza essas informações para apresentar à instituição um resumo de cada necessidade, contendo a quantidade desejada, prometida, recebida e o percentual de atendimento.
+O diagrama representa o modelo comportamental da aplicação web, demonstrando como ocorre a comunicação entre o doador, front-end, API, back-end, banco de dados e 
+instituição de caridade durante o processo de doação.
 
-## 3. Modelo estrutural em Mermaid
+O fluxo começa com o doador, que acessa o front-end da aplicação para escolher uma necessidade, o item que deseja doar e a quantidade. Essas informações são 
+enviadas pela API REST ao back-end, responsável por aplicar as regras de negócio do sistema e consultar o banco de dados para verificar a quantidade que ainda é 
+necessária. Após a validação, o back-end registra a doação no banco de dados com o status "Prometida" e retorna a confirmação ao doador. 
+
+O sistema também permite que o doador acompanhe a evolução da doação, que pode passar pelos estados "Prometida" → "A caminho" → "Entregue". Caso necessário, a 
+doação também pode ser cancelada enquanto estiver nos estados permitidos, devolvendo a quantidade à necessidade.
+
+Paralelamente, a instituição de caridade possui um painel próprio para consultar as doações que estão a caminho. Nesse painel, são apresentadas informações como 
+doador, item, quantidade e status da doação. Após receber uma doação, a instituição pode confirmar o recebimento, fazendo com que o back-end atualize os dados no 
+banco de dados.
+
+O sistema também utiliza essas informações para apresentar à instituição um resumo de cada necessidade, contendo a quantidade desejada, prometida, recebida e o 
+percentual de atendimento.
+
+## 3. Modelo Estrutural em Mermaid
 
 ```mermaid
 erDiagram
@@ -125,26 +137,27 @@ erDiagram
     }
 ```
 
-**Descrição e decisões representadas:**  
-O modelo representa as principais entidades do sistema e seus relacionamentos. Um `USUARIO` pode atuar como `DOADOR` ou `INSTITUICAO`. Uma instituição pode possuir várias necessidades, enquanto um doador pode realizar várias doações. Cada `DOACAO` relaciona um doador a uma necessidade específica e registra a quantidade, o status e a data da promessa.
+**Descrição e decisões representadas:** O Modelo Estrutural em Mermaid representa as principais entidades do sistema e seus relacionamentos. Um `USUARIO` pode 
+atuar como `DOADOR` ou `INSTITUICAO`. Uma instituição pode possuir várias necessidades, enquanto um doador pode realizar várias doações. Cada `DOACAO` relaciona 
+um doador a uma necessidade específica e registra a quantidade, o status e a data da promessa.
 
-**Descrição e decisões representadas:** `[PREENCHER]`
+Ademais, uma `INSTITUICAO` possui uma relação de 1 para N com `NECESSIDADE`, mantendo o controle do total desejado (`quantidadeTotal`) e do saldo pendente 
+(`quantidadeFaltante`). A entidade `DOACAO` funciona como o elo associativo entre `DOADOR` e `NECESSIDADE`, registrando a quantidade comprometida, o estado atual 
+do ciclo da doação (`status`) e o carimbo de data/hora (`dataPromessa`).
 
 ## 4. Relação entre requisitos e modelos
 
 | Requisito | Elemento do modelo | Como está representado | Alteração provocada no backlog/código |
 | :--- | :--- | :--- | :--- |
-| **RF-01** | Classes `Doador` e `Usuario` | `Doador` possui o atributo `nome` e o método `criarConta()`, herdando `email`, `senha` e `autenticar()` da classe abstrata `Usuario`. | Issue: Criar migration/schema para tabela `Doador` e desenvolver endpoint `POST /doadores` com hash de senha. |
-| **RF-02** | Classes `Instituicao` e `Necessidade` | `Instituicao` (herda `Usuario`) possui `descricao` e flag `verificada`. Tem relação de composição (`1..*`) com `Necessidade` para garantir a exigência de itens iniciais. | Issue: Criar schemas de `Instituicao` e `Necessidade`. Desenvolver form multi-step e endpoint `POST /instituicoes` com validação de array de necessidades. |
-| **RF-18 e RF-19** | Classe `Doacao` | Entidade associativa que conecta `Doador` e `Necessidade`. Armazena `quantidade`, `status` (ex: "Prometida") e aciona validação pelo método `validarQuantidade()`. | Issue: Criar tabela de vínculo `Doacao`. Implementar endpoint `POST /doacoes` contendo lógica de transação para decrementar `quantidadeFaltante` na Necessidade. |
-| **Requisito** | **Elemento do modelo** | **Como está representado** | **Alteração provocada no backlog/código** |
-|---|---|---|---|
-| **RF-19** | Fluxo `Doador → Front-end → API → Back-end → Banco de Dados` | O doador escolhe uma necessidade, informa o item e a quantidade. O back-end valida a quantidade disponível e registra a doação com o status **"Prometida"** no banco de dados. | Issue: Implementar endpoint `POST /doacoes`, validar a quantidade disponível e registrar a doação como **"Prometida"**, atualizando a quantidade da necessidade. |
-| **RF-20** | Fluxo de acompanhamento da `Doação` | O doador acompanha a doação pelo front-end, enquanto o back-end consulta e atualiza o status da doação entre **"Prometida"**, **"A caminho"** e **"Entregue"**. | Issue: Implementar endpoint para consulta e atualização do status da doação e criar interface para o doador acompanhar seu progresso. |
-| **RF-21** | Fluxo de atualização da `Doação` e `Necessidade` | O doador pode cancelar uma doação enquanto ela estiver nos status **"Prometida"** ou **"A caminho"**. O back-end atualiza a doação e devolve a quantidade para a necessidade. | Issue: Implementar endpoint `DELETE /doacoes/:id` ou equivalente, permitindo o cancelamento nos status permitidos e restaurando a quantidade disponível da necessidade. |
-| **RF-22** | `Painel da Instituição → API → Back-end → Banco de Dados` | A instituição consulta as doações a receber por meio do painel, visualizando **doador, item, quantidade e status** da doação. | Issue: Criar endpoint para listar as doações destinadas à instituição e desenvolver a tela de **Doações a receber** no painel da instituição. |
-| **RF-23** | Fluxo `Instituição → API → Back-end → Banco de Dados` | A instituição confirma o recebimento da doação. O back-end atualiza o status e a quantidade recebida da necessidade no banco de dados. | Issue: Implementar endpoint para confirmação de recebimento e atualizar os dados da doação e da necessidade após a confirmação. |
-| **RF-24** | `Resumo das necessidades` no `Painel da Instituição` | O painel apresenta, para cada necessidade, a quantidade **desejada, prometida, recebida e o percentual atendido**, utilizando os dados armazenados no banco. | Issue: Criar endpoint para gerar o resumo das necessidades e desenvolver a visualização com os valores desejados, prometidos, recebidos e percentual atendido. |
+| **RF-01** | Classes `Doador` e `Usuario` | `Doador` possui o atributo `nome` e o método `criarConta()`, herdando `email`, `senha` e `autenticar()` da classe abstrata `Usuario`. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/2: Criar migration/schema para tabela `Doador` e desenvolver endpoint `POST /doadores` com hash de senha. |
+| **RF-02** | Classes `Instituicao` e `Necessidade` | `Instituicao` (herda `Usuario`) possui `descricao` e flag `verificada`. Tem relação de composição (`1..*`) com `Necessidade` para garantir a exigência de itens iniciais. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/2: Criar schemas de `Instituicao` e `Necessidade`. Desenvolver form multi-step e endpoint `POST /instituicoes` com validação de array de necessidades. |
+| **RF-18** | Classe `Doacao` | Entidade associativa que conecta `Doador` e `Necessidade`. Armazena `quantidade`, `status` (ex: "Prometida") e aciona validação pelo método `validarQuantidade()`. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/10: Criar tabela de vínculo `Doacao`. Implementar endpoint `POST /doacoes` contendo lógica de transação para decrementar `quantidadeFaltante` na Necessidade. |
+| **RF-19** | Fluxo `Doador → Front-end → API → Back-end → Banco de Dados` | O doador escolhe uma necessidade, informa o item e a quantidade. O back-end valida a quantidade disponível e registra a doação com o status **"Prometida"** no banco de dados. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/10: Implementar endpoint `POST /doacoes`, validar a quantidade disponível e registrar a doação como **"Prometida"**, atualizando a quantidade da necessidade. |
+| **RF-20** | Fluxo de acompanhamento da `Doação` | O doador acompanha a doação pelo front-end, enquanto o back-end consulta e atualiza o status da doação entre **"Prometida"**, **"A caminho"** e **"Entregue"**. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/11: Implementar endpoint para consulta e atualização do status da doação e criar interface para o doador acompanhar seu progresso. |
+| **RF-21** | Fluxo de atualização da `Doação` e `Necessidade` | O doador pode cancelar uma doação enquanto ela estiver nos status **"Prometida"** ou **"A caminho"**. O back-end atualiza a doação e devolve a quantidade para a necessidade. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/11: Implementar endpoint `DELETE /doacoes/:id` ou equivalente, permitindo o cancelamento nos status permitidos e restaurando a quantidade disponível da necessidade. |
+| **RF-22** | `Painel da Instituição → API → Back-end → Banco de Dados` | A instituição consulta as doações a receber por meio do painel, visualizando **doador, item, quantidade e status** da doação. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/12: Criar endpoint para listar as doações destinadas à instituição e desenvolver a tela de **Doações a receber** no painel da instituição. |
+| **RF-23** | Fluxo `Instituição → API → Back-end → Banco de Dados` | A instituição confirma o recebimento da doação. O back-end atualiza o status e a quantidade recebida da necessidade no banco de dados. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/12: Implementar endpoint para confirmação de recebimento e atualizar os dados da doação e da necessidade após a confirmação. |
+| **RF-24** | `Resumo das necessidades` no `Painel da Instituição` | O painel apresenta, para cada necessidade, a quantidade **desejada, prometida, recebida e o percentual atendido**, utilizando os dados armazenados no banco. | Issue https://github.com/gigi-zacaroni/tp-eng-software/issues/12: Criar endpoint para gerar o resumo das necessidades e desenvolver a visualização com os valores desejados, prometidos, recebidos e percentual atendido. |
 
 ### 5. Correspondência entre modelo e código
 
@@ -156,6 +169,12 @@ O modelo representa as principais entidades do sistema e seus relacionamentos. U
 | **Diagrama de Comportamento** — etapa implícita de acesso (login/cadastro que precede o fluxo de doação) | `src/Cadastro_back.routes.js` | Implementa RF-01 (cadastro de doador), RF-02 (cadastro de instituição), RF-03 (login) e RF-04 (logout). Corresponde à condição de acesso que antecede o passo 1 do fluxograma ("Doador escolhe necessidade"). |
 | **Diagrama de Comportamento** — restrição de acesso a autenticados (RF-05) | `src/autenticação.js` | Middleware `autenticar`/`exigirTipo` que valida o token JWT antes de liberar qualquer rota protegida; ainda não aplicado a rotas de necessidade/doação porque elas não foram subidas. |
 | **Diagrama de Comportamento** — nó "BANCO DE DADOS" | `src/db.js` | Pool de conexão MySQL usado por `auth.routes.js` para persistir usuários, doadores e instituições. |
+
+### 6. Refinamentos identificados
+
+- **Separação das Entidades de Usuário:** A modelagem estrutural evidenciou a necessidade de isolar a tabela `USUARIO` das tabelas de perfil (`DOADOR` e `INSTITUICAO`), evitando atributos nulos recorrentes e simplificando a autenticação via JWT (`RF-03`).
+- **Controle de Transação no Incremento/Decremento de Estoque:** No diagrama comportamental, constatou-se a necessidade de tratar as promessas e cancelamentos de doações (`RF-19, RF-21`) sob transações SQL (ACID). Isso garante que dois doadores não prometam quantidades que excedam o saldo pendente da necessidade de forma concorrente (`RNF-06`).
+- **Isolamento da Etapa de Acesso:** A verificação dos fluxos comportamentais levou à criação de rotas dedicadas de cadastro e login (`src/Cadastro_back.routes.js`) para validar a segurança das rotas (`RF-05`) antes da execução das doações.
 
 ### 7. Histórico de atualização
 
