@@ -53,7 +53,7 @@ Os requisitos identificados estão em [`docs/requisitos/requisitos.md`](docs/req
 | Back-end | Node.js / Express |
 | Banco de dados | MySQL 8 |
 
-> **Mudança na Sprint 3.** Até a Sprint 2, o stack previsto era Next.js/React no front e Java/Spring Boot no back ([decisão 5 da ata de 12/09](docs/reunioes/2026-09-12-refinamento-requisitos.md)). Nenhuma linha havia sido escrita nesse stack. Ao iniciar a implementação, o grupo passou para Node.js/Express + MySQL, para entregar um fluxo verificável dentro do prazo da sprint. Nenhum requisito foi alterado. O registro está no [histórico de refinamento do backlog](docs/backlog-produto.md#7-histórico-de-refinamento).
+> **Mudança na Sprint 3.** Até a Sprint 2, o stack previsto era Next.js/React no front e Java/Spring Boot no back ([decisão 5 da ata de 12/09](docs/reunioes/2026-09-12-refinamento-requisitos.md)). Nenhuma linha havia sido escrita nesse stack. No [planejamento da Sprint 3, em 22/09](docs/reunioes/2026-09-22-planejamento-sprint-03.md), o grupo passou para Node.js/Express + MySQL, para entregar um fluxo verificável dentro do prazo. Nenhum requisito foi alterado. O registro está no [histórico de refinamento do backlog](docs/backlog-produto.md#7-histórico-de-refinamento).
 
 > O [protótipo navegável](docs/prototipo/README.md) entregue na Sprint 2 foi construído em HTML/CSS/JS apenas para validar fluxos e a visão do produto. Ele **não** é a versão final da aplicação.
 

@@ -150,9 +150,9 @@ O acompanhamento é feito no [GitHub Project](https://github.com/users/gigi-zaca
 ### Acompanhamento
 
 - **GitHub Project:** [ConectaAção — Backlog](https://github.com/users/gigi-zacaroni/projects/1) — onde os itens da sprint são acompanhados.
-- **Reuniões/decisões:** [ata de 28/09/2026 — revisão do incremento e fechamento da Sprint 3](../reunioes/2026-09-28-revisao-sprint-03.md), com as sete decisões tomadas na revisão: o tratamento transacional da promessa de doação, o registro explícito das divergências entre modelo e código, o reconhecimento da ausência dos endpoints de consulta como lacuna, a mudança de stack, os dois estados novos do backlog, as Issues retroativas e a adoção de Pull Request a partir da Sprint 4.
+- **Reuniões/decisões:** [ata de 22/09/2026 — planejamento da Sprint 3](../reunioes/2026-09-22-planejamento-sprint-03.md), com as quatro decisões que orientaram a sprint: escolha dos dois modelos e do Mermaid como formato, divisão do trabalho entre os integrantes, **mudança de stack para Node.js/Express** e decisão de implementar o fluxo de doação como incremento, indo além do mínimo exigido pela sprint. Não houve reunião formal de fechamento: as decisões tomadas durante a execução estão registradas onde produziram efeito — as de modelagem na [§6 de `modelagem.md`](../modelagem/modelagem.md#6-refinamentos-identificados) e as da revisão do incremento na seção 7 deste arquivo. Registrar a revisão em ata própria é uma das ações da retrospectiva.
 - **Impedimentos:** nenhum impedimento externo. A dificuldade interna foi a duplicação de esforço no back-end: duas tentativas paralelas de implementação (`src/server.js` em 26/09 e `src/Cadastro_back.js` em 27/09) foram feitas antes da consolidação em `src/back/` no dia 28. Isso consumiu parte da sprint e deixou um arquivo órfão no repositório (`T-09`).
-- **Mudanças de escopo:** **uma, relevante — a troca de stack.** A [decisão 5 da ata de 12/09](../reunioes/2026-09-12-refinamento-requisitos.md) fixou Next.js/React no front e Java/Spring Boot no back, e o `README.md` registrava isso. Ao iniciar a implementação, o grupo optou por **Node.js/Express + MySQL**, com front em HTML/CSS, para conseguir entregar um fluxo verificável dentro do prazo. A decisão foi tomada durante a execução, sem reunião formal, e está registrada agora no backlog e no `README.md`. Nenhum requisito foi alterado, adicionado ou removido.
+- **Mudanças de escopo:** **uma, relevante — a troca de stack.** A [decisão 5 da ata de 12/09](../reunioes/2026-09-12-refinamento-requisitos.md) fixou Next.js/React no front e Java/Spring Boot no back, e o `README.md` registrava isso. No [planejamento de 22/09](../reunioes/2026-09-22-planejamento-sprint-03.md) o grupo revisou essa escolha — nenhuma linha havia sido escrita no stack anterior — e optou por **Node.js/Express + MySQL**, com front em HTML/CSS, para conseguir entregar um fluxo verificável dentro do prazo. Nenhum requisito foi alterado, adicionado ou removido: a decisão troca a tecnologia, não o comportamento especificado. O `README.md` e o [histórico de refinamento do backlog](../backlog-produto.md#7-histórico-de-refinamento) foram atualizados.
 
 ## 6. GitHub, documentação e rastreabilidade — 0,50 ponto
 
@@ -220,13 +220,15 @@ A tabela completa dos 27 requisitos está em [`docs/rastreabilidade.md`](../rast
 - **Precisa melhorar:** três pontos, em ordem de impacto.
   1. **Nenhum Pull Request nesta sprint.** Todo o código entrou direto na `main`, sem revisão — o que contraria [`CONTRIBUTING.md`](../../CONTRIBUTING.md) e é a razão de nenhuma história atingir a Definition of Done.
   2. **Trabalho sem Issue.** As Issues desta sprint só foram criadas no fechamento, então o quadro não refletiu o andamento enquanto a sprint corria.
-  3. **Mensagens de commit genéricas.** Há uma sequência de commits `Update sprint-03.md`, exatamente o padrão que `CONTRIBUTING.md` desaconselha.
+  3. **Mensagens de commit genéricas.** Há uma sequência de commits `Update sprint-03.md`, exatamente o padrão que `CONTRIBUTING.md` desaconselha — consequência de editar o arquivo pelo editor web do GitHub, que sugere esse texto e grava direto na `main`.
+  4. **A revisão do incremento não virou ata.** O planejamento foi registrado, mas o fechamento não: as decisões tomadas ao revisar o código contra os modelos ficaram espalhadas pelos documentos que elas afetaram, em vez de terem um registro próprio com data e participantes.
 
 - **Ações concretas para a Sprint 4:**
   1. Abrir a Issue **antes** de começar cada item e movê-la no Project ao longo da sprint, não no fim.
   2. Trabalhar em branch e abrir PR com revisão de outro integrante — começando por [#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19), que é pequeno e serve de piloto do fluxo.
   3. Priorizar [#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20) (endpoints de consulta), que destrava `US-04`, `US-05` e a verificação do `RF-05`.
-  4. Aplicar princípios de projeto — coesão e baixo acoplamento — separando as rotas das regras de negócio, que é o artefato central da Sprint 4.
+  4. Registrar duas atas por sprint — planejamento e revisão — seguindo o [`modelo-ata.md`](../reunioes/modelo-ata.md).
+  5. Aplicar princípios de projeto — coesão e baixo acoplamento — separando as rotas das regras de negócio, que é o artefato central da Sprint 4.
 
 ## 9. O que não será considerado suficiente
 
