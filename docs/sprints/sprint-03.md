@@ -3,7 +3,7 @@
 - **Data de entrega:** 28/09/2026
 - **Pontuação:** 2,5 pontos
 - **Tag obrigatória:** `sprint-03`
-- **Responsável por conferir este arquivo:** Arthur Veiga (@ArtJamis1208)
+- **Responsável por conferir este arquivo:** Karol Guimarães (@KarolGSMiranda)
 
 ## 1. Pergunta que esta sprint deve responder
 

@@ -32,6 +32,8 @@ As decisões tomadas nessa conversa estão registradas nos documentos que elas a
 | Abrir Issues retroativas para o trabalho da sprint, separando especificação de execução | [#15](https://github.com/gigi-zacaroni/tp-eng-software/issues/15)–[#18](https://github.com/gigi-zacaroni/tp-eng-software/issues/18) |
 | Adotar branch e Pull Request a partir da Sprint 4, usando [#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19) como piloto | [`sprint-03.md` §8](../sprints/sprint-03.md#8-retrospectiva-e-próxima-sprint) |
 
+Houve também uma mudança de responsabilidade em relação ao planejamento: a **conferência do arquivo da sprint**, atribuída a Arthur na decisão 2, passou para **Karol Guimarães (@KarolGSMiranda)**, que assumiu o fechamento da documentação — consolidação do artefato central, atualização da matriz de rastreabilidade e do backlog. Arthur manteve a revisão final dos dois modelos, registrada em [`ca58383`](https://github.com/gigi-zacaroni/tp-eng-software/commit/ca58383).
+
 > O formato assíncrono foi o possível no dia da entrega, mas tem limite: não houve momento em que os quatro examinassem o código junto. A ação correspondente está na retrospectiva da sprint.
 
 ## Impedimentos
