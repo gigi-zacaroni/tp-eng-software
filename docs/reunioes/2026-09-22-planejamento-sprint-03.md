@@ -5,7 +5,9 @@
 - **Sprint:** 3 — Modelagem e rastreabilidade dos requisitos
 - **Objetivo:** definir quais modelos seriam produzidos, dividir o trabalho entre os integrantes e decidir o que entraria como incremento da aplicação.
 
-## Decisões
+> O fechamento da sprint não teve reunião presencial: foi conduzido por mensagem em 28/09, e está registrado [ao final deste documento](#fechamento-da-sprint--28092026-por-mensagem).
+
+## Decisões do planejamento
 
 1. **Produzir dois modelos: um comportamental e um estrutural.** O [mapa das entregas](../sprints/README.md) pede modelos estrutural e comportamental, sem fixar o tipo de diagrama. O grupo decidiu por um **fluxo de doação** como comportamental — por ser o processo que dá nome ao produto e o único que atravessa os dois perfis de usuário — e um **modelo entidade-relacionamento do domínio** como estrutural, por ser onde a regra de integridade mais sensível do sistema (`RNF-06`, o saldo de uma necessidade) precisa ser decidida. Ambos em **Mermaid**, versionados no repositório, em vez de imagem exportada de ferramenta externa: o GitHub renderiza o diagrama e o diff fica legível quando o modelo mudar.
 
@@ -15,9 +17,27 @@
 
 4. **Implementar o back-end como incremento, indo além do mínimo exigido.** A Sprint 3 pede apenas "código coerente com ao menos um modelo". O grupo decidiu implementar o fluxo **cadastro → login → promessa de doação**, que corresponde ao caminho principal do modelo comportamental, para que a correspondência entre modelo e código pudesse ser demonstrada por execução real — chamando cada endpoint e conferindo o efeito no banco — e não apenas por uma tabela de equivalências.
 
+## Fechamento da sprint — 28/09/2026, por mensagem
+
+O grupo não voltou a se reunir presencialmente. A revisão do incremento e o fechamento da sprint foram conduzidos **de forma assíncrona, por troca de mensagens em 28/09/2026**, com a participação dos quatro integrantes: Geovana Oliveira Zacaroni (@gigi-zacaroni), Maria Luiza Pestana (@Malupestana), Karol Guimarães (@KarolGSMiranda) e Arthur Veiga (@ArtJamis1208).
+
+As decisões tomadas nessa conversa estão registradas nos documentos que elas afetaram, e não repetidas aqui:
+
+| Decisão | Onde está registrada |
+|---|---|
+| Tratar a promessa de doação sob transação com `SELECT ... FOR UPDATE`, após identificar o risco de duas promessas simultâneas excederem o saldo (`RNF-06`) | [`sprint-03.md` §7 — Feedback recebido](../sprints/sprint-03.md#7-revisão-do-incremento) |
+| Registrar as divergências entre modelo e código numa tabela explícita, em vez de ajustar o diagrama para casar com o código | [`modelagem.md` §5](../modelagem/modelagem.md#5-correspondência-entre-modelo-e-código) |
+| Reconhecer a ausência de endpoints de consulta como lacuna da sprint, e não como continuação natural do trabalho | [#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20) · [`modelagem.md` §6](../modelagem/modelagem.md#6-refinamentos-identificados) |
+| Não marcar nenhuma história como concluída, criando os estados `Implementada (back-end)` e `Implementada parcialmente` | [`backlog-produto.md` §4](../backlog-produto.md#4-visão-resumida-do-backlog) |
+| Abrir Issues retroativas para o trabalho da sprint, separando especificação de execução | [#15](https://github.com/gigi-zacaroni/tp-eng-software/issues/15)–[#18](https://github.com/gigi-zacaroni/tp-eng-software/issues/18) |
+| Adotar branch e Pull Request a partir da Sprint 4, usando [#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19) como piloto | [`sprint-03.md` §8](../sprints/sprint-03.md#8-retrospectiva-e-próxima-sprint) |
+
+> O formato assíncrono foi o possível no dia da entrega, mas tem limite: não houve momento em que os quatro examinassem o código junto. A ação correspondente está na retrospectiva da sprint.
+
 ## Impedimentos
 
 - Nenhum impedimento externo registrado no planejamento.
+- No fechamento, a dificuldade apontada foi a duplicação de esforço no back-end: houve duas tentativas paralelas de implementação (26/09 e 27/09) antes da consolidação em `src/back/` no dia 28, o que consumiu parte da sprint e deixou um arquivo órfão no repositório ([#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19)).
 
 ## Evidências complementares
 
