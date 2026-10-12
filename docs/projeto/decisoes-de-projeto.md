@@ -54,8 +54,8 @@ Artefato central da Sprint 4. Registre decisões locais de organização do cód
 
 | Aspecto | Antes | Depois | Benefício observado |
 | :--- | :--- | :--- | :--- |
-| **Responsabilidade duplicada (Rotas vs Regras)** | `src/back/src/routes/doacoes.js` [link do estado antigo no github] | Código dividido entre `doacaoController.js` e `doacaoService.js` [links dos arquivos novos] | O express (`req`/`res`) não polui mais a regra de decrementar o estoque, permitindo testar o negócio enviando objetos JavaScript puros. |
-| **Gestão de Banco de Dados** | Múltiplos arquivos DDL conflitantes (`database/` e `src/back/sql/`) [link das issues] | Fonte única mantida em `src/back/sql/schema.sql` [link do arquivo correto] | Coesão documental. Elimina a ambiguidade sobre qual estrutura o sistema e a API realmente esperam, facilitando novos deploys. |
+| **Responsabilidade duplicada (Rotas vs Regras)** | `src/back/src/routes/doacoes.js` [link do estado antigo no github] | Código dividido entre `doacaoController.js` e `doacaoService.js` [https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/src/controllers] [https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/src/services]| O express (`req`/`res`) não polui mais a regra de decrementar o estoque, permitindo testar o negócio enviando objetos JavaScript puros. |
+| **Gestão de Banco de Dados** | Múltiplos arquivos DDL conflitantes (`database/` e `src/back/sql/`) [link das issues] | Fonte única mantida em `src/back/sql/schema.sql` [https://github.com/gigi-zacaroni/tp-eng-software/blob/main/src/back/sql/schema.sql] | Coesão documental. Elimina a ambiguidade sobre qual estrutura o sistema e a API realmente esperam, facilitando novos deploys. |
 
 ---
 
