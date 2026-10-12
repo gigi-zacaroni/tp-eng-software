@@ -2,9 +2,11 @@
 -- Confira com o banco que você já tem no DBeaver antes de rodar em cima dele.
 -- Requer MySQL 8.0.16+ (por causa dos CHECK).
 
-CREATE DATABASE IF NOT EXISTS sistema_doacoes
+use conectaacao_db; 
+
+CREATE DATABASE IF NOT EXISTS conectaacao_db
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE sistema_doacoes;
+USE conectaacao_db;
 
 CREATE TABLE IF NOT EXISTS usuarios (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -47,6 +49,7 @@ CREATE TABLE IF NOT EXISTS doacoes (
   necessidade_id INT UNSIGNED NOT NULL,
   quantidade INT UNSIGNED NOT NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'Prometida',
+  dataPromessa DATETIME DEFAULT CURRENT_TIMESTAMP, -- Adicionado para resolver a divergência do modelo
   CONSTRAINT fk_doacoes_doador FOREIGN KEY (doador_id) REFERENCES doadores (id),
   CONSTRAINT fk_doacoes_necessidade FOREIGN KEY (necessidade_id) REFERENCES necessidades (id)
 );
