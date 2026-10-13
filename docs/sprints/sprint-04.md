@@ -55,7 +55,7 @@ node src/server.js
 | #12 | Implementação de Segurança e Autenticação JWT | @malupestana | Geração de token e middleware funcionando | Concluída |
 | #13 | Isolamento da Regra de Negócio de Doações | @malupestana | Trava de concorrência e chave estrangeira validadas | Concluída |
 | #14 | Configuração de Variáveis de Ambiente (.env) | @malupestana | Credenciais protegidas via `dotenv` | Concluída |
-| #19 | T-09 — Remover a API legada src/server.js e consolidar o schema | @KarolGSMiranda | Arquivo legado removido, DDL único consolidado e credencial inativa confirmada | Concluída |
+| #19 | T-09 — Remover a API legada src/server.js e consolidar o schema | @malupestana | Arquivo legado removido, DDL único consolidado e credencial inativa confirmada | Concluída |
 
 ### Acompanhamento
 
@@ -105,5 +105,5 @@ node src/server.js
 ## 10. Links enviados no UFLA Virtual
 
 - **Tag `sprint-04`:** [https://github.com/gigi-zacaroni/tp-eng-software/releases/tag/sprint-04]
-- **Este arquivo na tag:** [https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/docs/sprints/sprint-04.md]
+- **Este arquivo na tag:** [https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/sprints/sprint-04.md]
 - **Observação adicional:** Refatoração arquitetural (Routes/Controllers/Services) concluída com sucesso. Dívidas técnicas do banco de dados e arquivos legados foram devidamente tratadas, e o fluxo validado localmente via Postman.
