@@ -94,7 +94,7 @@ classDiagram
         +logout(req, res)
     }
 
-    class DoacoesController {
+    class DoacaoController {
         +criarDoacao(req, res)
     }
 
@@ -105,8 +105,8 @@ classDiagram
         +autenticarLogin(email, senha)
     }
 
-    class DoacoesService {
-        +registrarDoacao(necessidade_id, quantidade, usuario_id)
+    class DoacaoService {
+        +registrarDoacao(doadorId, necessidadeId, quantidade)
     }
 
     %% 3. Entidades do Banco de Dados 
@@ -150,14 +150,14 @@ classDiagram
 
     %% 4. Relacionamentos Arquiteturais (Baixo Acoplamento)
     AuthController --> AuthService : delega requisição
-    DoacoesController --> DoacoesService : delega requisição
+    DoacaoController --> DoacaoService : delega requisição
 
     AuthService ..> USUARIO : insere/consulta
     AuthService ..> DOADOR : insere
     AuthService ..> INSTITUICAO : insere
     
-    DoacoesService ..> DOACAO : insere
-    DoacoesService ..> NECESSIDADE : atualiza saldo
+    DoacaoService ..> DOACAO : insere
+    DoacaoService ..> NECESSIDADE : atualiza saldo
 ```
 
 **Descrição e decisões representadas**
@@ -192,7 +192,7 @@ O diagrama acima evoluiu de um simples modelo Entidade-Relacionamento (ER) para 
 | `RF-01` | Entidades `USUARIO` e `DOADOR` | `DOADOR` guarda `nome` e referencia `USUARIO` por `usuario_id`; `email` e `senha` ficam só em `USUARIO`. | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) · Implementado: `POST /cadastro/doador` refatorado para delegar a criação ao `AuthController` e `AuthService`. |
 | `RF-02` | `USUARIO`, `INSTITUICAO` e `NECESSIDADE` | A relação de um para muitos obrigatória entre instituição e necessidade exige ao menos uma necessidade inicial; `verificada` nasce `false`. | [#5](https://github.com/gigi-zacaroni/tp-eng-software/issues/5) · Implementado parcialmente: `POST /cadastro/instituicao` grava `nome` e `descricao`. Causa, cidade e contato ficaram fora do schema — registrado como pendência. |
 | `RF-18` | `NECESSIDADE.quantidadeTotal` e `quantidadeFaltante` | O progresso de uma necessidade é a diferença entre os dois campos. | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) · Os campos existem e são mantidos corretamente, mas não há endpoint que os exponha. |
-| `RF-19` | Fluxo comportamental, arestas 1 a 9 | O back-end valida o saldo antes de registrar a doação como `Prometida` e decrementar `quantidadeFaltante`. | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) · Implementado: `POST /doacoes` refatorado para `DoacoesService`, mantendo a transação com `SELECT ... FOR UPDATE`. |
+| `RF-19` | Fluxo comportamental, arestas 1 a 9 | O back-end valida o saldo antes de registrar a doação como `Prometida` e decrementar `quantidadeFaltante`. | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) · Implementado: `POST /doacoes` refatorado para `DoacaoService`, mantendo a transação com `SELECT ... FOR UPDATE`. |
 | `RF-20` | `DOACAO.status` e aresta 15 | Ciclo `Prometida` → `A caminho` → `Entregue`. | [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) · Não implementado: o campo existe e nasce `Prometida`, mas não há rota de transição. |
 | `RF-21` | Aresta 15 + `NECESSIDADE.quantidadeFaltante` | Cancelar devolve a quantidade ao saldo pendente. | [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) · Não implementado. Depende da mesma rota de transição de status. |
 | `RF-22` | Arestas 10 a 14 (painel da instituição) | Consulta das doações destinadas à instituição, com doador, item, quantidade e status. | [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) · Não implementado: depende dos endpoints de consulta. |
@@ -206,8 +206,8 @@ Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a p
 | Elemento modelado | Arquivo correspondente | Observação |
 |---|---|---|
 | Modelo estrutural de banco (5 entidades) | [`src/back/sql/schema.sql`](../../src/back/sql/schema.sql) | DDL com as tabelas, FKs, `UNIQUE` e validação `CHECK (quantidadeFaltante <= quantidadeTotal)`. |
-| Camada `Controllers` (Recebimento) | [`src/back/src/controllers/authController.js`](../../src/back/src/controllers/authController.js) · [`doacoesController.js`](../../src/back/src/controllers/doacoesController.js) | Responsáveis exclusivos por extrair o payload (`req.body`) e devolver status HTTP (`res.status`). |
-| Camada `Services` (Regras de Negócio) | [`src/back/src/services/authService.js`](../../src/back/src/services/authService.js) · [`doacoesService.js`](../../src/back/src/services/doacoesService.js) | Contêm o processamento da validação de regras, criptografia de senha e a persistência efetiva no BD. |
+| Camada `Controllers` (Recebimento) | [`src/back/src/controllers/authController.js`](../../src/back/src/controllers/authController.js) · [`doacaoController.js`](../../src/back/src/controllers/doacaoController.js) | Responsáveis exclusivos por extrair o payload (`req.body`) e devolver status HTTP (`res.status`). |
+| Camada `Services` (Regras de Negócio) | [`src/back/src/services/authService.js`](../../src/back/src/services/authService.js) · [`doacaoService.js`](../../src/back/src/services/doacaoService.js) | Contêm o processamento da validação de regras, criptografia de senha e a persistência efetiva no BD. |
 | Roteamento (Endpoints) | [`src/back/src/routes/auth.js`](../../src/back/src/routes/auth.js) · [`doacoes.js`](../../src/back/src/routes/doacoes.js) | Apenas mapeiam a URL (ex: `/cadastro/doador`) para o respectivo Controller. |
 | Validações de Acesso | [`src/back/src/middleware/autenticacao.js`](../../src/back/src/middleware/autenticacao.js) | `autenticar` valida o JWT; `exigirTipo` separa doador de instituição. |
 | Nó "BANCO DE DADOS" do fluxo | [`src/back/src/config/db.js`](../../src/back/src/config/db.js) | Pool MySQL e o helper `comTransacao`, que concentra `begin`/`commit`/`rollback`. |
@@ -215,21 +215,21 @@ Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a p
 
 ### Divergências conhecidas entre modelo e código
 
-| Divergência | Onde |
-|---|---|
-| `DOACAO.dataPromessa` existe no modelo estrutural, mas **não** na tabela `doacoes` do schema em uso. Sem ela não há como ordenar ou auditar promessas. | [`src/back/sql/schema.sql`](../../src/back/sql/schema.sql) |
-| `INSTITUICAO` foi modelada com `nome` e `descricao` apenas; o `RF-02` e o protótipo preveem também causa, cidade e contato. | [`auth.js`](../../src/back/src/routes/auth.js) |
-| Existem **dois** arquivos de schema divergentes: `database/schema.sql` (anterior, com `ON DELETE CASCADE` e `dataPromessa`) e `src/back/sql/schema.sql` (em uso). Não há fonte única. | `database/` e `src/back/sql/` |
-| As arestas 10 a 16 do fluxo não têm nenhum código correspondente — não existe endpoint de consulta na API. | — |
+| Divergência | Onde | Situação na Sprint 4 |
+|---|---|---|
+| `DOACAO.dataPromessa` existia no modelo estrutural, mas não na tabela `doacoes` do schema em uso. | [`src/back/sql/schema.sql`](../../src/back/sql/schema.sql) | Resolvida. A coluna entrou no schema em [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0). |
+| `INSTITUICAO` foi modelada com `nome` e `descricao` apenas; o `RF-02` e o protótipo preveem também causa, cidade e contato. | [`authService.js`](../../src/back/src/services/authService.js) | Aberta. Fica junto com os endpoints de consulta ([#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20)). |
+| Existiam dois arquivos de schema divergentes: `database/schema.sql` e `src/back/sql/schema.sql`. | `database/` e `src/back/sql/` | Resolvida. `database/schema.sql` foi removido e `src/back/sql/schema.sql` virou a fonte única ([#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19)). |
+| As arestas 10 a 16 do fluxo não têm código correspondente. Não existe endpoint de consulta na API. | | Aberta ([#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20)). |
 
 ## 6. Refinamentos identificados
 
 - **Separação de Camadas (Sprint 4).** O código original concentrava a manipulação do banco de dados e a resposta HTTP no mesmo arquivo de rota. Isso foi refatorado criando os módulos de `Controllers` e `Services`, aplicando princípios de responsabilidade única, alta coesão e baixo acoplamento para facilitar a manutenção.
 - **Separação das entidades de usuário.** A modelagem estrutural evidenciou a necessidade de isolar `USUARIO` das tabelas de perfil, evitando atributos nulos recorrentes e simplificando o login: o token JWT, agora gerado pelo `AuthService`, passou a carregar `id`, `tipo` e `perfilId` (`RF-03`).
-- **Controle transacional no saldo da necessidade.** O diagrama comportamental deixou claro que os passos 4→6 precisam ser atômicos: dois doadores simultâneos poderiam prometer quantidades que, somadas, excedem o saldo. O controle via `SELECT ... FOR UPDATE` e o `CHECK` no banco foram mantidos e isolados no `DoacoesService` (`RF-19`, `RF-21`, `RNF-06`).
+- **Controle transacional no saldo da necessidade.** O diagrama comportamental deixou claro que os passos 4→6 precisam ser atômicos: dois doadores simultâneos poderiam prometer quantidades que, somadas, excedem o saldo. O controle via `SELECT ... FOR UPDATE` e o `CHECK` no banco foram mantidos e isolados no `DoacaoService` (`RF-19`, `RF-21`, `RNF-06`).
 - **Isolamento da etapa de acesso.** A verificação dos fluxos levou a rotas dedicadas de cadastro e login, gerando JWT e abstraindo a sessão, verificáveis antes de qualquer doação (`RF-05`).
 - **Lacuna descoberta na revisão: o modelo tem leitura, a API não.** As arestas 10 a 14 e os requisitos `RF-06`–`RF-10` descrevem consultas que nenhum endpoint atende. O produto resolve o problema de "descobrir quem ajudar", e essa metade do fluxo não saiu do diagrama. Virou item prioritário do backlog (`T-10`).
-- **Lacuna descoberta na revisão: duplicidade de schema.** A existência de dois arquivos DDL divergentes torna ambíguo o que o modelo estrutural representa. Virou item de dívida técnica (`T-09`).
+- **Lacuna descoberta na revisão: duplicidade de schema.** A existência de dois arquivos DDL divergentes torna ambíguo o que o modelo estrutural representa. Virou item de dívida técnica (`T-09`), resolvido na Sprint 4.
 
 ## 7. Histórico de atualização
 
@@ -239,4 +239,5 @@ Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a p
 | Sprint 3 | Modelo comportamental — etapa de acesso | Implementação isolada de `RF-01` a `RF-04` para validar cadastro e login antes de integrar o fluxo de doação. | [`f8a059c`](https://github.com/gigi-zacaroni/tp-eng-software/commit/f8a059ce6edf8a187866540f09f167f8134ebca2) · [`2e888a1`](https://github.com/gigi-zacaroni/tp-eng-software/commit/2e888a12a801469910edb78800ee6c6f49f32392) · [`a8c2ff2`](https://github.com/gigi-zacaroni/tp-eng-software/commit/a8c2ff26f4425aa24d986e1c4e7efe630b5d5ff7) · [`0a85290`](https://github.com/gigi-zacaroni/tp-eng-software/commit/0a852902cb4954238172f966bcd244479d22fbf6) |
 | Sprint 3 | Ambos — reorganização do back-end | O fluxo completo de doação foi implementado e o código reorganizado em `config/`, `middleware/`, `routes/` e `utils/`, substituindo a primeira versão monolítica. | [`d72574c`](https://github.com/gigi-zacaroni/tp-eng-software/commit/d72574c4cf49a529badbd6d8858ceec19492998f) |
 | Sprint 3 | §5 e §6 — correspondência e refinamentos | Revisão final: os caminhos de arquivo citados não existiam mais após a reorganização, e as divergências modelo × código foram registradas explicitamente. | [`ca58383`](https://github.com/gigi-zacaroni/tp-eng-software/commit/ca58383) |
-| Sprint 4 | Estrutural (Diagrama de Classes) e §4, §5, §6 | Atualização arquitetural para o padrão Routes/Controllers/Services, refletindo a aplicação dos princípios de responsabilidade única e separação de interesses. | Commits atrelados à tag `sprint-04` no repositório. |
+| Sprint 4 | Estrutural (Diagrama de Classes) e §4, §5, §6 | Atualização arquitetural para o padrão Routes/Controllers/Services, refletindo a aplicação dos princípios de responsabilidade única e separação de interesses. | [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0) · [`280e744`](https://github.com/gigi-zacaroni/tp-eng-software/commit/280e74448e844ec5549bf79638d6a03e3aa0ae62) |
+| Sprint 4 | §3 e §5, nomes e links | Os nomes das classes e os links da §5 não batiam com os arquivos reais (`doacaoController.js`, `doacaoService.js`). As divergências resolvidas na sprint foram marcadas. | [`sprint-04.md`](../sprints/sprint-04.md) |
