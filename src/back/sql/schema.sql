@@ -2,8 +2,6 @@
 -- Confira com o banco que você já tem no DBeaver antes de rodar em cima dele.
 -- Requer MySQL 8.0.16+ (por causa dos CHECK).
 
-use conectaacao_db; 
-
 CREATE DATABASE IF NOT EXISTS conectaacao_db
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE conectaacao_db;
