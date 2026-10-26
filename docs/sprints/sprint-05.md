@@ -31,8 +31,8 @@
 |---|---|---|
 | `docs/padroes/padroes-de-projeto.md` | [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/padroes/padroes-de-projeto.md) | Documento central do padrão: problema, alternativas, estrutura, evidência, comparação e limitações. |
 | `docs/projeto/decisoes-de-projeto.md` | [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/padroes/padroes-de-projeto.md) | Nova `DP-04`; análise de acoplamento e melhorias atualizadas. |
-| `docs/modelagem/modelagem.md` | [modelagem](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/modelagem/modelagem.md) | Diagrama de classes com a camada `Repositories`; §5, §6 e §7 atualizadas. |
-| `docs/backlog-produto.md` e `docs/rastreabilidade.md` | `[link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/backlog-produto.md) | `T-17` e `T-18`; links dos requisitos para `DP-04`, `PP-01` e os repositories. |
+| `docs/modelagem/modelagem.md` | [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/modelagem/modelagem.md) | Diagrama de classes com a camada `Repositories`; §5, §6 e §7 atualizadas. |
+| `docs/backlog-produto.md` e `docs/rastreabilidade.md` | [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/backlog-produto.md) | `T-17` e `T-18`; links dos requisitos para `DP-04`, `PP-01` e os repositories. |
 
 ## 4. Incremento da aplicação web — 0,75 ponto
 
