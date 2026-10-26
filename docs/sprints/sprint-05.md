@@ -115,5 +115,5 @@ Verificação manual (pendente): com o MySQL no ar e o `.env` preenchido, rodar 
 ## 10. Links enviados no UFLA Virtual
 
 - **Tag `sprint-05`:** [link](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05)
-- **Este arquivo na tag:** `[link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/sprints/sprint-05.md)
+- **Este arquivo na tag:** [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/sprints/sprint-05.md)
 - **Observação adicional:** `[quando necessária]`
