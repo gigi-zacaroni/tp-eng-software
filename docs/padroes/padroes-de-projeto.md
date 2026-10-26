@@ -45,7 +45,7 @@ A regra de negócio ("não prometer mais do que falta") está misturada com o fo
 - **Participantes do padrão no código:** ver §5.
 - **Requisitos relacionados:** `RF-01`, `RF-02`, `RF-03`, `RF-14`, `RF-18`, `RF-19`, `RNF-06`.
 - **Decisão registrada em:** [`DP-04`](../projeto/decisoes-de-projeto.md#dp-04--camada-de-repositories-padrão-repository).
-- **Issue/PR:** `[PREENCHER — Issue T-17 (implementação) e T-18 (validação)]`.
+- **Issue/PR:** [`T-17`](https://github.com/gigi-zacaroni/tp-eng-software/issues/25) e [`T-18`](https://github.com/gigi-zacaroni/tp-eng-software/issues/26).
 
 **Como o padrão foi aplicado, sem mudar as responsabilidades já decididas:**
 
