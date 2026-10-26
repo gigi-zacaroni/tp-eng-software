@@ -29,10 +29,10 @@
 
 | Artefato criado/atualizado | Link na tag da sprint | O que mudou |
 |---|---|---|
-| `docs/padroes/padroes-de-projeto.md` | `[link]` | Documento central do padrão: problema, alternativas, estrutura, evidência, comparação e limitações. |
-| `docs/projeto/decisoes-de-projeto.md` | `[link]` | Nova `DP-04`; análise de acoplamento e melhorias atualizadas. |
-| `docs/modelagem/modelagem.md` | `[link]` | Diagrama de classes com a camada `Repositories`; §5, §6 e §7 atualizadas. |
-| `docs/backlog-produto.md` e `docs/rastreabilidade.md` | `[link]` | `T-17` e `T-18`; links dos requisitos para `DP-04`, `PP-01` e os repositories. |
+| `docs/padroes/padroes-de-projeto.md` | [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/padroes/padroes-de-projeto.md) | Documento central do padrão: problema, alternativas, estrutura, evidência, comparação e limitações. |
+| `docs/projeto/decisoes-de-projeto.md` | [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/padroes/padroes-de-projeto.md) | Nova `DP-04`; análise de acoplamento e melhorias atualizadas. |
+| `docs/modelagem/modelagem.md` | [modelagem](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/modelagem/modelagem.md) | Diagrama de classes com a camada `Repositories`; §5, §6 e §7 atualizadas. |
+| `docs/backlog-produto.md` e `docs/rastreabilidade.md` | `[link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/backlog-produto.md) | `T-17` e `T-18`; links dos requisitos para `DP-04`, `PP-01` e os repositories. |
 
 ## 4. Incremento da aplicação web — 0,75 ponto
 
@@ -114,6 +114,6 @@ Verificação manual (pendente): com o MySQL no ar e o `.env` preenchido, rodar 
 
 ## 10. Links enviados no UFLA Virtual
 
-- **Tag `sprint-05`:** `[COLAR LINK]`
-- **Este arquivo na tag:** `[COLAR LINK]`
+- **Tag `sprint-05`:** [link](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05)
+- **Este arquivo na tag:** `[link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/sprints/sprint-05.md)
 - **Observação adicional:** `[quando necessária]`
