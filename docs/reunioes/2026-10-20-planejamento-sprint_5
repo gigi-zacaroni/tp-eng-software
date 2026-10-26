@@ -5,7 +5,7 @@
 ---
 
 ## 1. Data e Participantes
-* **Data:** 26/10/2026
+* **Data:** 19/10/2026
 * **Participantes:**
   * Geovana Zacaroni
   * Maria Luiza Pestana
@@ -29,10 +29,10 @@ Planejar e alinhar as atividades da **Sprint 05**, com foco na validação de au
 
 | Tarefa | Responsável | Prazo |
 |---|---|---|
-| Elaborar e documentar os casos de teste para validação de JWT | Geovana Zacaroni | 29/10/2026 |
-| Validar regras do fluxo de check-in e cálculo do sistema de pontos | Maria Luiza Pestana | 01/11/2026 |
-| Estruturar os arquivos de documentação da suíte de testes em Markdown no repositório | Geovana Zacaroni | 03/11/2026 |
-| Organizar e atualizar as *issues* no Kanban do GitHub Projects | Geovana Zacaroni / Maria Luiza Pestana | 05/11/2026 |
+| Elaborar e documentar os casos de teste para validação de JWT | Geovana Zacaroni | 23/10/2026 |
+| Validar regras do fluxo de check-in e cálculo do sistema de pontos | Maria Luiza Pestana | 23/10/2026 |
+| Estruturar os arquivos de documentação da suíte de testes em Markdown no repositório | Geovana Zacaroni | 23/10/2026 |
+| Organizar e atualizar as *issues* no Kanban do GitHub Projects | Geovana Zacaroni / Maria Luiza Pestana | 23/10/2026 |
 
 ---
 
@@ -42,3 +42,4 @@ Planejar e alinhar as atividades da **Sprint 05**, com foco na validação de au
 ---
 
 ## 6. Evidências 
+[print-reuniao-meet](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/evidencias/reuniao-2026-10.png)
