@@ -71,7 +71,7 @@ Verificação manual (pendente): com o MySQL no ar e o `.env` preenchido, rodar 
 ### Acompanhamento
 
 - **GitHub Project:** [Quadro Kanban](https://github.com/users/gigi-zacaroni/projects/1)
-- **Reuniões/decisões:** [ata_reuniao](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/reunioes/2026-10-20-planejamento-sprint_5)
+- **Reuniões/decisões:** [ata_reuniao](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/reunioes/2026-10-20-planejamento-sprint_5.md)
 - **Impedimentos:**  Divergência de agendas 
 - **Mudanças de escopo:** `T-15` e `T-16`, previstos para a Sprint 5 na análise da Sprint 4, ficaram fora para concentrar a sprint em um padrão bem aplicado e testado. `T-18` foi criado para a validação.
 
@@ -114,6 +114,6 @@ Verificação manual (pendente): com o MySQL no ar e o `.env` preenchido, rodar 
 
 ## 10. Links enviados no UFLA Virtual
 
-- **Tag `sprint-05`:** [link](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05.md)
+- **Tag `sprint-05`:** [link](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05)
 - **Este arquivo na tag:** [link](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/sprints/sprint-05.md)
 - **Observação adicional:** `[quando necessária]`
