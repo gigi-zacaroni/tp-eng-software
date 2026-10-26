@@ -54,9 +54,9 @@ Verificação manual (pendente): com o MySQL no ar e o `.env` preenchido, rodar 
 
 | Requisito/Issue | Código ou protótipo | Evidência de execução |
 |---|---|---|
-| `RF-01`–`RF-03` · `T-17` | `[link para authService.js e repositories]` | `npm test`, `caracterizacao.test.js` |
-| `RF-19`, `RNF-06` · `T-17` | `[link para doacaoService.js e repositories]` | `npm test`, `caracterizacao.test.js` e `services.test.js` |
-| `T-18` | `[link para src/back/tests/]` | Saída do `npm test` e roteiro manual `[a registrar]` |
+| `RF-01`–`RF-03` · `T-17` | [authService.js](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/src/back/src/services/authService.js) e [repositories](https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/src/repositories) | `npm test`, `caracterizacao.test.js` |
+| `RF-19`, `RNF-06` · `T-17` | [doacaoService.js](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/src/back/src/services/doacaoService.js) e  [repositories](https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/src/repositories) | `npm test`, `caracterizacao.test.js` e `services.test.js` |
+| `T-18` | [tests](https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/tests) | Saída do `npm test` e roteiro manual `[a registrar]` |
 
 ## 5. Scrum e gestão do trabalho — 0,50 ponto
 
@@ -90,7 +90,7 @@ Verificação manual (pendente): com o MySQL no ar e o `.env` preenchido, rodar 
 
 | Requisito | Issue | Artefato/modelo/decisão | Código | Teste/evidência |
 |---|---|---|---|---|
-| `RF-01`–`RF-03`, `RF-14`, `RF-18`, `RF-19` | `T-17`, `T-18` | [`DP-04`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/projeto/decisoes-de-projeto.md) · [`PP-01`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/padroes/padroes-de-projeto.md) | [`repositories/`](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05/src/back/src/repositories) | [`tests/`](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05/src/back/tests) (automatizados; casos `CT-XX` formais só na Sprint 7) |
+| `RF-01`–`RF-03`, `RF-14`, `RF-18`, `RF-19` | `T-17`, `T-18` | [`DP-04`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/projeto/decisoes-de-projeto.md) · [`PP-01`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/docs/padroes/padroes-de-projeto.md) | [`repositories/`](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05/src/back/src/repositories) | [`tests/`](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-05/src/back/tests) (automatizados e manuais : [login](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/evidencias/login.jpeg) , [doacoes](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/evidencias/doa%C3%A7%C3%B5es.jpeg) , [cadastro](https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/evidencias/cadastro_instituicoes.jpeg) |
 
 ## 7. Revisão do incremento
 
