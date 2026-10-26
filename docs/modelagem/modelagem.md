@@ -109,6 +109,32 @@ classDiagram
         +registrarDoacao(doadorId, necessidadeId, quantidade)
     }
 
+    %% 2b. Camada de Repositories (Sprint 5, padrão Repository: único lugar com SQL)
+    class UsuarioRepository {
+        +buscarPorEmail(conexao, email)
+        +criar(conexao, email, senhaHash)
+    }
+
+    class DoadorRepository {
+        +criar(conexao, usuarioId, nome)
+        +buscarPorUsuarioId(conexao, usuarioId)
+    }
+
+    class InstituicaoRepository {
+        +criar(conexao, dados)
+        +buscarPorUsuarioId(conexao, usuarioId)
+    }
+
+    class NecessidadeRepository {
+        +criar(conexao, dados)
+        +buscarSaldoComTrava(conexao, necessidadeId)
+        +reduzirSaldo(conexao, necessidadeId, quantidade)
+    }
+
+    class DoacaoRepository {
+        +criarPrometida(conexao, dados)
+    }
+
     %% 3. Entidades do Banco de Dados 
     class USUARIO {
         +int id
@@ -152,17 +178,23 @@ classDiagram
     AuthController --> AuthService : delega requisição
     DoacaoController --> DoacaoService : delega requisição
 
-    AuthService ..> USUARIO : insere/consulta
-    AuthService ..> DOADOR : insere
-    AuthService ..> INSTITUICAO : insere
-    
-    DoacaoService ..> DOACAO : insere
-    DoacaoService ..> NECESSIDADE : atualiza saldo
+    AuthService --> UsuarioRepository : usa
+    AuthService --> DoadorRepository : usa
+    AuthService --> InstituicaoRepository : usa
+    AuthService --> NecessidadeRepository : usa
+    DoacaoService --> NecessidadeRepository : usa
+    DoacaoService --> DoacaoRepository : usa
+
+    UsuarioRepository ..> USUARIO : insere/consulta
+    DoadorRepository ..> DOADOR : insere/consulta
+    InstituicaoRepository ..> INSTITUICAO : insere/consulta
+    NecessidadeRepository ..> NECESSIDADE : insere, trava e atualiza saldo
+    DoacaoRepository ..> DOACAO : insere
 ```
 
 **Descrição e decisões representadas**
 
-O diagrama acima evoluiu de um simples modelo Entidade-Relacionamento (ER) para um diagrama de classes completo na Sprint 4, a fim de representar as decisões internas de arquitetura.
+O diagrama acima evoluiu de um simples modelo Entidade-Relacionamento (ER) para um diagrama de classes completo na Sprint 4, a fim de representar as decisões internas de arquitetura. Na Sprint 5 foi acrescentada a camada de `Repositories` ([`DP-04`](../projeto/decisoes-de-projeto.md#dp-04--camada-de-repositories-padrão-repository) e [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md)): os services deixaram de se ligar diretamente às entidades e passaram a usar os repositories, que concentram o SQL.
 
 `DOACAO` é a entidade associativa entre `DOADOR` e `NECESSIDADE`, registrando a quantidade comprometida, o estado do ciclo (`status`) e o carimbo de data/hora da promessa (`dataPromessa`).
 
@@ -207,7 +239,8 @@ Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a p
 |---|---|---|
 | Modelo estrutural de banco (5 entidades) | [`src/back/sql/schema.sql`](../../src/back/sql/schema.sql) | DDL com as tabelas, FKs, `UNIQUE` e validação `CHECK (quantidadeFaltante <= quantidadeTotal)`. |
 | Camada `Controllers` (Recebimento) | [`src/back/src/controllers/authController.js`](../../src/back/src/controllers/authController.js) · [`doacaoController.js`](../../src/back/src/controllers/doacaoController.js) | Responsáveis exclusivos por extrair o payload (`req.body`) e devolver status HTTP (`res.status`). |
-| Camada `Services` (Regras de Negócio) | [`src/back/src/services/authService.js`](../../src/back/src/services/authService.js) · [`doacaoService.js`](../../src/back/src/services/doacaoService.js) | Contêm o processamento da validação de regras, criptografia de senha e a persistência efetiva no BD. |
+| Camada `Services` (Regras de Negócio) | [`src/back/src/services/authService.js`](../../src/back/src/services/authService.js) · [`doacaoService.js`](../../src/back/src/services/doacaoService.js) | Contêm a validação de regras, a criptografia de senha, a geração do JWT e o controle da transação. Desde a Sprint 5 não escrevem SQL: persistem pelos repositories. |
+| Camada `Repositories` (acesso a dados, Sprint 5) | [`src/back/src/repositories/`](../../src/back/src/repositories/): [`usuarioRepository.js`](../../src/back/src/repositories/usuarioRepository.js) · [`doadorRepository.js`](../../src/back/src/repositories/doadorRepository.js) · [`instituicaoRepository.js`](../../src/back/src/repositories/instituicaoRepository.js) · [`necessidadeRepository.js`](../../src/back/src/repositories/necessidadeRepository.js) · [`doacaoRepository.js`](../../src/back/src/repositories/doacaoRepository.js) | Único lugar com SQL. Cada módulo corresponde a uma entidade do modelo estrutural. Recebem a conexão por parâmetro e não controlam transação. |
 | Roteamento (Endpoints) | [`src/back/src/routes/auth.js`](../../src/back/src/routes/auth.js) · [`doacoes.js`](../../src/back/src/routes/doacoes.js) | Apenas mapeiam a URL (ex: `/cadastro/doador`) para o respectivo Controller. |
 | Validações de Acesso | [`src/back/src/middleware/autenticacao.js`](../../src/back/src/middleware/autenticacao.js) | `autenticar` valida o JWT; `exigirTipo` separa doador de instituição. |
 | Nó "BANCO DE DADOS" do fluxo | [`src/back/src/config/db.js`](../../src/back/src/config/db.js) | Pool MySQL e o helper `comTransacao`, que concentra `begin`/`commit`/`rollback`. |
@@ -225,6 +258,7 @@ Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a p
 ## 6. Refinamentos identificados
 
 - **Separação de Camadas (Sprint 4).** O código original concentrava a manipulação do banco de dados e a resposta HTTP no mesmo arquivo de rota. Isso foi refatorado criando os módulos de `Controllers` e `Services`, aplicando princípios de responsabilidade única, alta coesão e baixo acoplamento para facilitar a manutenção.
+- **Camada de acesso a dados (Sprint 5).** O modelo estrutural ligava os services diretamente às entidades, o que no código significava SQL dentro da regra de negócio. A camada `Repositories` (padrão Repository, `DP-04`) passou a mediar essa ligação. O fluxo de doação (§2) não mudou: os passos 4→6 continuam atômicos e agora aparecem no `DoacaoService` como chamadas a `NecessidadeRepository` e `DoacaoRepository`.
 - **Separação das entidades de usuário.** A modelagem estrutural evidenciou a necessidade de isolar `USUARIO` das tabelas de perfil, evitando atributos nulos recorrentes e simplificando o login: o token JWT, agora gerado pelo `AuthService`, passou a carregar `id`, `tipo` e `perfilId` (`RF-03`).
 - **Controle transacional no saldo da necessidade.** O diagrama comportamental deixou claro que os passos 4→6 precisam ser atômicos: dois doadores simultâneos poderiam prometer quantidades que, somadas, excedem o saldo. O controle via `SELECT ... FOR UPDATE` e o `CHECK` no banco foram mantidos e isolados no `DoacaoService` (`RF-19`, `RF-21`, `RNF-06`).
 - **Isolamento da etapa de acesso.** A verificação dos fluxos levou a rotas dedicadas de cadastro e login, gerando JWT e abstraindo a sessão, verificáveis antes de qualquer doação (`RF-05`).
@@ -241,3 +275,4 @@ Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a p
 | Sprint 3 | §5 e §6 — correspondência e refinamentos | Revisão final: os caminhos de arquivo citados não existiam mais após a reorganização, e as divergências modelo × código foram registradas explicitamente. | [`ca58383`](https://github.com/gigi-zacaroni/tp-eng-software/commit/ca58383) |
 | Sprint 4 | Estrutural (Diagrama de Classes) e §4, §5, §6 | Atualização arquitetural para o padrão Routes/Controllers/Services, refletindo a aplicação dos princípios de responsabilidade única e separação de interesses. | [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0) · [`280e744`](https://github.com/gigi-zacaroni/tp-eng-software/commit/280e74448e844ec5549bf79638d6a03e3aa0ae62) |
 | Sprint 4 | §3 e §5, nomes e links | Os nomes das classes e os links da §5 não batiam com os arquivos reais (`doacaoController.js`, `doacaoService.js`). As divergências resolvidas na sprint foram marcadas. | [`sprint-04.md`](../sprints/sprint-04.md) |
+| Sprint 5 | Estrutural (Diagrama de Classes) e §3, §5, §6 | Inclusão da camada `Repositories` e dos relacionamentos `Service → Repository → Entidade`, refletindo a aplicação do padrão Repository. O modelo comportamental não mudou. | [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md) · [commit](https://github.com/johnatan-si/tp-eng-software/commit/fa515a9f36ab5306bf0011052301527ba26fae87) |

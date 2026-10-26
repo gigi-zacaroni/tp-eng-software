@@ -8,7 +8,8 @@ Artefato central da Sprint 4. Registre decisões locais de organização do cód
 | :--- | :--- | :--- | :--- |
 | **`routes/` (Rotas HTTP)** | Receber as requisições HTTP (Express), mapear os endpoints e delegar para os Controllers. | `controllers/`, `middleware/` | Todos funcionais |
 | **`controllers/` (Controladores)** | Extrair parâmetros (req.body, req.params), invocar regras de negócio e formatar a resposta HTTP (status, JSON). | `services/`, `utils/` | Todos funcionais |
-| **`services/` (Serviços / Regras de Negócio)** | Executar as validações de domínio, cálculos e interagir com o banco de dados via transações. Não recebe `req` nem `res`. | `config/db.js`, `utils/` | RF-01, RF-02, RF-19 |
+| **`services/` (Serviços / Regras de Negócio)** | Executar as validações de domínio e cálculos e controlar a transação. Não recebe `req` nem `res` e, desde a Sprint 5, não escreve SQL. | `repositories/`, `config/db.js` (`comTransacao`), `utils/` | RF-01, RF-02, RF-19 |
+| **`repositories/` (Acesso a dados)** | Concentrar o SQL de cada tabela e devolver valores simples (`null`, número, objeto) aos services. Não decide regra de negócio e não abre transação. | `config/db.js` apenas como executor de SQL recebido por parâmetro | RF-01, RF-02, RF-03, RF-14, RF-18, RF-19 |
 | **`middleware/` (Interceptadores)** | Isolar a responsabilidade de segurança (validação de JWT) e controle de acesso aos perfis antes das requisições chegarem ao negócio. | `utils/` | RF-03, RF-05 |
 | **`config/db.js` (Infraestrutura)** | Centralizar e gerenciar o pool de conexões do MySQL e utilitários de transação atômica. | Nenhuma interna (apenas lib externa `mysql2`) | RNF-06 |
 
@@ -46,16 +47,27 @@ Artefato central da Sprint 4. Registre decisões locais de organização do cód
 - **Código afetado:** `src/back/sql/schema.sql`, `src/back/src/services/authService.js`
 - **Issue/PR/commit:** [#22](https://github.com/gigi-zacaroni/tp-eng-software/issues/22) (T-12) · commit [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0). A separação de tabelas vem da Sprint 3 ([#16](https://github.com/gigi-zacaroni/tp-eng-software/issues/16)).
 
+### DP-04 — Camada de repositories (padrão Repository)
+- **Contexto/problema:** Depois da `DP-01`, os services ficaram com 11 instruções SQL e com o formato de resposta do `mysql2` (`[linhas]`, `.length`, `.insertId`) misturados à regra de negócio. A consulta de e-mail existia em duas versões (cadastro e login) e o SQL das cinco tabelas estava espalhado por dois arquivos. Descrição completa em [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md#1-problema-recorrente-identificado).
+- **Alternativas consideradas:** 1) Manter o SQL nos services. 2) ORM ou query builder. 3) Um único arquivo `queries.js`. 4) Active Record. 5) Um repository por entidade, com operações nomeadas pela intenção de negócio. Comparação em [`padroes-de-projeto.md` §2](../padroes/padroes-de-projeto.md#2-alternativas-consideradas).
+- **Decisão:** Criar `src/back/src/repositories/` com um módulo por tabela (`usuario`, `doador`, `instituicao`, `necessidade`, `doacao`). Os services passam a chamá-los. A **regra** (saldo suficiente, e-mail único) e a **transação** continuam nos services; o repository recebe a conexão por parâmetro.
+- **Justificativa:** Separação de interesses (a regra não conhece SQL) e menor acoplamento ao driver. Permite testar a regra com repositories falsos e dá um lugar certo para as consultas do `T-10`. Não exige dependência nova.
+- **Consequências positivas:** Services sem SQL (11 → 0 instruções); consulta de e-mail unificada; suíte de 39 testes automatizados, com 18 que passam também no código anterior.
+- **Trade-offs/riscos:** Mais 5 arquivos e uma indireção; o service ainda escolhe `pool` ou `conexao`; `buscarSaldoComTrava` só é seguro dentro de transação (garantido só por comentário); a verificação de e-mail do cadastro passou a selecionar também `senha`. Limitações completas em [`padroes-de-projeto.md` §7](../padroes/padroes-de-projeto.md#7-benefícios-custos-e-limitações).
+- **Código afetado:** `src/back/src/repositories/*.js` (novos), `src/back/src/services/authService.js`, `src/back/src/services/doacaoService.js`. Rotas, controllers, middleware, `server.js` e `schema.sql` não mudaram.
+- **Issue/PR/commit:** [issue T-17](https://github.com/gigi-zacaroni/tp-eng-software/issues/25) , [issue t-18](https://github.com/gigi-zacaroni/tp-eng-software/issues/26)  , [commit](https://github.com/johnatan-si/tp-eng-software/commit/fa515a9f36ab5306bf0011052301527ba26fae87)
+
 ---
 
 ## 3. Antes e depois
 
-A refatoração abaixo é a evidência concreta da DP-01. O comportamento externo da API não mudou: os mesmos endpoints, com as mesmas respostas.
+A refatoração abaixo é a evidência concreta da DP-01 (e, na linha "Acesso a dados", da DP-04). O comportamento externo da API não mudou: os mesmos endpoints, com as mesmas respostas.
 
 | Aspecto | Antes | Depois | Benefício observado |
 | :--- | :--- | :--- | :--- |
 | **Autenticação** | [`routes/auth.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/43a430aa69b34b841ba76df7a3a064575fc60d82/src/back/src/routes/auth.js) com 168 linhas. Fazia HTTP, validação, SQL, hash e JWT no mesmo arquivo. | [`routes/auth.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/src/back/src/routes/auth.js) com 18 linhas, só o mapeamento das URLs. A lógica foi para [`authController.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/src/back/src/controllers/authController.js) e [`authService.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/src/back/src/services/authService.js). | Dá para ler as rotas da API num olhar só. A regra de cadastro e login pode ser chamada sem subir o Express. |
 | **Doação** | [`routes/doacoes.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/43a430aa69b34b841ba76df7a3a064575fc60d82/src/back/src/routes/doacoes.js) com 56 linhas. A regra do saldo estava misturada com `req` e `res`. | [`doacaoController.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/src/back/src/controllers/doacaoController.js) lê a requisição. [`doacaoService.js`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/src/back/src/services/doacaoService.js) recebe três números e cuida do saldo. | A regra de decrementar o saldo pode ser testada passando valores simples, sem objeto HTTP. |
+| **Acesso a dados (Sprint 5)** | 11 instruções SQL dentro de `authService.js` (8) e `doacaoService.js` (3). | 0 instruções nos services. O SQL está em `repositories/` (5 arquivos, 10 instruções). | A regra do saldo lê-se em 5 linhas e pode ser testada com repositories falsos. Detalhes na [`DP-04`](#dp-04--camada-de-repositories-padrão-repository). |
 | **Schema do banco** | Dois arquivos DDL diferentes: `database/schema.sql` e `src/back/sql/schema.sql` ([#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19)). | Fonte única em [`src/back/sql/schema.sql`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/src/back/sql/schema.sql), já com `dataPromessa`. A API legada `src/server.js` também saiu. | Não existe mais dúvida sobre qual estrutura a API espera. |
 
 Commit da refatoração: [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0). O diff mostra o antes e o depois lado a lado.
@@ -70,13 +82,13 @@ Olhamos cada parte do back-end depois da refatoração. A ideia foi ver o que me
 | :--- | :--- | :--- | :--- |
 | [`routes/`](../../src/back/src/routes/) | Alta. Cada arquivo só liga URL a controller. | Depende só dos controllers e do middleware. | Nada relevante. |
 | [`controllers/`](../../src/back/src/controllers/) | Alta. Lê a requisição, chama o service e monta a resposta. | Depende do service e de `utils/`. | O `doacaoController` valida a entrada, mas no auth quem valida é o service. A mesma tarefa mora em lugares diferentes. |
-| [`services/doacaoService.js`](../../src/back/src/services/doacaoService.js) | Alta. Uma função, uma regra: registrar a doação dentro do saldo. | Recebe números, não objetos HTTP. | Ainda lança `ErroHttp(404)` e `ErroHttp(400)`. Ou seja, o service ainda sabe qual status HTTP devolver. |
-| [`services/authService.js`](../../src/back/src/services/authService.js) | Média. Junta validação, hash de senha, SQL e geração de JWT. | Depende de `bcrypt`, `jsonwebtoken`, banco e `utils/`. | É o arquivo mais pesado (150 linhas). O login faz duas consultas para descobrir se o usuário é doador ou instituição. |
+| [`services/doacaoService.js`](../../src/back/src/services/doacaoService.js) | Alta. Uma função, uma regra: registrar a doação dentro do saldo. | Recebe números, não objetos HTTP, e (Sprint 5) não escreve SQL: usa `necessidadeRepository` e `doacaoRepository`. | Ainda lança `ErroHttp(404)` e `ErroHttp(400)`. Ou seja, o service ainda sabe qual status HTTP devolver. |
+| [`services/authService.js`](../../src/back/src/services/authService.js) | Média. Junta validação, hash de senha e geração de JWT. Desde a Sprint 5 o SQL saiu para os repositories (150 → 134 linhas). | Depende de `bcrypt`, `jsonwebtoken`, dos repositories, de `config/db.js` e `utils/`. | A validação continua misturada (`T-16`). O login ainda faz duas consultas para descobrir se o usuário é doador ou instituição, agora via `doadorRepository` e `instituicaoRepository`. |
 | [`middleware/autenticacao.js`](../../src/back/src/middleware/autenticacao.js) | Alta. Só cuida do token e do tipo de usuário. | Depende do `jsonwebtoken`. | Responde com `res.status(...)` direto, em vez de passar pelo handler central de erros. São dois caminhos de erro. |
 | [`config/db.js`](../../src/back/src/config/db.js) | Alta. Pool de conexões e o helper `comTransacao`. | Não depende de nenhum módulo interno. | Nada relevante. |
 | [`server.js`](../../src/back/src/server.js) | Média. Monta o Express e trata os erros. | O handler conhece o código `ER_DUP_ENTRY`, que é do MySQL. | O servidor fica preso ao banco escolhido. |
 
-**Resumo:** a separação em camadas resolveu o problema principal, que era a rota fazendo tudo. O que sobrou é acoplamento mais fino: services que conhecem HTTP, servidor que conhece MySQL e validação sem lugar fixo.
+**Resumo:** a separação em camadas resolveu o problema principal, que era a rota fazendo tudo. O que sobrou é acoplamento mais fino: services que conhecem HTTP, servidor que conhece MySQL e validação sem lugar fixo. *Atualização da Sprint 5:* o problema de services que conhecem SQL (item [T-17](https://github.com/gigi-zacaroni/tp-eng-software/issues/25)) foi resolvido pela `DP-04`. Os três pontos acima seguem abertos.
 
 ---
 
@@ -86,9 +98,9 @@ Pontos que a análise acima revelou. Viraram itens do backlog para as próximas 
 
 | ID | Melhoria | Por que importa | Sprint prevista |
 | :--- | :--- | :--- | :--- |
-| `T-15` | Services lançam um erro de domínio próprio. A tradução para status HTTP fica só no handler central. | Tira o conhecimento de HTTP dos services e junta os dois caminhos de erro (middleware e handler). | 5 |
-| `T-16` | Definir um lugar único para validar a entrada. | Hoje cada fluxo valida num lugar diferente, e isso confunde quem mexe no código. | 5 |
-| `T-17` | Tirar o SQL de dentro dos services. | Os services ficariam só com a regra de negócio. É candidato ao padrão Repository, tema da Sprint 5. | 5 |
+| `T-15` | Services lançam um erro de domínio próprio. A tradução para status HTTP fica só no handler central. | Tira o conhecimento de HTTP dos services e junta os dois caminhos de erro (middleware e handler). | 5 — **não tratada na Sprint 5**; a reavaliar |
+| `T-16` | Definir um lugar único para validar a entrada. | Hoje cada fluxo valida num lugar diferente, e isso confunde quem mexe no código. | 5 — **não tratada na Sprint 5**; a reavaliar |
+| `T-17` | Tirar o SQL de dentro dos services. | Os services ficariam só com a regra de negócio. É candidato ao padrão Repository, tema da Sprint 5. | 5 — **implementada** (`DP-04`), aguardando revisão e merge |
 
 ---
 

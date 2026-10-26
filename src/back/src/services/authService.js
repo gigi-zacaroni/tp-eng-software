@@ -2,6 +2,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool, comTransacao } = require('../config/db');
 const { ErroHttp } = require('../utils/http');
+const usuarioRepository = require('../repositories/usuarioRepository');
+const doadorRepository = require('../repositories/doadorRepository');
+const instituicaoRepository = require('../repositories/instituicaoRepository');
+const necessidadeRepository = require('../repositories/necessidadeRepository');
 const {
   textoNaoVazio,
   normalizarEmail,
@@ -33,15 +37,11 @@ function validarAcesso({ email, senha, confirmarSenha }) {
 }
 
 async function criarUsuario(conexao, email, senha) {
-  const [existente] = await conexao.execute('SELECT id FROM usuarios WHERE email = ?', [email]);
-  if (existente.length > 0) throw new ErroHttp(409, 'Já existe uma conta com este e-mail.');
+  const existente = await usuarioRepository.buscarPorEmail(conexao, email);
+  if (existente) throw new ErroHttp(409, 'Já existe uma conta com este e-mail.');
 
   const senhaHash = await bcrypt.hash(senha, 10);
-  const [usuario] = await conexao.execute(
-    'INSERT INTO usuarios (email, senha) VALUES (?, ?)',
-    [email, senhaHash]
-  );
-  return usuario.insertId;
+  return usuarioRepository.criar(conexao, email, senhaHash);
 }
 
 // --- Funções Exportadas ---
@@ -54,10 +54,7 @@ async function cadastrarDoador(nome, email, senha, confirmarSenha) {
 
   await comTransacao(async (conexao) => {
     const usuarioId = await criarUsuario(conexao, emailNormalizado, senha);
-    await conexao.execute(
-      'INSERT INTO doadores (usuario_id, nome) VALUES (?, ?)',
-      [usuarioId, nome.trim()]
-    );
+    await doadorRepository.criar(conexao, usuarioId, nome.trim());
   });
 }
 
@@ -88,17 +85,18 @@ async function cadastrarInstituicao(acesso, sobre, necessidadesIniciais) {
   await comTransacao(async (conexao) => {
     const usuarioId = await criarUsuario(conexao, emailNormalizado, acesso.senha);
 
-    const [instituicao] = await conexao.execute(
-      'INSERT INTO instituicoes (usuario_id, nome, descricao, verificada) VALUES (?, ?, ?, false)',
-      [usuarioId, sobre.nome.trim(), sobre.descricao || null]
-    );
+    const instituicaoId = await instituicaoRepository.criar(conexao, {
+      usuarioId,
+      nome: sobre.nome.trim(),
+      descricao: sobre.descricao
+    });
 
     for (const n of necessidades) {
-      await conexao.execute(
-        `INSERT INTO necessidades (instituicao_id, item, quantidadeTotal, quantidadeFaltante)
-         VALUES (?, ?, ?, ?)`,
-        [instituicao.insertId, n.item, n.quantidade, n.quantidade]
-      );
+      await necessidadeRepository.criar(conexao, {
+        instituicaoId,
+        item: n.item,
+        quantidade: n.quantidade
+      });
     }
   });
 }
@@ -108,36 +106,22 @@ async function autenticarLogin(email, senha) {
     throw new ErroHttp(400, 'Informe e-mail e senha.');
   }
 
-  const [usuarios] = await pool.execute(
-    'SELECT id, senha FROM usuarios WHERE email = ?',
-    [normalizarEmail(email)]
-  );
-  if (usuarios.length === 0) throw new ErroHttp(401, 'E-mail ou senha inválidos.');
+  const usuario = await usuarioRepository.buscarPorEmail(pool, normalizarEmail(email));
+  if (!usuario) throw new ErroHttp(401, 'E-mail ou senha inválidos.');
 
-  const usuario = usuarios[0];
   const senhaOk = await bcrypt.compare(senha, usuario.senha);
   if (!senhaOk) throw new ErroHttp(401, 'E-mail ou senha inválidos.');
 
-  const [doadores] = await pool.execute(
-    'SELECT id, nome FROM doadores WHERE usuario_id = ?',
-    [usuario.id]
-  );
-
   let tipo;
-  let perfil;
-  if (doadores.length > 0) {
+  let perfil = await doadorRepository.buscarPorUsuarioId(pool, usuario.id);
+  if (perfil) {
     tipo = 'doador';
-    perfil = doadores[0];
   } else {
-    const [instituicoes] = await pool.execute(
-      'SELECT id, nome, verificada FROM instituicoes WHERE usuario_id = ?',
-      [usuario.id]
-    );
-    if (instituicoes.length === 0) {
+    perfil = await instituicaoRepository.buscarPorUsuarioId(pool, usuario.id);
+    if (!perfil) {
       throw new ErroHttp(500, 'Usuário sem perfil de doador ou instituição associado.');
     }
     tipo = 'instituicao';
-    perfil = instituicoes[0];
   }
 
   const token = gerarToken({ id: usuario.id, tipo, perfilId: perfil.id });
