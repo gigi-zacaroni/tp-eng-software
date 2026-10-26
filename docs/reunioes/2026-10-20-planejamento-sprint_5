@@ -1,0 +1,44 @@
+# Registro de Reunião: 2026-10-19- Planejamento da Sprint 05
+
+* **Arquivo:** `2026-10-19-planejamento-sprint-05.md`
+
+---
+
+## 1. Data e Participantes
+* **Data:** 26/10/2026
+* **Participantes:**
+  * Geovana Zacaroni
+  * Maria Luiza Pestana
+
+---
+
+## 2. Objetivo
+Planejar e alinhar as atividades da **Sprint 05**, com foco na validação de autenticação via token JWT, implementação/testes das regras de negócio de check-in por foto, cálculo do sistema de pontos e estruturação do backlog de testes no GitHub Projects.
+
+---
+
+## 3. Decisões Tomadas
+1. **Estrutura da Documentação de Testes:** Os casos e planos de teste de QA serão mantidos em arquivos Markdown dentro do repositório, com tabelas padronizadas sem colunas desnecessárias de data/executor individual.
+2. **Validação de Autenticação JWT:** Priorizar os testes automatizados e manuais cobrindo cenários de expiração, token inválido e permissões de acesso.
+3. **Regras de Negócio de Check-in:** Validar o fluxo de check-in fotográfico e a lógica do cálculo do sistema de pontos atribuídos ao usuário.
+4. **Organização do Board:** O quadro Kanban no GitHub Projects será atualizado para refletir com clareza o ciclo de vida dos testes e correção de bugs (*To Do*, *In Progress*, *In Review*, *Done*).
+
+---
+
+## 4. Tarefas, Responsáveis e Prazos
+
+| Tarefa | Responsável | Prazo |
+|---|---|---|
+| Elaborar e documentar os casos de teste para validação de JWT | Geovana Zacaroni | 29/10/2026 |
+| Validar regras do fluxo de check-in e cálculo do sistema de pontos | Maria Luiza Pestana | 01/11/2026 |
+| Estruturar os arquivos de documentação da suíte de testes em Markdown no repositório | Geovana Zacaroni | 03/11/2026 |
+| Organizar e atualizar as *issues* no Kanban do GitHub Projects | Geovana Zacaroni / Maria Luiza Pestana | 05/11/2026 |
+
+---
+
+## 5. Impedimentos
+* Agenda entre os membros dando conflito
+
+---
+
+## 6. Evidências 
