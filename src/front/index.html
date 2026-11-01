@@ -3,61 +3,107 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ConectaAção — Engenharia de Software 2026/2</title>
-  <link rel="stylesheet" href="style.css">
+  <title>ConectaAção</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <main class="container">
-    <p class="tag">Sprint 2 — requisitos e escopo validável</p>
-    <h1>ConectaAção</h1>
-    <p>
-      Plataforma que conecta pessoas dispostas a ajudar às instituições de caridade
-      que precisam de apoio. Esta página é a estrutura executável do repositório; a
-      aplicação real será construída em Next.js/React e Java/Spring Boot, a partir
-      das decisões técnicas das Sprints 3 e 4.
-    </p>
-    <section>
-      <h2>Problema tratado</h2>
-      <p>
-        Muitas pessoas querem doar, mas não sabem quais instituições existem, do que
-        elas precisam ou como contribuir. As instituições, por sua vez, têm dificuldade
-        de divulgar suas necessidades. O problema não é a falta de quem queira ajudar,
-        e sim a <strong>dificuldade de conectar essas pessoas a quem precisa</strong>.
-      </p>
+  <header class="cabecalho">
+    <div class="conteudo">
+      <a class="marca" href="/index.html"><span class="marca-icone">C</span>ConectaAção</a>
+
+      <nav class="menu" aria-label="Principal">
+        <a class="menu-item" href="/pages/login.html" data-perfil="visitante">Instituições</a>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Instituições<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Favoritos<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Minhas doações<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="instituicao" hidden>Instituições<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="instituicao" hidden>Painel da instituição<small>em breve</small></span>
+      </nav>
+
+      <div class="acoes-usuario" id="acoes-visitante">
+        <a class="link-forte" href="/pages/login.html">Entrar</a>
+        <span class="botao em-breve" aria-disabled="true">Criar conta<small>em breve</small></span>
+      </div>
+      <div class="acoes-usuario" id="acoes-logado" hidden>
+        <div class="usuario">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-texto">
+            <span class="usuario-nome" id="usuario-nome"></span>
+            <span class="usuario-papel" id="usuario-papel"></span>
+          </span>
+        </div>
+        <button type="button" class="botao-sair" id="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- RF-06: landing pública -->
+    <section class="conteudo hero">
+      <div class="hero-texto">
+        <span class="selo" id="selo-contagem">ConectaAção</span>
+        <h1>Quem quer ajudar, encontrando quem precisa.</h1>
+        <p>Veja exatamente do que cada instituição precisa hoje, prometa a doação que você pode fazer e acompanhe até a entrega. Sem intermediação de dinheiro: a conexão é direta.</p>
+        <div class="hero-botoes">
+          <a class="botao botao-grande" id="conhecer" href="/pages/login.html">Conhecer instituições</a>
+          <span class="botao botao-grande botao-contorno em-breve" aria-disabled="true">Cadastrar instituição<small>em breve</small></span>
+        </div>
+      </div>
+      <img class="hero-foto" src="/img/voluntarios-doacoes.jpg" width="1400" height="781"
+        alt="Voluntários separando doações de roupas, alimentos, brinquedos e ração em um galpão">
+
     </section>
-    <section>
-      <h2>Funcionalidade prioritária — prometer uma doação</h2>
-      <p>
-        Requisito <code>RF-19</code>, história <code>US-08</code>
-        (<a href="https://github.com/gigi-zacaroni/tp-eng-software/issues/10">Issue #10</a>),
-        com a condição verificável do <code>RNF-01</code>: a doação deve ser concluída
-        em no máximo três passos.
-      </p>
-      <button type="button" id="demo">Contar os passos do fluxo de doação</button>
-      <p id="resultado" aria-live="polite"></p>
-      <p>
-        O fluxo completo pode ser percorrido no
-        <a href="../docs/prototipo/README.md">protótipo navegável</a>, que relaciona
-        cada tela aos seus requisitos e critérios de aceitação.
-      </p>
+
+    <section class="secao-branca">
+      <div class="conteudo secao">
+        <div class="secao-titulo">
+          <h2>Como funciona</h2>
+          <p>Três passos, do primeiro clique até a doação entregue.</p>
+        </div>
+        <div class="passos">
+          <div class="passo">
+            <span class="passo-numero">1</span>
+            <h3>Descobrir</h3>
+            <p>Busque por causa, cidade ou tipo de necessidade e veja instituições com pedidos ativos.</p>
+          </div>
+          <div class="passo">
+            <span class="passo-numero">2</span>
+            <h3>Escolher como ajudar</h3>
+            <p>Escolha o item da lista de necessidades e a quantidade que consegue doar. A instituição é avisada na hora.</p>
+          </div>
+          <div class="passo">
+            <span class="passo-numero">3</span>
+            <h3>Acompanhar</h3>
+            <p>Siga sua doação de Prometida até Entregue, e veja a necessidade sendo preenchida.</p>
+          </div>
+        </div>
+      </div>
     </section>
-    <section>
-      <h2>Documentação</h2>
-      <ul>
-        <li><a href="../docs/visao-geral.md">Visão geral do produto</a></li>
-        <li><a href="../docs/requisitos/requisitos.md">Requisitos (27 RF, 10 RNF, 8 regras de negócio)</a></li>
-        <li><a href="../docs/rastreabilidade.md">Matriz de rastreabilidade</a></li>
-        <li><a href="../docs/prototipo/README.md">Protótipo navegável</a></li>
-      </ul>
+
+    <section class="conteudo secao">
+      <div class="secao-titulo">
+        <h2>Instituições em destaque</h2>
+        <p>Precisam de apoio nesta semana.</p>
+      </div>
+      <p class="aviso" id="destaques-aviso" role="status" aria-live="polite">Carregando instituições...</p>
+      <div class="cards" id="destaques"></div>
     </section>
   </main>
-  <script>
-    const PASSOS = ['Escolher o item', 'Definir a quantidade', 'Confirmar a doação'];
-    document.querySelector('#demo').addEventListener('click', () => {
-      document.querySelector('#resultado').textContent =
-        PASSOS.map((p, i) => `${i + 1}. ${p}`).join('  →  ') +
-        `  (${PASSOS.length} passos — RNF-01 exige no máximo 3)`;
-    });
-  </script>
+
+  <footer class="rodape">
+    <div class="conteudo">
+      <div class="rodape-marca">
+        <span class="marca-icone">C</span>
+        <strong>ConectaAção</strong>
+        <span>Conexão entre doadores e instituições. Não processamos pagamentos.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/cabecalho.js"></script>
+  <script type="module" src="/js/landing.js"></script>
 </body>
 </html>
