@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const { pool } = require('./config/db');
 const { ErroHttp, asyncHandler } = require('./utils/http');
@@ -21,6 +22,10 @@ app.get('/teste-conexao', asyncHandler(async (req, res) => {
 
 app.use('/', authRoutes);              // /cadastro/doador, /cadastro/instituicao, /login, /logout
 app.use('/doacoes', doacoesRoutes);    // POST /doacoes
+
+// Front-end estático (src/front) servido pela mesma origem da API: o navegador
+// chama a API sem CORS e a aplicação sobe com um único processo.
+app.use(express.static(path.join(__dirname, '..', '..', 'front')));
 
 app.use((req, res) => {
   res.status(404).json({ erro: 'Rota não encontrada.' });
