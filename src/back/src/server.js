@@ -5,6 +5,7 @@ const { pool } = require('./config/db');
 const { ErroHttp, asyncHandler } = require('./utils/http');
 const authRoutes = require('./routes/auth');
 const doacoesRoutes = require('./routes/doacoes');
+const instituicoesRoutes = require('./routes/instituicoes');
 
 const app = express();
 app.use(express.json()); // Permite que a API entenda formato JSON
@@ -22,6 +23,7 @@ app.get('/teste-conexao', asyncHandler(async (req, res) => {
 
 app.use('/', authRoutes);              // /cadastro/doador, /cadastro/instituicao, /login, /logout
 app.use('/doacoes', doacoesRoutes);    // POST /doacoes
+app.use('/instituicoes', instituicoesRoutes); // GET /instituicoes, /instituicoes/destaques, /instituicoes/:id
 
 // Front-end estático (src/front) servido pela mesma origem da API: o navegador
 // chama a API sem CORS e a aplicação sobe com um único processo.
