@@ -172,3 +172,48 @@ test.describe('authService', () => {
     assert.equal(buscarInst.mock.callCount(), 0);
   });
 });
+
+test.describe('instituicaoService', () => {
+  const instituicaoService = require('../src/services/instituicaoService');
+
+  test('destaques: pede no máximo 4 e normaliza selo e contagem', async () => {
+    const listar = mock.method(instituicaoRepository, 'listarResumo', async () => [
+      { id: 1, nome: 'ONG', descricao: null, verificada: 1, necessidadesAbertas: '2' }
+    ]);
+
+    const res = await instituicaoService.destaques();
+
+    assert.equal(listar.mock.calls[0].arguments[1], 4);
+    assert.deepEqual(res, [{ id: 1, nome: 'ONG', resumo: '', verificada: true, necessidadesAbertas: 2 }]);
+  });
+
+  test('listar: não limita a quantidade', async () => {
+    const listar = mock.method(instituicaoRepository, 'listarResumo', async () => []);
+    assert.deepEqual(await instituicaoService.listar(), []);
+    assert.equal(listar.mock.calls[0].arguments[1], undefined);
+  });
+
+  test('detalhar: calcula o prometido de cada necessidade', async () => {
+    mock.method(instituicaoRepository, 'buscarPorId', async () => ({ id: 2, nome: 'ONG', descricao: 'Abrigo', verificada: 0 }));
+    mock.method(necessidadeRepository, 'listarPorInstituicao', async () => [
+      { id: 7, item: 'Ração', quantidadeTotal: 10, quantidadeFaltante: 4 }
+    ]);
+
+    const res = await instituicaoService.detalhar(2);
+
+    assert.equal(res.verificada, false);
+    assert.deepEqual(res.necessidades, [
+      { id: 7, item: 'Ração', desejado: 10, prometido: 6, faltante: 4, percentualPrometido: 60 }
+    ]);
+  });
+
+  test('detalhar: instituição inexistente devolve 404 sem buscar necessidades', async () => {
+    mock.method(instituicaoRepository, 'buscarPorId', async () => null);
+    const listar = mock.method(necessidadeRepository, 'listarPorInstituicao', async () => []);
+
+    const erro = await erroDe(instituicaoService.detalhar(99));
+
+    assert.equal(erro.status, 404);
+    assert.equal(listar.mock.callCount(), 0);
+  });
+});
