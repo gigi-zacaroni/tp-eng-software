@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · ConectaAção</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="conteudo">
+      <a class="marca" href="/index.html"><span class="marca-icone">C</span>ConectaAção</a>
+
+      <nav class="menu" aria-label="Principal">
+        <a class="menu-item" href="/pages/login.html" data-perfil="visitante">Instituições</a>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Instituições<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Favoritos<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Minhas doações<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="instituicao" hidden>Instituições<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="instituicao" hidden>Painel da instituição<small>em breve</small></span>
+      </nav>
+
+      <div class="acoes-usuario" id="acoes-visitante">
+        <a class="link-forte" href="/pages/login.html">Entrar</a>
+        <span class="botao em-breve" aria-disabled="true">Criar conta<small>em breve</small></span>
+      </div>
+      <div class="acoes-usuario" id="acoes-logado" hidden>
+        <div class="usuario">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-texto">
+            <span class="usuario-nome" id="usuario-nome"></span>
+            <span class="usuario-papel" id="usuario-papel"></span>
+          </span>
+        </div>
+        <button type="button" class="botao-sair" id="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="login">
+    <div class="login-texto">
+      <span class="selo">Acesso necessário</span>
+      <h1>Entre para ver as instituições</h1>
+      <p>A lista de instituições e suas necessidades é visível apenas para pessoas cadastradas. Isso protege os dados de contato das organizações e permite acompanhar cada doação prometida.</p>
+      <ul class="beneficios">
+        <li>Favoritar instituições e receber avisos</li>
+        <li>Acompanhar o status de cada doação</li>
+        <li>Cadastro gratuito, sem dados de pagamento</li>
+      </ul>
+    </div>
+
+    <!-- RF-03: um único formulário para doador e instituição; o perfil vem da API -->
+    <form class="cartao" id="form-login" novalidate>
+      <div class="cartao-titulo">
+        <h2>Entrar</h2>
+        <p>Use o e-mail cadastrado na plataforma.</p>
+      </div>
+
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="voce@email.com" aria-describedby="erro-email">
+        <span class="erro-campo" id="erro-email"></span>
+      </div>
+
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" autocomplete="current-password" placeholder="••••••••" aria-describedby="erro-senha">
+        <span class="erro-campo" id="erro-senha"></span>
+      </div>
+
+      <p class="mensagem-erro" id="mensagem" role="alert"></p>
+
+      <button type="submit" class="botao botao-grande">Acessar minha conta</button>
+
+      <div class="cartao-rodape">
+        <span>Ainda não tem conta?</span>
+        <div>
+          <span class="em-breve" aria-disabled="true">Criar conta de doador<small>em breve</small></span>
+          <span class="em-breve" aria-disabled="true">Cadastrar instituição<small>em breve</small></span>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script type="module" src="/js/cabecalho.js"></script>
+  <script type="module" src="/js/login.js"></script>
+</body>
+</html>
