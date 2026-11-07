@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   email VARCHAR(255) NOT NULL,
   senha VARCHAR(255) NOT NULL,            -- hash bcrypt
   UNIQUE KEY uq_usuarios_email (email)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS doadores (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS doadores (
   nome VARCHAR(255) NOT NULL,
   UNIQUE KEY uq_doadores_usuario (usuario_id),
   CONSTRAINT fk_doadores_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS instituicoes (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS instituicoes (
   verificada BOOLEAN NOT NULL DEFAULT FALSE,
   UNIQUE KEY uq_instituicoes_usuario (usuario_id),
   CONSTRAINT fk_instituicoes_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS necessidades (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS necessidades (
   quantidadeFaltante INT UNSIGNED NOT NULL,
   CONSTRAINT ck_necessidades_qtd CHECK (quantidadeFaltante <= quantidadeTotal),
   CONSTRAINT fk_necessidades_instituicao FOREIGN KEY (instituicao_id) REFERENCES instituicoes (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS doacoes (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS doacoes (
   necessidade_id INT UNSIGNED NOT NULL,
   quantidade INT UNSIGNED NOT NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'Prometida',
-  dataPromessa DATETIME DEFAULT CURRENT_TIMESTAMP, -- Adicionado para resolver a divergência do modelo
+  dataPromessa DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_doacoes_doador FOREIGN KEY (doador_id) REFERENCES doadores (id),
   CONSTRAINT fk_doacoes_necessidade FOREIGN KEY (necessidade_id) REFERENCES necessidades (id)
-);
+) ENGINE=InnoDB;
