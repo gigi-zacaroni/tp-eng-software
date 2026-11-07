@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool, comTransacao } = require('../config/db');
+const { config } = require('../config/env');
 const { ErroHttp } = require('../utils/http');
 const usuarioRepository = require('../repositories/usuarioRepository');
 const doadorRepository = require('../repositories/doadorRepository');
@@ -16,9 +17,9 @@ const {
 // --- Funções Privadas do Serviço ---
 
 function gerarToken(payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+  return jwt.sign(payload, config.jwt.secret, {
     algorithm: 'HS256',
-    expiresIn: process.env.JWT_EXPIRES_IN || '8h'
+    expiresIn: config.jwt.expiresIn
   });
 }
 
