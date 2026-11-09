@@ -1,0 +1,44 @@
+Entrega da Sprint 6: consulta de instituições na API, landing e login do protótipo ligados à API, e o documento de arquitetura.
+
+## O que entra
+
+| Issue | Descrição | Responsáveç | Critério de aceitação / conclusão  |
+|---|---|---|
+| #20 `T-10` |Expor endpoints de consulta (GET) de instituições e necessidades : `GET /instituicoes/destaques` (público), `GET /instituicoes` e `GET /instituicoes/:id` (com token) | repository, service e rotas |
+| #27 `T-19` | servir o front-end pela API e criar o cliente da API : Express serve `src/front/` na mesma origem da API; `js/api.js` como único ponto de `fetch` | servir front, cliente da API |
+| #28 `T-20` | Landing do protótipo com instituições em destaque vindas da API | identidade visual, landing |
+| #29 `T-21` | Login de doador e instituição; cabeçalho muda por perfil | cabeçalho, login |
+| #30 `D-09` | Documento de arquitetura da Sprint 6
+ `docs/arquitetura/arquitetura.md` | arquitetura |
+
+Cada commit é uma entrega pequena e a suíte passa em todos eles (`npm test`: 47 testes, 8 novos).
+
+## Como testar
+
+```bash
+cd src/back
+npm install
+npm test            # não precisa de MySQL
+npm start           # com MySQL e .env preenchido
+```
+
+Abrir `http://localhost:3000` (não abrir o `index.html` direto pelo arquivo, senão o `fetch` não funciona).
+
+- [ ] A landing mostra as instituições cadastradas no banco
+- [ ] Login como doador: avatar verde, papel "Doador", menu Instituições, Favoritos e Minhas doações
+- [ ] Login como instituição: avatar laranja, papel "Instituição", menu Instituições e Painel
+- [ ] Sair volta o cabeçalho ao estado de visitante
+- [ ] `GET /instituicoes` sem token responde 401
+
+## Pendências
+
+- **Teste com MySQL real:** só foi feito com dados falsos (sem banco nesta máquina). Falta rodar o roteiro acima e salvar as capturas em `docs/evidencias/sprint-06/`.
+- **#20, critério 4 (CORS):** deixou de ser necessário, porque o front é servido pela mesma origem (`DA-02`).
+- **#20, critério 5 (paginação):** não foi feita. Por isso este PR não fecha a #20; decidir no grupo se a paginação entra agora ou vira item próprio.
+- **Banco sem causa e cidade:** os cards mostram nome, selo e resumo. Registrado como risco no `arquitetura.md`.
+
+Closes #27
+Closes #28
+Closes #29
+Closes #30
+Refs #20
