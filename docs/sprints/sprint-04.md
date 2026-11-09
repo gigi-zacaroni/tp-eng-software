@@ -24,7 +24,7 @@ Entrega esperada: docs/projeto/decisoes-de-projeto.md, decomposição e decisõe
 | Artefato criado/atualizado | Link na tag da sprint | O que mudou |
 |---|---|---|
 | `docs/projeto/decisoes-de-projeto.md` | [link para a tag sprint-04] | Criação do documento detalhando as decisões de coesão, acoplamento e refatoração. |
-| `docs/projeto/modelagem.md` | [link para a tag sprint-04] | Atualização do modelo estrutural para diagrama de classes e inclusão das camadas de Controller/Service. |
+| `docs/modelagem/modelagem.md` | [link para a tag sprint-04] | Atualização do modelo estrutural para diagrama de classes e inclusão das camadas de Controller/Service. |
 
 ## 4. Incremento da aplicação web — 0,75 ponto
 Incremento mínimo esperado: Implementação/refatoração que demonstre a decisão, com comparação ou vínculo claro entre documento e código.
@@ -43,7 +43,7 @@ node src/server.js
 | Requisito/Issue | Código ou protótipo | Evidência de execução |
 |---|---|---|
 | RF-01 / #2 | `src/back/src/services/authService.js` | [Print de sucesso do cadastro] |
-| RF-19 / #10 | `src/back/src/services/doacoesService.js` | [Print da doação registrada] |
+| RF-19 / #10 | `src/back/src/services/doacaoService.js` | [Print da doação registrada] |
 
 ## 5. Scrum e gestão do trabalho - 0,50 ponto
 
@@ -80,7 +80,7 @@ node src/server.js
 |---|---|---|---|---|
 | `RF-01` | `#2`, `#12` | `docs/projeto/decisoes-de-projeto.md` (DP-03) | `src/back/src/services/authService.js` | [Teste Cadastro Postman](../evidencias/sprint-04/cadastro-instituicao.png) |
 | `RF-02` | `#3`, `#12` | `docs/projeto/decisoes-de-projeto.md` (DP-03) | `src/back/src/services/authService.js` e `middleware/autenticacao.js` | [Teste Login Postman](../evidencias/sprint-04/login.png) |
-| `RF-19` | `#10`, `#13` | `docs/projeto/decisoes-de-projeto.md` (DP-02) | `src/back/src/services/doacoesService.js` e `src/back/sql/schema.sql` | [Teste Doação Postman](../evidencias/sprint-04/doacoes.png) |
+| `RF-19` | `#10`, `#13` | `docs/projeto/decisoes-de-projeto.md` (DP-02) | `src/back/src/services/doacaoService.js` e `src/back/sql/schema.sql` | [Teste Doação Postman](../evidencias/sprint-04/doacoes.png) |
 
 ## 7. Revisão do incremento
 

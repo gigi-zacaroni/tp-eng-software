@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { config } = require('../config/env');
 
 function autenticar(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -7,7 +8,7 @@ function autenticar(req, res, next) {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+    const payload = jwt.verify(token, config.jwt.secret, { algorithms: ['HS256'] });
     req.usuario = payload;
     next();
   } catch (erro) {

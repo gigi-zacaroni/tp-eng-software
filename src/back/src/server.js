@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const { pool } = require('./config/db');
+const { config, validarConfiguracaoDeProducao } = require('./config/env');
 const { ErroHttp, asyncHandler } = require('./utils/http');
 const authRoutes = require('./routes/auth');
 const doacoesRoutes = require('./routes/doacoes');
@@ -50,13 +51,14 @@ app.use((erro, req, res, next) => {
 });
 
 if (require.main === module) {
-  if (!process.env.JWT_SECRET) {
-    console.error('JWT_SECRET não definido. Copie .env.example para .env e preencha.');
+  try {
+    validarConfiguracaoDeProducao();
+  } catch (erro) {
+    console.error(erro.message);
     process.exit(1);
   }
-  const porta = Number(process.env.PORT) || 3000;
-  app.listen(porta, () => {
-    console.log(`Servidor rodando na porta ${porta}! Acesse: http://localhost:${porta}/teste-conexao`);
+  app.listen(config.port, () => {
+    console.log(`Servidor rodando na porta ${config.port}! Acesse: http://localhost:${config.port}/teste-conexao`);
   });
 }
 
