@@ -1,6 +1,6 @@
 # Arquitetura de software
 
-> **Artefato central da Sprint 6.** A arquitetura descreve a organização global da aplicação, as responsabilidades das partes e suas interações.
+> **Artefato central da Sprint 6.** Mostra como a aplicação se organiza como um todo: as partes, o que cada uma faz e como se comunicam. As decisões internas do back-end estão em [`decisoes-de-projeto.md`](../projeto/decisoes-de-projeto.md) e [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md).
 
 ## 1. Visão geral
 
@@ -21,7 +21,7 @@ flowchart LR
 - **Doador:** cria conta, faz login e registra doações para uma necessidade de uma instituição.
 - **Instituição:** cria conta com seus dados e uma lista inicial de necessidades (item e quantidade), e acompanha seu perfil, incluindo se está verificada.
 
-## 3. Diagrama de contêineres/componentes
+## 3. Diagrama de contêineres e componentes
 
 ### 3.1 Contêineres
 
@@ -48,7 +48,7 @@ flowchart TB
 
 ## 4. Componentes e responsabilidades
 
-| Componente | Responsabilidade | Tecnologia | Diretório/serviço real | Comunicação |
+| Componente | Responsabilidade | Tecnologia | Diretório real | Comunicação |
 |---|---|---|---|---|
 | Front-end web | Telas de login, cadastro de doador e de instituição e registro de doação; guarda o token no navegador | HTML, CSS e JavaScript puro (`fetch`) | [`src/front/`](../src/front/) | HTTP + JSON com a API |
 | Rotas | Mapeiam URLs e métodos HTTP para os controllers (`/cadastro/doador`, `/cadastro/instituicao`, `/login`, `/logout`, `/doacoes`) | Express Router | [`src/back/src/routes/`](../src/back/src/routes/) | Chamam middleware e controllers |
@@ -101,7 +101,32 @@ flowchart TB
 - **Consequências e trade-offs:** um único processo e uma única URL, sem configuração de CORS; front e back não escalam nem são publicados de forma independente.
 - **Evidência no repositório:** `app.use(express.static(...))` em [`src/back/src/server.js`](../src/back/src/server.js)
 
-## 6. Implantação e execução
+- **Contexto:** doador e instituição fazem login, e as rotas precisam saber quem é o usuário.
+- **Decisão:** token JWT assinado, enviado no cabeçalho `Authorization`. O token informa o tipo de perfil, e o front usa isso para montar o menu de cada um.
+- **Requisitos:** `RNF-03`, `RNF-04`.
+- **Consequências:** o servidor não guarda sessão. Em troca, um token vazado vale até expirar (8h).
+- **Evidência:** [`autenticacao.js`](../../src/back/src/middleware/autenticacao.js), [`authService.js`](../../src/back/src/services/authService.js)
+
+### DA-04: Banco relacional único com transação
+
+- **Contexto:** duas promessas ao mesmo tempo não podem passar do que falta.
+- **Decisão:** MySQL com transação e `SELECT ... FOR UPDATE` no saldo.
+- **Requisitos:** `RNF-06`, `RNF-07`.
+- **Consequências:** o banco garante a regra mesmo com acessos simultâneos. Em troca, a aplicação depende do MySQL para rodar.
+- **Evidência:** [`necessidadeRepository.js`](../../src/back/src/repositories/necessidadeRepository.js), [`doacaoService.js`](../../src/back/src/services/doacaoService.js)
+
+## 6. Requisitos não funcionais e decisões
+
+| RNF | Como é atendido | Decisão |
+|---|---|---|
+| `RNF-02` Responsividade | Layout testado de 390 px a 1366 px; alvos de 44 px | `DA-02` |
+| `RNF-03` Segurança | Senha com bcrypt; JWT com segredo no `.env` | `DA-03` |
+| `RNF-04` Privacidade | Listagem e detalhe exigem token | `DA-03` |
+| `RNF-05` Sem pagamento | Nenhum serviço externo | `DA-01` |
+| `RNF-06` Integridade | Transação com trava de linha | `DA-04` |
+| `RNF-09` Compatibilidade | HTML, CSS e JS padrão, sem build | `DA-02` |
+
+## 7. Implantação e execução
 
 ```mermaid
 flowchart TB
@@ -113,12 +138,12 @@ flowchart TB
 
 **Ambientes:**
 
-| Ambiente | Endereço ou comando | Finalidade |
+| Ambiente | Comando ou endereço | Finalidade |
 |---|---|---|
 | Local | Criar o banco com `sql/schema.sql`, configurar o `.env` e executar `node src/server.js` em `src/back`; acessar `http://localhost:3000` (a rota `/teste-conexao` confirma a ligação com o banco) | Desenvolvimento e testes |
 | Publicado | `[URL]` | Demonstração |
 
-## 7. Riscos arquiteturais
+## 8. Riscos arquiteturais
 
 | Risco | Probabilidade | Impacto | Mitigação | Issue |
 |---|---|---|---|---|
@@ -130,9 +155,9 @@ flowchart TB
 | Não existe fluxo para verificar uma instituição (`verificada` fica sempre falso) nem para confirmar o status da doação (`Prometida`) | Média | Média | Definir papel de administrador e rotas de verificação e confirmação | `#XX` |
 | Doações concorrentes na mesma necessidade ficam enfileiradas pela trava de linha | Baixa | Baixa | Aceitável no volume atual; reavaliar se houver alta concorrência | `#XX` |
 
-## 8. Correspondência arquitetura × código
+## 9. Correspondência arquitetura × código
 
-| Elemento do diagrama | Evidência no código/configuração |
+| Elemento do diagrama | Evidência no código |
 |---|---|
 | Front-end web | [`src/front/index.html`](../src/front/index.html), [`app.js`](../src/front/app.js), [`style.css`](../src/front/style.css) |
 | API REST (Express) | [`src/back/src/server.js`](../src/back/src/server.js) |
