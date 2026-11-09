@@ -138,7 +138,53 @@ python -m http.server 8000 --directory docs/prototipo
 
 Abra `http://localhost:8000/ConectaAcao%20Prototipo.dc.html`. O protótipo cobre as dez telas das funcionalidades prioritárias; o mapa tela → requisito → critério de aceitação está em [`docs/prototipo/README.md`](docs/prototipo/README.md).
 
-### Aplicação
+## FrontEnd
+
+### Como executar e verificar
+
+```bash
+# 1. Entrar no back-end e instalar as dependências
+cd src/back
+npm install
+
+# 2. Criar o banco e as tabelas (MySQL 8.0.16+)
+mysql -u root -p < sql/schema.sql
+
+# 3. Configurar o ambiente (defina JWT_SECRET e os dados do banco)
+cp .env.example .env
+
+# 4. Subir a aplicação
+node src/server.js
+```
+
+**Verificação pelo navegador:** abrir `http://localhost:3000`, cadastrar uma instituição com uma necessidade inicial, cadastrar um doador, fazer login com o doador e registrar uma doação.
+
+**Verificação pela API (opcional):**
+
+```bash
+# Conexão com o banco
+curl http://localhost:3000/teste-conexao
+
+# Cadastro de doador
+curl -X POST http://localhost:3000/cadastro/doador \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Maria","email":"maria@email.com","senha":"123456","confirmarSenha":"123456"}'
+
+# Login (copie o "token" da resposta)
+curl -X POST http://localhost:3000/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"maria@email.com","senha":"123456"}'
+
+# Doação (use o id de uma necessidade existente e o token obtido)
+curl -X POST http://localhost:3000/doacoes \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -d '{"necessidade_id":1,"quantidade":2}'
+```
+
+**Resultado esperado:** `201` com `"Doação registrada e quantidade atualizada com sucesso!"`. Para conferir o saldo no banco: `SELECT id, item, quantidadeFaltante FROM necessidades;`. Uma doação maior que o saldo retorna `400`, e uma requisição sem token retorna `401`.
+
+
 
 **Back-end** (incremento da Sprint 3) — API REST com os fluxos de cadastro, login e promessa de doação:
 
