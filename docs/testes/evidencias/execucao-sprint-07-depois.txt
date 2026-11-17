@@ -1,0 +1,325 @@
+# Execução: npm test (src/back)
+# Data: 16/11/2026 23:00
+# Node: v18.16.1
+# Base: commit 01f10c2 + correção dos hooks de teste
+
+
+> conectaacao-backend@1.0.0 test
+> node --test
+
+TAP version 13
+# Subtest: RF-01 — cadastro de doador
+    # Subtest: cria usuário e doador, normaliza o e-mail e não guarda a senha em texto puro
+    ok 1 - cria usuário e doador, normaliza o e-mail e não guarda a senha em texto puro
+      ---
+      duration_ms: 139.2106
+      ...
+    # Subtest: e-mail repetido devolve 409 e não cria nada
+    ok 2 - e-mail repetido devolve 409 e não cria nada
+      ---
+      duration_ms: 113.5717
+      ...
+    # Subtest: senhas diferentes devolvem 400 sem abrir transação
+    ok 3 - senhas diferentes devolvem 400 sem abrir transação
+      ---
+      duration_ms: 1.2843
+      ...
+    # Subtest: falha ao gravar o perfil desfaz o usuário (rollback)
+    ok 4 - falha ao gravar o perfil desfaz o usuário (rollback)
+      ---
+      duration_ms: 117.5122
+      ...
+    1..4
+ok 1 - RF-01 — cadastro de doador
+  ---
+  duration_ms: 375.0846
+  ...
+# Subtest: RF-02 — cadastro de instituição
+    # Subtest: cria usuário, instituição não verificada e necessidades com saldo cheio
+    ok 1 - cria usuário, instituição não verificada e necessidades com saldo cheio
+      ---
+      duration_ms: 116.1066
+      ...
+    # Subtest: descrição ausente é gravada como null
+    ok 2 - descrição ausente é gravada como null
+      ---
+      duration_ms: 117.8796
+      ...
+    # Subtest: necessidade inválida devolve 400 e nada é gravado
+    ok 3 - necessidade inválida devolve 400 e nada é gravado
+      ---
+      duration_ms: 0.6715
+      ...
+    # Subtest: falha ao gravar uma necessidade desfaz usuário e instituição (rollback)
+    ok 4 - falha ao gravar uma necessidade desfaz usuário e instituição (rollback)
+      ---
+      duration_ms: 113.2835
+      ...
+    1..4
+ok 2 - RF-02 — cadastro de instituição
+  ---
+  duration_ms: 348.9504
+  ...
+# Subtest: RF-03 — login
+    # Subtest: doador recebe token com id, tipo e perfilId
+    ok 1 - doador recebe token com id, tipo e perfilId
+      ---
+      duration_ms: 227.9115
+      ...
+    # Subtest: instituição recebe o perfil com o campo verificada
+    ok 2 - instituição recebe o perfil com o campo verificada
+      ---
+      duration_ms: 225.8645
+      ...
+    # Subtest: senha errada e e-mail inexistente dão a mesma resposta 401
+    ok 3 - senha errada e e-mail inexistente dão a mesma resposta 401
+      ---
+      duration_ms: 213.6715
+      ...
+    # Subtest: usuário sem perfil devolve 500
+    ok 4 - usuário sem perfil devolve 500
+      ---
+      duration_ms: 214.8953
+      ...
+    1..4
+ok 3 - RF-03 — login
+  ---
+  duration_ms: 882.8113
+  ...
+# Subtest: RF-19 / RNF-06 — promessa de doação
+    # Subtest: registra a doação como Prometida e reduz o saldo
+    ok 1 - registra a doação como Prometida e reduz o saldo
+      ---
+      duration_ms: 212.7187
+      ...
+    # Subtest: doar exatamente o saldo zera a necessidade
+    ok 2 - doar exatamente o saldo zera a necessidade
+      ---
+      duration_ms: 201.1677
+      ...
+    # Subtest: quantidade acima do saldo devolve 400 e não altera nada
+    ok 3 - quantidade acima do saldo devolve 400 e não altera nada
+      ---
+      duration_ms: 212.2414
+      ...
+    # Subtest: necessidade inexistente devolve 404
+    ok 4 - necessidade inexistente devolve 404
+      ---
+      duration_ms: 230.2528
+      ...
+    # Subtest: entrada inválida devolve 400 antes de abrir transação
+    ok 5 - entrada inválida devolve 400 antes de abrir transação
+      ---
+      duration_ms: 231.666
+      ...
+    # Subtest: falha ao reduzir o saldo desfaz a doação inserida (rollback)
+    ok 6 - falha ao reduzir o saldo desfaz a doação inserida (rollback)
+      ---
+      duration_ms: 240.3726
+      ...
+    1..6
+ok 4 - RF-19 / RNF-06 — promessa de doação
+  ---
+  duration_ms: 1329.241
+  ...
+# Subtest: usuarioRepository
+    # Subtest: buscarPorEmail devolve a primeira linha ou null
+    ok 1 - buscarPorEmail devolve a primeira linha ou null
+      ---
+      duration_ms: 1.3896
+      ...
+    # Subtest: criar devolve o insertId
+    ok 2 - criar devolve o insertId
+      ---
+      duration_ms: 0.214
+      ...
+    1..2
+ok 2 - usuarioRepository
+  ---
+  duration_ms: 3.4992
+  ...
+# Subtest: doadorRepository
+    # Subtest: criar e buscarPorUsuarioId
+    ok 1 - criar e buscarPorUsuarioId
+      ---
+      duration_ms: 1.599
+      ...
+    1..1
+ok 3 - doadorRepository
+  ---
+  duration_ms: 1.7681
+  ...
+# Subtest: instituicaoRepository
+    # Subtest: criar grava como não verificada e converte descrição vazia em null
+    ok 1 - criar grava como não verificada e converte descrição vazia em null
+      ---
+      duration_ms: 0.9494
+      ...
+    # Subtest: buscarPorUsuarioId devolve o perfil ou null
+    ok 2 - buscarPorUsuarioId devolve o perfil ou null
+      ---
+      duration_ms: 0.2611
+      ...
+    # Subtest: listarResumo conta necessidades abertas e só põe LIMIT quando pedido
+    ok 3 - listarResumo conta necessidades abertas e só põe LIMIT quando pedido
+      ---
+      duration_ms: 0.4875
+      ...
+    # Subtest: listarResumo converte o limite para inteiro antes de escrever no SQL
+    ok 4 - listarResumo converte o limite para inteiro antes de escrever no SQL
+      ---
+      duration_ms: 0.2401
+      ...
+    # Subtest: buscarPorId devolve a instituição ou null
+    ok 5 - buscarPorId devolve a instituição ou null
+      ---
+      duration_ms: 0.2288
+      ...
+    1..5
+ok 4 - instituicaoRepository
+  ---
+  duration_ms: 2.4472
+  ...
+# Subtest: necessidadeRepository
+    # Subtest: criar inicia quantidadeFaltante igual à quantidadeTotal
+    ok 1 - criar inicia quantidadeFaltante igual à quantidadeTotal
+      ---
+      duration_ms: 0.2547
+      ...
+    # Subtest: buscarSaldoComTrava usa FOR UPDATE e devolve o número ou null
+    ok 2 - buscarSaldoComTrava usa FOR UPDATE e devolve o número ou null
+      ---
+      duration_ms: 0.3947
+      ...
+    # Subtest: buscarSaldoComTrava devolve 0 (e não null) quando o saldo está zerado
+    ok 3 - buscarSaldoComTrava devolve 0 (e não null) quando o saldo está zerado
+      ---
+      duration_ms: 0.1318
+      ...
+    # Subtest: reduzirSaldo subtrai a quantidade da necessidade certa
+    ok 4 - reduzirSaldo subtrai a quantidade da necessidade certa
+      ---
+      duration_ms: 0.1467
+      ...
+    # Subtest: listarPorInstituicao filtra pela instituição
+    ok 5 - listarPorInstituicao filtra pela instituição
+      ---
+      duration_ms: 0.3362
+      ...
+    1..5
+ok 5 - necessidadeRepository
+  ---
+  duration_ms: 1.4421
+  ...
+# Subtest: doacaoRepository
+    # Subtest: criarPrometida grava o status Prometida e devolve o id
+    ok 1 - criarPrometida grava o status Prometida e devolve o id
+      ---
+      duration_ms: 0.2472
+      ...
+    1..1
+ok 6 - doacaoRepository
+  ---
+  duration_ms: 0.328
+  ...
+# Subtest: doacaoService.registrarDoacao
+    # Subtest: com saldo suficiente: cria a doação e reduz o saldo, na mesma conexão da transação
+    ok 1 - com saldo suficiente: cria a doação e reduz o saldo, na mesma conexão da transação
+      ---
+      duration_ms: 4.5723
+      ...
+    # Subtest: doar exatamente o saldo é permitido
+    ok 2 - doar exatamente o saldo é permitido
+      ---
+      duration_ms: 2.7021
+      ...
+    # Subtest: necessidade inexistente: 404 e nada é gravado
+    ok 3 - necessidade inexistente: 404 e nada é gravado
+      ---
+      duration_ms: 2.2052
+      ...
+    # Subtest: saldo zerado não é confundido com necessidade inexistente: 400
+    ok 4 - saldo zerado não é confundido com necessidade inexistente: 400
+      ---
+      duration_ms: 0.7947
+      ...
+    # Subtest: quantidade acima do saldo: 400 e nada é gravado
+    ok 5 - quantidade acima do saldo: 400 e nada é gravado
+      ---
+      duration_ms: 0.6698
+      ...
+    # Subtest: erro do repository propaga e provoca rollback
+    ok 6 - erro do repository propaga e provoca rollback
+      ---
+      duration_ms: 0.9545
+      ...
+    1..6
+ok 3 - doacaoService.registrarDoacao
+  ---
+  duration_ms: 17.3764
+  ...
+# Subtest: authService
+    # Subtest: cadastrarDoador com e-mail já existente: 409 e o perfil não é criado
+    ok 1 - cadastrarDoador com e-mail já existente: 409 e o perfil não é criado
+      ---
+      duration_ms: 2.785
+      ...
+    # Subtest: cadastrarDoador: o usuário é criado com hash e o perfil recebe o id gerado
+    ok 2 - cadastrarDoador: o usuário é criado com hash e o perfil recebe o id gerado
+      ---
+      duration_ms: 150.1988
+      ...
+    # Subtest: cadastrarInstituicao: cada necessidade usa o id da instituição criada
+    ok 3 - cadastrarInstituicao: cada necessidade usa o id da instituição criada
+      ---
+      duration_ms: 110.5731
+      ...
+    # Subtest: autenticarLogin: sem perfil de doador, procura a instituição
+    ok 4 - autenticarLogin: sem perfil de doador, procura a instituição
+      ---
+      duration_ms: 14.3241
+      ...
+    # Subtest: autenticarLogin: doador não dispara a consulta de instituição
+    ok 5 - autenticarLogin: doador não dispara a consulta de instituição
+      ---
+      duration_ms: 6.7521
+      ...
+    1..5
+ok 4 - authService
+  ---
+  duration_ms: 285.6664
+  ...
+# Subtest: instituicaoService
+    # Subtest: destaques: pede no máximo 4 e normaliza selo e contagem
+    ok 1 - destaques: pede no máximo 4 e normaliza selo e contagem
+      ---
+      duration_ms: 0.5918
+      ...
+    # Subtest: listar: não limita a quantidade
+    ok 2 - listar: não limita a quantidade
+      ---
+      duration_ms: 0.3097
+      ...
+    # Subtest: detalhar: calcula o prometido de cada necessidade
+    ok 3 - detalhar: calcula o prometido de cada necessidade
+      ---
+      duration_ms: 0.8453
+      ...
+    # Subtest: detalhar: instituição inexistente devolve 404 sem buscar necessidades
+    ok 4 - detalhar: instituição inexistente devolve 404 sem buscar necessidades
+      ---
+      duration_ms: 0.3549
+      ...
+    1..4
+ok 5 - instituicaoService
+  ---
+  duration_ms: 2.2907
+  ...
+1..12
+# tests 12
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5309.27
