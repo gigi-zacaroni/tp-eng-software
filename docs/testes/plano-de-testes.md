@@ -189,7 +189,7 @@ Todos os casos automatizados partem da mesma pré-condição: banco em memória 
 - **Causa:** os hooks `beforeEach` e `afterEach` estavam no nível do arquivo. No Node 18, aceito pelo `package.json` (`>=18.11`), esses hooks não rodam antes dos testes dentro de um `describe`. O banco em memória não era recriado e um teste via os dados do anterior.
 - **Correção:** registrar os hooks dentro de cada `describe` em [`caracterizacao.test.js`](../../src/back/tests/caracterizacao.test.js) e [`services.test.js`](../../src/back/tests/services.test.js).
 - **Severidade:** alta para a confiabilidade da suíte. O código da aplicação não tinha defeito.
-- **Issue:** `#XX` (a criar pelo grupo).
+- **Issue:** [#35](https://github.com/gigi-zacaroni/tp-eng-software/issues/35).
 
 ## 8. Comandos de execução
 

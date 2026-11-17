@@ -67,10 +67,10 @@ A saída deve terminar com `# fail 0`.
 
 | Issue | Item | Responsável | Critério de conclusão | Situação |
 |---|---|---|---|---|
-| `#XX` | `D-11` Plano de testes | Arthur e Karol | Casos com pré-condição, dados, passos, resultado esperado e requisito. | Concluída |
-| `#XX` | `T-22` Executar a suíte e salvar a saída | Arthur e Karol | Saída salva e ligada aos casos CT. | Concluída |
-| `#XX` | `T-23` Corrigir DEF-01 | Arthur e Karol | Reteste com `# fail 0`. | Concluída |
-| `#XX` | `T-24` Executar o caso manual `CT-13` | Arthur e Karol | Fluxo no navegador com MySQL e capturas salvas. | Pendente (Sprint 8) |
+| [#33](https://github.com/gigi-zacaroni/tp-eng-software/issues/33) | `D-11` Plano de testes | Arthur e Karol | Casos com pré-condição, dados, passos, resultado esperado e requisito. | Concluída |
+| [#34](https://github.com/gigi-zacaroni/tp-eng-software/issues/34) | `T-22` Executar a suíte e salvar a saída | Arthur e Karol | Saída salva e ligada aos casos CT. | Concluída |
+| [#35](https://github.com/gigi-zacaroni/tp-eng-software/issues/35) | `T-23` Corrigir DEF-01 | Arthur e Karol | Reteste com `# fail 0`. | Concluída |
+| [#36](https://github.com/gigi-zacaroni/tp-eng-software/issues/36) | `T-24` Executar o caso manual `CT-13` | Arthur e Karol | Fluxo no navegador com MySQL e capturas salvas. | Pendente (Sprint 8) |
 
 ### Acompanhamento
 
@@ -87,7 +87,7 @@ A saída deve terminar com `# fail 0`.
 | Correção do DEF-01 | [`43ff986`](https://github.com/gigi-zacaroni/tp-eng-software/commit/43ff986139cdc1bda8cb6acc662861231210666c), [`10f2616`](https://github.com/gigi-zacaroni/tp-eng-software/commit/10f2616756103dcb931425f6681883b19f4c045c) | Hooks movidos para dentro de cada `describe`. |
 | Reteste | [`61dabb8`](https://github.com/gigi-zacaroni/tp-eng-software/commit/61dabb8bb3f9d44042f2ebef48b4792e38ccd13e) | Saída com os 47 testes aprovados. |
 | Plano de testes | [`551154e`](https://github.com/gigi-zacaroni/tp-eng-software/commit/551154e6681ed2f93e26d9ec52ec5baecd1fe454), [`229900f`](https://github.com/gigi-zacaroni/tp-eng-software/commit/229900f9a521716d7126a77ccb28b4c25e6b3840), [`004a94b`](https://github.com/gigi-zacaroni/tp-eng-software/commit/004a94b09d55352076111cf9aff2c20bb1750f14) | Escopo e riscos, depois casos e matriz, depois resultados. |
-| Issue do defeito | `#XX` | Registro do DEF-01. |
+| Issue do defeito | [#35](https://github.com/gigi-zacaroni/tp-eng-software/issues/35) | Registro do DEF-01. |
 | Backlog atualizado | [`backlog-produto.md`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-07/docs/backlog-produto.md) | Itens `D-11`, `T-22`, `T-23` e `T-24`. |
 
 ### Rastreabilidade
