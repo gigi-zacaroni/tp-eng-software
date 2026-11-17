@@ -19,6 +19,8 @@ const { mock } = test;
 let transacao;
 
 // A transação continua sendo do service/db.js: só fingimos a conexão do pool.
+// Os hooks ficam dentro de cada describe pelo mesmo motivo de caracterizacao.test.js.
+function usarConexaoFalsa() {
 test.beforeEach(() => {
   transacao = [];
   const conexao = {
@@ -31,6 +33,7 @@ test.beforeEach(() => {
   mock.method(pool, 'getConnection', async () => conexao);
 });
 test.afterEach(() => mock.restoreAll());
+}
 
 async function erroDe(promessa) {
   try { await promessa; } catch (e) { return e; }
@@ -38,6 +41,8 @@ async function erroDe(promessa) {
 }
 
 test.describe('doacaoService.registrarDoacao', () => {
+  usarConexaoFalsa();
+
   test('com saldo suficiente: cria a doação e reduz o saldo, na mesma conexão da transação', async () => {
     const saldo = mock.method(necessidadeRepository, 'buscarSaldoComTrava', async () => 10);
     const criar = mock.method(doacaoRepository, 'criarPrometida', async () => 55);
@@ -100,6 +105,8 @@ test.describe('doacaoService.registrarDoacao', () => {
 });
 
 test.describe('authService', () => {
+  usarConexaoFalsa();
+
   test('cadastrarDoador com e-mail já existente: 409 e o perfil não é criado', async () => {
     mock.method(usuarioRepository, 'buscarPorEmail', async () => ({ id: 1, senha: 'x' }));
     const criarUsuario = mock.method(usuarioRepository, 'criar', async () => 1);
@@ -174,6 +181,8 @@ test.describe('authService', () => {
 });
 
 test.describe('instituicaoService', () => {
+  usarConexaoFalsa();
+
   const instituicaoService = require('../src/services/instituicaoService');
 
   test('destaques: pede no máximo 4 e normaliza selo e contagem', async () => {
