@@ -163,6 +163,34 @@ Todos os casos automatizados partem da mesma pré-condição: banco em memória 
 - A sprint é aprovada quando todos os casos de prioridade 1 passam e não há defeito crítico aberto.
 - Um caso reprovado gera uma Issue com a label `bug` e só volta a ser aprovado após o reteste.
 
+## 7. Primeiras execuções da Sprint 7
+
+| Caso | 1ª execução | Reteste após DEF-01 |
+|---|---|---|
+| CT-01 | Aprovado | Aprovado |
+| CT-02 | Reprovado | Aprovado |
+| CT-03 | Reprovado | Aprovado |
+| CT-04 | Reprovado | Aprovado |
+| CT-05 | Reprovado | Aprovado |
+| CT-06 | Aprovado | Aprovado |
+| CT-07 | Reprovado | Aprovado |
+| CT-08 | Reprovado | Aprovado |
+| CT-09 | Reprovado | Aprovado |
+| CT-10 | Reprovado | Aprovado |
+| CT-11 | Aprovado | Aprovado |
+| CT-12 | Aprovado | Aprovado |
+| CT-13 | Não executado | Planejado para a Sprint 8 |
+
+**Totais:** a 1ª execução teve 32 testes aprovados e 15 reprovados ([saída](evidencias/execucao-sprint-07-antes.txt)). O reteste teve 47 aprovados e nenhum reprovado ([saída](evidencias/execucao-sprint-07-depois.txt)). Ambiente: Node 18.16.1, base no commit `01f10c2`.
+
+### Defeito DEF-01: estado vazando entre testes no Node 18
+
+- **Sintoma:** 15 testes falharam com "Já existe uma conta com este e-mail".
+- **Causa:** os hooks `beforeEach` e `afterEach` estavam no nível do arquivo. No Node 18, aceito pelo `package.json` (`>=18.11`), esses hooks não rodam antes dos testes dentro de um `describe`. O banco em memória não era recriado e um teste via os dados do anterior.
+- **Correção:** registrar os hooks dentro de cada `describe` em [`caracterizacao.test.js`](../../src/back/tests/caracterizacao.test.js) e [`services.test.js`](../../src/back/tests/services.test.js).
+- **Severidade:** alta para a confiabilidade da suíte. O código da aplicação não tinha defeito.
+- **Issue:** `#XX` (a criar pelo grupo).
+
 ## 8. Comandos de execução
 
 ```bash
