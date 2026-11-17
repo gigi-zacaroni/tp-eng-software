@@ -33,9 +33,13 @@ async function erroDe(promessa) {
   assert.fail('era esperado um erro, mas a chamada terminou sem falhar');
 }
 
+// Os hooks ficam dentro de cada describe. No Node 18, hooks no nível do
+// arquivo não rodam antes dos testes aninhados e o banco vazava entre eles.
 let db;
-test.beforeEach(() => { db = bancoFalso.instalar(); });
-test.afterEach(() => { db.restaurar(); });
+function usarBancoFalso() {
+  test.beforeEach(() => { db = bancoFalso.instalar(); });
+  test.afterEach(() => { db.restaurar(); });
+}
 
 const doador = (extra = {}) => ({
   nome: 'Ana', email: 'ANA@Email.com', senha: 'segredo123', confirmarSenha: 'segredo123', ...extra
@@ -49,6 +53,8 @@ const instituicao = (extra = {}) => ({
 });
 
 test.describe('RF-01 — cadastro de doador', () => {
+  usarBancoFalso();
+
   test('cria usuário e doador, normaliza o e-mail e não guarda a senha em texto puro', async () => {
     const res = await chamar(authController.cadastrarDoador, { body: doador() });
 
@@ -86,6 +92,8 @@ test.describe('RF-01 — cadastro de doador', () => {
 });
 
 test.describe('RF-02 — cadastro de instituição', () => {
+  usarBancoFalso();
+
   test('cria usuário, instituição não verificada e necessidades com saldo cheio', async () => {
     const res = await chamar(authController.cadastrarInstituicao, { body: instituicao() });
 
@@ -124,6 +132,8 @@ test.describe('RF-02 — cadastro de instituição', () => {
 });
 
 test.describe('RF-03 — login', () => {
+  usarBancoFalso();
+
   test('doador recebe token com id, tipo e perfilId', async () => {
     await chamar(authController.cadastrarDoador, { body: doador() });
     const res = await chamar(authController.login, { body: { email: ' Ana@email.com ', senha: 'segredo123' } });
@@ -163,6 +173,8 @@ test.describe('RF-03 — login', () => {
 });
 
 test.describe('RF-19 / RNF-06 — promessa de doação', () => {
+  usarBancoFalso();
+
   async function prepararNecessidade() {
     await chamar(authController.cadastrarInstituicao, { body: instituicao() });
     await chamar(authController.cadastrarDoador, { body: doador() });
