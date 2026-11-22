@@ -37,7 +37,10 @@ CREATE TABLE IF NOT EXISTS necessidades (
   item VARCHAR(255) NOT NULL,
   quantidadeTotal INT UNSIGNED NOT NULL,
   quantidadeFaltante INT UNSIGNED NOT NULL,
-  CONSTRAINT ck_necessidades_qtd CHECK (quantidadeFaltante <= quantidadeTotal),
+  CONSTRAINT ck_necessidades_qtd CHECK (
+    quantidadeTotal > 0
+    AND quantidadeFaltante <= quantidadeTotal
+  ),
   CONSTRAINT fk_necessidades_instituicao FOREIGN KEY (instituicao_id) REFERENCES instituicoes (id)
 ) ENGINE=InnoDB;
 
@@ -48,6 +51,10 @@ CREATE TABLE IF NOT EXISTS doacoes (
   quantidade INT UNSIGNED NOT NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'Prometida',
   dataPromessa DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT ck_doacoes_quantidade CHECK (quantidade > 0),
+  CONSTRAINT ck_doacoes_status CHECK (
+    status IN ('Prometida', 'A caminho', 'Entregue', 'Cancelada')
+  ),
   CONSTRAINT fk_doacoes_doador FOREIGN KEY (doador_id) REFERENCES doadores (id),
   CONSTRAINT fk_doacoes_necessidade FOREIGN KEY (necessidade_id) REFERENCES necessidades (id)
 ) ENGINE=InnoDB;

@@ -14,4 +14,18 @@ router.post(
   asyncHandler(doacaoController.criarDoacao)
 );
 
+router.patch(
+  '/:id/avancar',
+  autenticar,
+  exigirTipo('doador'),
+  asyncHandler(doacaoController.avancarDoacao)
+);
+
+router.patch(
+  '/:id/cancelar',
+  autenticar,
+  exigirTipo('doador'),
+  asyncHandler(doacaoController.cancelarDoacao)
+);
+
 module.exports = router;

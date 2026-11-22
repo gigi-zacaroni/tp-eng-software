@@ -59,6 +59,48 @@ Antes de iniciar a API, crie o banco executando
 [`sql/schema.sql`](sql/schema.sql) no MySQL. Os critérios de validação das tabelas
 e relações estão em [`sql/README.md`](sql/README.md).
 
+## Ambiente e massa de dados para testes
+
+Os testes manuais e automatizados podem usar o banco isolado
+`conectaacao_test`, evitando alterações na base local da aplicação.
+
+No MySQL, execute na ordem:
+
+```sql
+SOURCE caminho/absoluto/para/src/back/sql/reset_test.sql;
+SOURCE caminho/absoluto/para/src/back/sql/seed_test.sql;
+```
+
+Use `reset_test.sql` para recriar as tabelas vazias e `seed_test.sql` para
+carregar os usuários, doadores, instituições, necessidades e doações de teste.
+Depois execute a API com `DB_NAME=conectaacao_test` no `.env`.
+
+Para executar os testes de integração com MySQL real:
+
+```powershell
+$env:DB_INTEGRATION = "1"
+$env:DB_HOST = "localhost"
+$env:DB_PORT = "3306"
+$env:DB_USER = "root"
+$env:DB_PASSWORD = "sua-senha"
+npm test
+```
+
+Os testes de integração usam o banco `conectaacao_test`, recriam sua estrutura
+e recarregam a massa antes de cada cenário. Sem `DB_INTEGRATION=1`, apenas os
+testes com banco em memória são executados.
+
+## Rotas do fluxo de doações
+
+- `POST /doacoes`: cria uma promessa e reduz o saldo da necessidade.
+- `PATCH /doacoes/:id/avancar`: avança apenas a doação do doador autenticado;
+  os estados válidos seguem `Prometida -> A caminho -> Entregue`.
+- `PATCH /doacoes/:id/cancelar`: cancela uma doação em `Prometida` ou
+  `A caminho` e devolve a quantidade ao saldo da necessidade.
+
+Chaves estrangeiras e constraints invocadas por estas operações são convertidas
+em respostas HTTP claras pelo handler central de erros.
+
 ## Testar
 
 ```powershell

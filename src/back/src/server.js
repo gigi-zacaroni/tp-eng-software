@@ -38,6 +38,15 @@ app.use((erro, req, res, next) => {
   if (erro.code === 'ER_DUP_ENTRY') {
     return res.status(409).json({ erro: 'Já existe um registro com estes dados.' });
   }
+  if (erro.code === 'ER_NO_REFERENCED_ROW_2') {
+    return res.status(400).json({ erro: 'Doador ou necessidade informado não existe.' });
+  }
+  if (
+    erro.code === 'ER_CHECK_CONSTRAINT_VIOLATED' ||
+    erro.code === 'ER_TRUNCATED_WRONG_VALUE_FOR_FIELD'
+  ) {
+    return res.status(400).json({ erro: 'Dados da doação violam uma regra do banco.' });
+  }
   console.error(erro);
   res.status(500).json({ erro: 'Erro interno do servidor.' });
 });

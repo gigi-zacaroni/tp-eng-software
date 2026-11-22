@@ -29,4 +29,16 @@ async function reduzirSaldo(conexao, necessidadeId, quantidade) {
   );
 }
 
-module.exports = { criar, buscarSaldoComTrava, reduzirSaldo };
+async function restaurarSaldo(conexao, necessidadeId, quantidade) {
+  await conexao.execute(
+    'UPDATE necessidades SET quantidadeFaltante = quantidadeFaltante + ? WHERE id = ?',
+    [quantidade, necessidadeId]
+  );
+}
+
+module.exports = {
+  criar,
+  buscarSaldoComTrava,
+  reduzirSaldo,
+  restaurarSaldo
+};

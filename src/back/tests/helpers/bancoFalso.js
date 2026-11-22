@@ -77,6 +77,27 @@ function criarExecutor(banco, falhas) {
       if (n) n.quantidadeFaltante -= params[0];
       return [{ affectedRows: n ? 1 : 0 }];
     }
+    if (/^SELECT id, doador_id, necessidade_id, quantidade, status FROM doacoes WHERE id = \? FOR UPDATE$/.test(sql)) {
+      return [banco.doacoes
+        .filter((d) => d.id === params[0])
+        .map((d) => ({
+          id: d.id,
+          doador_id: d.doador_id,
+          necessidade_id: d.necessidade_id,
+          quantidade: d.quantidade,
+          status: d.status
+        }))];
+    }
+    if (/^UPDATE doacoes SET status = \? WHERE id = \?$/.test(sql)) {
+      const d = banco.doacoes.find((x) => x.id === params[1]);
+      if (d) d.status = params[0];
+      return [{ affectedRows: d ? 1 : 0 }];
+    }
+    if (/^UPDATE necessidades SET quantidadeFaltante = quantidadeFaltante \+ \? WHERE id = \?$/.test(sql)) {
+      const n = banco.necessidades.find((x) => x.id === params[1]);
+      if (n) n.quantidadeFaltante += params[0];
+      return [{ affectedRows: n ? 1 : 0 }];
+    }
     throw new Error(`BancoFalso: instrução SQL não suportada: ${sql}`);
   };
 }

@@ -99,6 +99,67 @@ test.describe('doacaoService.registrarDoacao', () => {
   });
 });
 
+test.describe('doacaoService.avancarDoacao e cancelarDoacao', () => {
+  test('avança Prometida para A caminho e depois para Entregue', async () => {
+    const atualizar = mock.method(doacaoRepository, 'atualizarStatus', async () => 1);
+    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 4,
+      status: 'Prometida'
+    }));
+
+    assert.equal(await doacaoService.avancarDoacao(1, 5), 'A caminho');
+    assert.deepEqual(atualizar.mock.calls[0].arguments.slice(1), [5, 'A caminho']);
+  });
+
+  test('rejeita avanço de doação de outro doador', async () => {
+    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 99,
+      necessidade_id: 2,
+      quantidade: 4,
+      status: 'Prometida'
+    }));
+
+    const erro = await erroDe(doacaoService.avancarDoacao(1, 5));
+
+    assert.equal(erro.status, 403);
+  });
+
+  test('cancelar restaura o saldo e muda o status para Cancelada', async () => {
+    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 4,
+      status: 'A caminho'
+    }));
+    const restaurar = mock.method(necessidadeRepository, 'restaurarSaldo', async () => {});
+    const atualizar = mock.method(doacaoRepository, 'atualizarStatus', async () => 1);
+
+    await doacaoService.cancelarDoacao(1, 5);
+
+    assert.deepEqual(restaurar.mock.calls[0].arguments.slice(1), [2, 4]);
+    assert.deepEqual(atualizar.mock.calls[0].arguments.slice(1), [5, 'Cancelada']);
+  });
+
+  test('não cancela uma doação já entregue', async () => {
+    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 4,
+      status: 'Entregue'
+    }));
+
+    const erro = await erroDe(doacaoService.cancelarDoacao(1, 5));
+
+    assert.equal(erro.status, 409);
+  });
+});
+
 test.describe('authService', () => {
   test('cadastrarDoador com e-mail já existente: 409 e o perfil não é criado', async () => {
     mock.method(usuarioRepository, 'buscarPorEmail', async () => ({ id: 1, senha: 'x' }));

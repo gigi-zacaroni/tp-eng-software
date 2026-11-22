@@ -98,4 +98,26 @@ test.describe('doacaoRepository', () => {
     assert.match(c.chamadas[0].sql, /'Prometida'\)$/);
     assert.deepEqual(c.chamadas[0].params, [1, 2, 3]);
   });
+
+  test('buscarPorIdComTrava usa FOR UPDATE', async () => {
+    const c = conexaoFalsa([[{
+      id: 21,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 3,
+      status: 'Prometida'
+    }]]);
+
+    const doacao = await doacaoRepository.buscarPorIdComTrava(c, 21);
+
+    assert.equal(doacao.status, 'Prometida');
+    assert.match(c.chamadas[0].sql, /FROM doacoes WHERE id = \? FOR UPDATE$/);
+  });
+
+  test('atualizarStatus grava o novo status pelo id', async () => {
+    const c = conexaoFalsa([{ affectedRows: 1 }]);
+    await doacaoRepository.atualizarStatus(c, 21, 'A caminho');
+    assert.equal(c.chamadas[0].sql, 'UPDATE doacoes SET status = ? WHERE id = ?');
+    assert.deepEqual(c.chamadas[0].params, ['A caminho', 21]);
+  });
 });

@@ -220,4 +220,37 @@ test.describe('RF-19 / RNF-06 — promessa de doação', () => {
     assert.equal(db.banco.doacoes.length, 0, 'a doação não pode ficar sem o saldo ter sido abatido');
     assert.equal(db.banco.necessidades[0].quantidadeFaltante, 10);
   });
+
+  test('avança o acompanhamento na ordem Prometida -> A caminho -> Entregue', async () => {
+    await prepararNecessidade();
+    await chamar(doacaoController.criarDoacao, pedido({ necessidade_id: 1, quantidade: 3 }));
+    const req = { usuario: { perfilId: 1 }, params: { id: '1' }, body: {} };
+
+    const aCaminho = await chamar(doacaoController.avancarDoacao, req);
+    assert.equal(aCaminho.statusCode, 200);
+    assert.equal(aCaminho.corpo.status, 'A caminho');
+    assert.equal(db.banco.doacoes[0].status, 'A caminho');
+
+    await chamar(doacaoController.avancarDoacao, req);
+    assert.equal(db.banco.doacoes[0].status, 'Entregue');
+  });
+
+  test('cancelamento restaura o saldo e rejeita doação de outro doador', async () => {
+    await prepararNecessidade();
+    await chamar(doacaoController.criarDoacao, pedido({ necessidade_id: 1, quantidade: 3 }));
+
+    const outroDoador = await erroDe(chamar(doacaoController.cancelarDoacao, {
+      usuario: { perfilId: 99 },
+      params: { id: '1' }
+    }));
+    assert.equal(outroDoador.status, 403);
+
+    const resposta = await chamar(doacaoController.cancelarDoacao, {
+      usuario: { perfilId: 1 },
+      params: { id: '1' }
+    });
+    assert.equal(resposta.statusCode, 200);
+    assert.equal(db.banco.doacoes[0].status, 'Cancelada');
+    assert.equal(db.banco.necessidades[0].quantidadeFaltante, 10);
+  });
 });
