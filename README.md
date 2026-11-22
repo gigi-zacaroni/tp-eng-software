@@ -143,16 +143,58 @@ Abra `http://localhost:8000/ConectaAcao%20Prototipo.dc.html`. O protótipo cobre
 **Back-end** (incremento da Sprint 3) — API REST com os fluxos de cadastro, login e promessa de doação:
 
 ```bash
-# 1. No MySQL Workbench, execute src/back/sql/schema.sql (requer MySQL 8.0.16+)
+# 1. Prepare o MySQL 8.0.16 ou superior
+# No MySQL Workbench, abra src/back/sql/schema.sql e execute o script completo.
+# Ele cria o banco conectaacao_db e as tabelas usuarios, doadores,
+# instituicoes, necessidades e doacoes.
 
 # 2. Dependências e configuração
 cd src/back
-npm install
-copy .env.example .env      # preencha DB_PASSWORD e JWT_SECRET
+npm ci
+copy .env.example .env
+# Preencha DB_PASSWORD e JWT_SECRET. Para a API, DB_NAME deve ser conectaacao_db.
 
 # 3. Subir a API
 npm start                   # http://localhost:3000/teste-conexao
 ```
+
+### Banco e testes da Sprint 7
+
+Os testes de integração usam um banco separado, `conectaacao_test`, para não
+alterar os dados da aplicação:
+
+```sql
+-- Execute no MySQL, na ordem:
+SOURCE caminho/absoluto/para/tp-eng-software/src/back/sql/reset_test.sql;
+SOURCE caminho/absoluto/para/tp-eng-software/src/back/sql/seed_test.sql;
+```
+
+`reset_test.sql` recria as tabelas vazias do ambiente de teste.
+`seed_test.sql` limpa e recarrega os dados controlados: dois doadores, duas
+instituições, três necessidades e duas doações. Os usuários de teste usam a
+senha `segredo123`.
+
+No PowerShell, execute os testes automatizados dentro de `src/back`:
+
+```powershell
+npm test
+```
+
+Os testes unitários usam um banco em memória e não precisam do MySQL real.
+Para habilitar também os testes de integração com MySQL:
+
+```powershell
+$env:DB_INTEGRATION = "1"
+$env:DB_HOST = "localhost"
+$env:DB_PORT = "3306"
+$env:DB_USER = "root"
+$env:DB_PASSWORD = "sua-senha"
+npm test
+```
+
+Configure o `.env` da API com `DB_NAME=conectaacao_test` somente ao executar a
+API contra o ambiente de testes. O código exige MySQL 8.0.16 ou superior por
+causa das constraints `CHECK`.
 
 Os endpoints disponíveis e como verificá-los estão em [`docs/sprints/sprint-03.md` §4](docs/sprints/sprint-03.md#4-incremento-da-aplicação-web--075-ponto). A API ainda não expõe rotas de consulta — ver [#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20).
 
