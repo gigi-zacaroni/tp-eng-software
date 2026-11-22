@@ -36,9 +36,19 @@ async function restaurarSaldo(conexao, necessidadeId, quantidade) {
   );
 }
 
+async function listarPorInstituicao(conexao, instituicaoId) {
+  const [linhas] = await conexao.execute(
+    `SELECT id, item, quantidadeTotal, quantidadeFaltante
+     FROM necessidades WHERE instituicao_id = ? ORDER BY id`,
+    [instituicaoId]
+  );
+  return linhas;
+}
+
 module.exports = {
   criar,
   buscarSaldoComTrava,
   reduzirSaldo,
-  restaurarSaldo
+  restaurarSaldo,
+  listarPorInstituicao
 };

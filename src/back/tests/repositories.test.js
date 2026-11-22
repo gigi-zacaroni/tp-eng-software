@@ -62,6 +62,32 @@ test.describe('instituicaoRepository', () => {
     assert.deepEqual(await instituicaoRepository.buscarPorUsuarioId(conexaoFalsa([[perfil]]), 9), perfil);
     assert.equal(await instituicaoRepository.buscarPorUsuarioId(conexaoFalsa([[]]), 9), null);
   });
+
+  test('listarResumo conta necessidades abertas e só põe LIMIT quando pedido', async () => {
+    const linhas = [{ id: 1, nome: 'ONG', descricao: null, verificada: 0, necessidadesAbertas: 2 }];
+    const todas = conexaoFalsa([linhas]);
+    assert.deepEqual(await instituicaoRepository.listarResumo(todas), linhas);
+    assert.match(todas.chamadas[0].sql, /n\.quantidadeFaltante > 0\) AS necessidadesAbertas/);
+    assert.match(todas.chamadas[0].sql, /ORDER BY necessidadesAbertas DESC, i\.id$/);
+
+    const quatro = conexaoFalsa([linhas]);
+    await instituicaoRepository.listarResumo(quatro, 4);
+    assert.match(quatro.chamadas[0].sql, / LIMIT 4$/);
+  });
+
+  test('listarResumo converte o limite para inteiro antes de escrever no SQL', async () => {
+    const c = conexaoFalsa([[]]);
+    await instituicaoRepository.listarResumo(c, 2.9);
+    assert.match(c.chamadas[0].sql, / LIMIT 2$/);
+  });
+
+  test('buscarPorId devolve a instituição ou null', async () => {
+    const inst = { id: 3, nome: 'ONG', descricao: 'x', verificada: 1 };
+    const c = conexaoFalsa([[inst]]);
+    assert.deepEqual(await instituicaoRepository.buscarPorId(c, 3), inst);
+    assert.deepEqual(c.chamadas[0].params, [3]);
+    assert.equal(await instituicaoRepository.buscarPorId(conexaoFalsa([[]]), 3), null);
+  });
 });
 
 test.describe('necessidadeRepository', () => {
@@ -88,6 +114,14 @@ test.describe('necessidadeRepository', () => {
     await necessidadeRepository.reduzirSaldo(c, 1, 3);
     assert.equal(c.chamadas[0].sql, 'UPDATE necessidades SET quantidadeFaltante = quantidadeFaltante - ? WHERE id = ?');
     assert.deepEqual(c.chamadas[0].params, [3, 1]);
+  });
+
+  test('listarPorInstituicao filtra pela instituição', async () => {
+    const linhas = [{ id: 1, item: 'Ração', quantidadeTotal: 10, quantidadeFaltante: 4 }];
+    const c = conexaoFalsa([linhas]);
+    assert.deepEqual(await necessidadeRepository.listarPorInstituicao(c, 5), linhas);
+    assert.match(c.chamadas[0].sql, /WHERE instituicao_id = \? ORDER BY id$/);
+    assert.deepEqual(c.chamadas[0].params, [5]);
   });
 });
 
