@@ -19,6 +19,8 @@ const { mock } = test;
 let transacao;
 
 // A transação continua sendo do service/db.js: só fingimos a conexão do pool.
+// Os hooks ficam dentro de cada describe pelo mesmo motivo de caracterizacao.test.js.
+function usarConexaoFalsa() {
 test.beforeEach(() => {
   transacao = [];
   const conexao = {
@@ -31,6 +33,7 @@ test.beforeEach(() => {
   mock.method(pool, 'getConnection', async () => conexao);
 });
 test.afterEach(() => mock.restoreAll());
+}
 
 async function erroDe(promessa) {
   try { await promessa; } catch (e) { return e; }
@@ -38,6 +41,8 @@ async function erroDe(promessa) {
 }
 
 test.describe('doacaoService.registrarDoacao', () => {
+  usarConexaoFalsa();
+
   test('com saldo suficiente: cria a doação e reduz o saldo, na mesma conexão da transação', async () => {
     const saldo = mock.method(necessidadeRepository, 'buscarSaldoComTrava', async () => 10);
     const criar = mock.method(doacaoRepository, 'criarPrometida', async () => 55);
@@ -161,6 +166,8 @@ test.describe('doacaoService.avancarDoacao e cancelarDoacao', () => {
 });
 
 test.describe('authService', () => {
+  usarConexaoFalsa();
+
   test('cadastrarDoador com e-mail já existente: 409 e o perfil não é criado', async () => {
     mock.method(usuarioRepository, 'buscarPorEmail', async () => ({ id: 1, senha: 'x' }));
     const criarUsuario = mock.method(usuarioRepository, 'criar', async () => 1);
@@ -231,5 +238,52 @@ test.describe('authService', () => {
 
     assert.equal(res.tipo, 'doador');
     assert.equal(buscarInst.mock.callCount(), 0);
+  });
+});
+
+test.describe('instituicaoService', () => {
+  usarConexaoFalsa();
+
+  const instituicaoService = require('../src/services/instituicaoService');
+
+  test('destaques: pede no máximo 4 e normaliza selo e contagem', async () => {
+    const listar = mock.method(instituicaoRepository, 'listarResumo', async () => [
+      { id: 1, nome: 'ONG', descricao: null, verificada: 1, necessidadesAbertas: '2' }
+    ]);
+
+    const res = await instituicaoService.destaques();
+
+    assert.equal(listar.mock.calls[0].arguments[1], 4);
+    assert.deepEqual(res, [{ id: 1, nome: 'ONG', resumo: '', verificada: true, necessidadesAbertas: 2 }]);
+  });
+
+  test('listar: não limita a quantidade', async () => {
+    const listar = mock.method(instituicaoRepository, 'listarResumo', async () => []);
+    assert.deepEqual(await instituicaoService.listar(), []);
+    assert.equal(listar.mock.calls[0].arguments[1], undefined);
+  });
+
+  test('detalhar: calcula o prometido de cada necessidade', async () => {
+    mock.method(instituicaoRepository, 'buscarPorId', async () => ({ id: 2, nome: 'ONG', descricao: 'Abrigo', verificada: 0 }));
+    mock.method(necessidadeRepository, 'listarPorInstituicao', async () => [
+      { id: 7, item: 'Ração', quantidadeTotal: 10, quantidadeFaltante: 4 }
+    ]);
+
+    const res = await instituicaoService.detalhar(2);
+
+    assert.equal(res.verificada, false);
+    assert.deepEqual(res.necessidades, [
+      { id: 7, item: 'Ração', desejado: 10, prometido: 6, faltante: 4, percentualPrometido: 60 }
+    ]);
+  });
+
+  test('detalhar: instituição inexistente devolve 404 sem buscar necessidades', async () => {
+    mock.method(instituicaoRepository, 'buscarPorId', async () => null);
+    const listar = mock.method(necessidadeRepository, 'listarPorInstituicao', async () => []);
+
+    const erro = await erroDe(instituicaoService.detalhar(99));
+
+    assert.equal(erro.status, 404);
+    assert.equal(listar.mock.callCount(), 0);
   });
 });
