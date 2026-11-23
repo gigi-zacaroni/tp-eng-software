@@ -29,6 +29,13 @@ async function reduzirSaldo(conexao, necessidadeId, quantidade) {
   );
 }
 
+async function restaurarSaldo(conexao, necessidadeId, quantidade) {
+  await conexao.execute(
+    'UPDATE necessidades SET quantidadeFaltante = quantidadeFaltante + ? WHERE id = ?',
+    [quantidade, necessidadeId]
+  );
+}
+
 async function listarPorInstituicao(conexao, instituicaoId) {
   const [linhas] = await conexao.execute(
     `SELECT id, item, quantidadeTotal, quantidadeFaltante
@@ -38,4 +45,10 @@ async function listarPorInstituicao(conexao, instituicaoId) {
   return linhas;
 }
 
-module.exports = { criar, buscarSaldoComTrava, reduzirSaldo, listarPorInstituicao };
+module.exports = {
+  criar,
+  buscarSaldoComTrava,
+  reduzirSaldo,
+  restaurarSaldo,
+  listarPorInstituicao
+};

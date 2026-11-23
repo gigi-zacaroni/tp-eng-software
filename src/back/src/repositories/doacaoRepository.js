@@ -10,4 +10,25 @@ async function criarPrometida(conexao, { doadorId, necessidadeId, quantidade }) 
   return resultado.insertId;
 }
 
-module.exports = { criarPrometida };
+async function buscarPorIdComTrava(conexao, doacaoId) {
+  const [linhas] = await conexao.execute(
+    `SELECT id, doador_id, necessidade_id, quantidade, status
+     FROM doacoes WHERE id = ? FOR UPDATE`,
+    [doacaoId]
+  );
+  return linhas[0] || null;
+}
+
+async function atualizarStatus(conexao, doacaoId, status) {
+  const [resultado] = await conexao.execute(
+    'UPDATE doacoes SET status = ? WHERE id = ?',
+    [status, doacaoId]
+  );
+  return resultado.affectedRows;
+}
+
+module.exports = {
+  criarPrometida,
+  buscarPorIdComTrava,
+  atualizarStatus
+};

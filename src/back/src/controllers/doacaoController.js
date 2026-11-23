@@ -26,6 +26,28 @@ async function criarDoacao(req, res) {
   });
 }
 
+async function avancarDoacao(req, res) {
+  const doacaoId = inteiroPositivo(req.params.id);
+  if (doacaoId === null) {
+    throw new ErroHttp(400, 'id da doação inválido.');
+  }
+
+  const status = await doacaoService.avancarDoacao(req.usuario.perfilId, doacaoId);
+  res.json({ mensagem: 'Status da doação atualizado.', status });
+}
+
+async function cancelarDoacao(req, res) {
+  const doacaoId = inteiroPositivo(req.params.id);
+  if (doacaoId === null) {
+    throw new ErroHttp(400, 'id da doação inválido.');
+  }
+
+  await doacaoService.cancelarDoacao(req.usuario.perfilId, doacaoId);
+  res.json({ mensagem: 'Doação cancelada e quantidade devolvida à necessidade.' });
+}
+
 module.exports = {
-  criarDoacao
+  criarDoacao,
+  avancarDoacao,
+  cancelarDoacao
 };

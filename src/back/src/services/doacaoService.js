@@ -35,6 +35,56 @@ async function registrarDoacao(doadorId, necessidadeId, quantidade) {
   });
 }
 
+async function avancarDoacao(doadorId, doacaoId) {
+  return comTransacao(async (conexao) => {
+    const doacao = await doacaoRepository.buscarPorIdComTrava(conexao, doacaoId);
+
+    if (!doacao) {
+      throw new ErroHttp(404, 'Doação não encontrada.');
+    }
+    if (doacao.doador_id !== doadorId) {
+      throw new ErroHttp(403, 'A doação pertence a outro doador.');
+    }
+
+    const proximoStatus = {
+      'Prometida': 'A caminho',
+      'A caminho': 'Entregue'
+    }[doacao.status];
+
+    if (!proximoStatus) {
+      throw new ErroHttp(409, 'O status da doação não permite novo avanço.');
+    }
+
+    await doacaoRepository.atualizarStatus(conexao, doacaoId, proximoStatus);
+    return proximoStatus;
+  });
+}
+
+async function cancelarDoacao(doadorId, doacaoId) {
+  return comTransacao(async (conexao) => {
+    const doacao = await doacaoRepository.buscarPorIdComTrava(conexao, doacaoId);
+
+    if (!doacao) {
+      throw new ErroHttp(404, 'Doação não encontrada.');
+    }
+    if (doacao.doador_id !== doadorId) {
+      throw new ErroHttp(403, 'A doação pertence a outro doador.');
+    }
+    if (doacao.status !== 'Prometida' && doacao.status !== 'A caminho') {
+      throw new ErroHttp(409, 'A doação não pode mais ser cancelada.');
+    }
+
+    await necessidadeRepository.restaurarSaldo(
+      conexao,
+      doacao.necessidade_id,
+      doacao.quantidade
+    );
+    await doacaoRepository.atualizarStatus(conexao, doacaoId, 'Cancelada');
+  });
+}
+
 module.exports = {
-  registrarDoacao
+  registrarDoacao,
+  avancarDoacao,
+  cancelarDoacao
 };
