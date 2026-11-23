@@ -98,6 +98,31 @@ function criarExecutor(banco, falhas) {
       if (n) n.quantidadeFaltante += params[0];
       return [{ affectedRows: n ? 1 : 0 }];
     }
+    if (/^SELECT i\.id, i\.nome, i\.descricao, i\.verificada, \(SELECT COUNT\(\*\) FROM necessidades n WHERE n\.instituicao_id = i\.id AND n\.quantidadeFaltante > 0\) AS necessidadesAbertas FROM instituicoes i ORDER BY necessidadesAbertas DESC, i\.id( LIMIT \d+)?$/.test(sql)) {
+      const limite = /LIMIT (\d+)$/.exec(sql);
+      const linhas = banco.instituicoes
+        .map((i) => ({
+          id: i.id,
+          nome: i.nome,
+          descricao: i.descricao,
+          verificada: i.verificada ? 1 : 0,
+          necessidadesAbertas: banco.necessidades
+            .filter((n) => n.instituicao_id === i.id && n.quantidadeFaltante > 0).length
+        }))
+        .sort((a, b) => b.necessidadesAbertas - a.necessidadesAbertas || a.id - b.id);
+      return [limite ? linhas.slice(0, Number(limite[1])) : linhas];
+    }
+    if (/^SELECT id, nome, descricao, verificada FROM instituicoes WHERE id = \?$/.test(sql)) {
+      return [banco.instituicoes
+        .filter((i) => i.id === params[0])
+        .map((i) => ({ id: i.id, nome: i.nome, descricao: i.descricao, verificada: i.verificada ? 1 : 0 }))];
+    }
+    if (/^SELECT id, item, quantidadeTotal, quantidadeFaltante FROM necessidades WHERE instituicao_id = \? ORDER BY id$/.test(sql)) {
+      return [banco.necessidades
+        .filter((n) => n.instituicao_id === params[0])
+        .sort((a, b) => a.id - b.id)
+        .map((n) => ({ id: n.id, item: n.item, quantidadeTotal: n.quantidadeTotal, quantidadeFaltante: n.quantidadeFaltante }))];
+    }
     throw new Error(`BancoFalso: instrução SQL não suportada: ${sql}`);
   };
 }

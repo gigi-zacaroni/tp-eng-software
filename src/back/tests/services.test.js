@@ -105,6 +105,8 @@ test.describe('doacaoService.registrarDoacao', () => {
 });
 
 test.describe('doacaoService.avancarDoacao e cancelarDoacao', () => {
+  usarConexaoFalsa();
+
   test('avança Prometida para A caminho e depois para Entregue', async () => {
     const atualizar = mock.method(doacaoRepository, 'atualizarStatus', async () => 1);
     mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({

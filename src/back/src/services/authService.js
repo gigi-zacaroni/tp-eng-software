@@ -14,6 +14,9 @@ const {
   inteiroPositivo
 } = require('../utils/validacao');
 
+// Limite da coluna instituicoes.nome (VARCHAR(255)) no sql/schema.sql.
+const LIMITE_NOME = 255;
+
 // --- Funções Privadas do Serviço ---
 
 function gerarToken(payload) {
@@ -67,6 +70,12 @@ async function cadastrarInstituicao(acesso, sobre, necessidadesIniciais) {
 
   if (!sobre || !textoNaoVazio(sobre.nome)) {
     throw new ErroHttp(400, 'Seção "sobre a instituição" incompleta (nome é obrigatório).');
+  }
+  if (sobre.nome.trim().length > LIMITE_NOME) {
+    throw new ErroHttp(400, `O nome da instituição deve ter no máximo ${LIMITE_NOME} caracteres.`);
+  }
+  if (sobre.descricao !== undefined && sobre.descricao !== null && typeof sobre.descricao !== 'string') {
+    throw new ErroHttp(400, 'A descrição da instituição deve ser um texto.');
   }
 
   const necessidades = [];
