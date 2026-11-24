@@ -16,6 +16,15 @@ export function montarCabecalho() {
     item.hidden = item.dataset.perfil !== tipo;
   });
 
+  // Destaca o item da página atual (<body data-pagina="...">).
+  const pagina = document.body.dataset.pagina;
+  if (pagina) {
+    document.querySelectorAll(`[data-menu="${pagina}"]`).forEach((item) => {
+      item.classList.add('ativo');
+      item.setAttribute('aria-current', 'page');
+    });
+  }
+
   if (sessao) {
     const nome = sessao.perfil.nome;
     const avatar = document.querySelector('#avatar');

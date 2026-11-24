@@ -48,14 +48,55 @@ async function requisitar(caminho, { metodo = 'GET', corpo, autenticado = false 
 
   const dados = await resposta.json().catch(() => ({}));
   if (!resposta.ok) {
+    // Token vencido ou inválido: a sessão salva não serve mais.
+    if (resposta.status === 401 && autenticado) limparSessao();
     throw new ErroApi(resposta.status, dados.erro || 'Erro inesperado.');
   }
   return dados;
 }
 
+// RF-05: telas protegidas mandam o visitante ao login e guardam o destino.
+export function exigirSessao() {
+  const sessao = obterSessao();
+  if (!sessao) {
+    const volta = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.replace(`/pages/login.html?volta=${volta}`);
+  }
+  return sessao;
+}
+
 // RF-06: público, sem token.
 export function destaques() {
   return requisitar('/instituicoes/destaques');
+}
+
+// RF-07: listagem completa, só para autenticados.
+export function listarInstituicoes() {
+  return requisitar('/instituicoes', { autenticado: true });
+}
+
+// RF-10 e RF-18: detalhe com necessidades e progresso.
+export function detalharInstituicao(id) {
+  return requisitar(`/instituicoes/${encodeURIComponent(id)}`, { autenticado: true });
+}
+
+// RF-19: o doador vem do token; o corpo leva só a necessidade e a quantidade.
+export function registrarDoacao(necessidadeId, quantidade) {
+  return requisitar('/doacoes', {
+    metodo: 'POST',
+    autenticado: true,
+    corpo: { necessidade_id: necessidadeId, quantidade }
+  });
+}
+
+// RF-01
+export function cadastrarDoador(dados) {
+  return requisitar('/cadastro/doador', { metodo: 'POST', corpo: dados });
+}
+
+// RF-02 e RF-14: acesso, dados da instituição e necessidades iniciais.
+export function cadastrarInstituicao(dados) {
+  return requisitar('/cadastro/instituicao', { metodo: 'POST', corpo: dados });
 }
 
 // RF-03

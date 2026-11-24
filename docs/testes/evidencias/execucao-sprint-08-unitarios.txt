@@ -1,0 +1,146 @@
+# Sprint 8 - npm test sem MySQL (DB_INTEGRATION ausente)
+# Data: 23/11/2026 22:49 | Node v18.16.1 | branch sprint-08/validacao-front | base 3663125 + tests/telas-http.test.js
+# Comando: cd src/back && node --test --test-reporter=spec (equivalente ao npm test, com saida legivel)
+
+▶ RF-01 — cadastro de doador
+  ✔ cria usuário e doador, normaliza o e-mail e não guarda a senha em texto puro (76.1225ms)
+  ✔ e-mail repetido devolve 409 e não cria nada (62.4411ms)
+  ✔ senhas diferentes devolvem 400 sem abrir transação (0.6253ms)
+  ✔ falha ao gravar o perfil desfaz o usuário (rollback) (68.3033ms)
+▶ RF-01 — cadastro de doador (208.8278ms)
+
+▶ RF-02 — cadastro de instituição
+  ✔ cria usuário, instituição não verificada e necessidades com saldo cheio (66.0569ms)
+  ✔ descrição ausente é gravada como null (81.7043ms)
+  ✔ necessidade inválida devolve 400 e nada é gravado (0.8481ms)
+  ✔ falha ao gravar uma necessidade desfaz usuário e instituição (rollback) (81.0515ms)
+▶ RF-02 — cadastro de instituição (230.1687ms)
+
+▶ RF-03 — login
+  ✔ doador recebe token com id, tipo e perfilId (172.0974ms)
+  ✔ instituição recebe o perfil com o campo verificada (131.2825ms)
+  ✔ senha errada e e-mail inexistente dão a mesma resposta 401 (128.2844ms)
+  ✔ usuário sem perfil devolve 500 (164.7116ms)
+▶ RF-03 — login (596.9514ms)
+
+▶ RF-19 / RNF-06 — promessa de doação
+  ✔ registra a doação como Prometida e reduz o saldo (124.4451ms)
+  ✔ doar exatamente o saldo zera a necessidade (128.8578ms)
+  ✔ quantidade acima do saldo devolve 400 e não altera nada (124.1107ms)
+  ✔ necessidade inexistente devolve 404 (119.0975ms)
+  ✔ entrada inválida devolve 400 antes de abrir transação (121.9412ms)
+  ✔ falha ao reduzir o saldo desfaz a doação inserida (rollback) (126.3328ms)
+  ✔ avança o acompanhamento na ordem Prometida -> A caminho -> Entregue (122.6259ms)
+  ✔ cancelamento restaura o saldo e rejeita doação de outro doador (124.6273ms)
+▶ RF-19 / RNF-06 — promessa de doação (992.5073ms)
+
+✔ integração MySQL — fluxo de doações (0.6085ms)
+▶ RF-02 — POST /cadastro/instituicao
+  ✔ cadastro válido devolve 201 e grava instituição não verificada com necessidades (156.8098ms)
+  ✔ nome da instituição ausente devolve 400 e nada é gravado (8.1981ms)
+  ✔ seção de acesso ausente devolve 400 (6.0673ms)
+  ✔ e-mail inválido devolve 400 (7.1071ms)
+  ✔ senhas diferentes devolvem 400 (3.7325ms)
+  ✔ necessidade com quantidade zero devolve 400 e nada é gravado (4.9498ms)
+  ✔ JSON malformado devolve 400 tratado (4.6498ms)
+  ✔ e-mail já cadastrado devolve 409 (81.3641ms)
+  ✔ nome maior que 255 caracteres devolve 400 (limite da coluna) (5.002ms)
+  ✔ descrição que não é texto devolve 400, e não 500 (3.7634ms)
+▶ RF-02 — POST /cadastro/instituicao (5078.5521ms)
+
+▶ RF-06 / RF-07 — listagem de instituições
+  ✔ GET /instituicoes sem token devolve 401 (6.1913ms)
+  ✔ GET /instituicoes com token inválido devolve 401 (4.9276ms)
+  ✔ fluxo completo: cadastra, faz login e lista as instituições (200) (263.0196ms)
+  ✔ GET /instituicoes/destaques é público e devolve no máximo 4 (320.3682ms)
+▶ RF-06 / RF-07 — listagem de instituições (5048.2514ms)
+
+▶ RF-10 — detalhe da instituição
+  ✔ devolve a instituição com necessidades e percentual prometido (141.5641ms)
+  ✔ instituição inexistente devolve 404 (146.595ms)
+  ✔ id inválido devolve 400 (137.1938ms)
+▶ RF-10 — detalhe da instituição (5055.6823ms)
+
+▶ RF-01 — POST /cadastro/doador
+  ✔ cadastro válido devolve 201 (65.8708ms)
+  ✔ nome ausente devolve 400 (4.0951ms)
+  ✔ corpo vazio devolve 400 (2.9182ms)
+▶ RF-01 — POST /cadastro/doador (5045.1843ms)
+
+▶ usuarioRepository
+  ✔ buscarPorEmail devolve a primeira linha ou null (1.0113ms)
+  ✔ criar devolve o insertId (0.117ms)
+▶ usuarioRepository (2.5972ms)
+
+▶ doadorRepository
+  ✔ criar e buscarPorUsuarioId (0.8375ms)
+▶ doadorRepository (0.9185ms)
+
+▶ instituicaoRepository
+  ✔ criar grava como não verificada e converte descrição vazia em null (0.3497ms)
+  ✔ buscarPorUsuarioId devolve o perfil ou null (0.1071ms)
+  ✔ listarResumo conta necessidades abertas e só põe LIMIT quando pedido (0.2408ms)
+  ✔ listarResumo converte o limite para inteiro antes de escrever no SQL (0.1096ms)
+  ✔ buscarPorId devolve a instituição ou null (0.1167ms)
+▶ instituicaoRepository (1.0575ms)
+
+▶ necessidadeRepository
+  ✔ criar inicia quantidadeFaltante igual à quantidadeTotal (0.139ms)
+  ✔ buscarSaldoComTrava usa FOR UPDATE e devolve o número ou null (0.2034ms)
+  ✔ buscarSaldoComTrava devolve 0 (e não null) quando o saldo está zerado (0.0626ms)
+  ✔ reduzirSaldo subtrai a quantidade da necessidade certa (0.0725ms)
+  ✔ listarPorInstituicao filtra pela instituição (0.1823ms)
+▶ necessidadeRepository (0.7571ms)
+
+▶ doacaoRepository
+  ✔ criarPrometida grava o status Prometida e devolve o id (0.2485ms)
+  ✔ buscarPorIdComTrava usa FOR UPDATE (0.3177ms)
+  ✔ atualizarStatus grava o novo status pelo id (0.1396ms)
+▶ doacaoRepository (0.8994ms)
+
+▶ doacaoService.registrarDoacao
+  ✔ com saldo suficiente: cria a doação e reduz o saldo, na mesma conexão da transação (1.4274ms)
+  ✔ doar exatamente o saldo é permitido (0.4654ms)
+  ✔ necessidade inexistente: 404 e nada é gravado (0.4353ms)
+  ✔ saldo zerado não é confundido com necessidade inexistente: 400 (0.3222ms)
+  ✔ quantidade acima do saldo: 400 e nada é gravado (0.352ms)
+  ✔ erro do repository propaga e provoca rollback (0.571ms)
+▶ doacaoService.registrarDoacao (4.8435ms)
+
+▶ doacaoService.avancarDoacao e cancelarDoacao
+  ✔ avança Prometida para A caminho e depois para Entregue (0.7153ms)
+  ✔ rejeita avanço de doação de outro doador (0.3807ms)
+  ✔ cancelar restaura o saldo e muda o status para Cancelada (0.65ms)
+  ✔ não cancela uma doação já entregue (0.7493ms)
+▶ doacaoService.avancarDoacao e cancelarDoacao (3.0111ms)
+
+▶ authService
+  ✔ cadastrarDoador com e-mail já existente: 409 e o perfil não é criado (0.9177ms)
+  ✔ cadastrarDoador: o usuário é criado com hash e o perfil recebe o id gerado (77.63ms)
+  ✔ cadastrarInstituicao: cada necessidade usa o id da instituição criada (64.2496ms)
+  ✔ autenticarLogin: sem perfil de doador, procura a instituição (7.7367ms)
+  ✔ autenticarLogin: doador não dispara a consulta de instituição (3.3982ms)
+▶ authService (154.2371ms)
+
+▶ instituicaoService
+  ✔ destaques: pede no máximo 4 e normaliza selo e contagem (0.3743ms)
+  ✔ listar: não limita a quantidade (0.1509ms)
+  ✔ detalhar: calcula o prometido de cada necessidade (0.286ms)
+  ✔ detalhar: instituição inexistente devolve 404 sem buscar necessidades (0.1795ms)
+▶ instituicaoService (1.083ms)
+
+▶ CT-25: telas da Sprint 8 servidas e ligadas à API
+  ✔ o Express serve as páginas e os módulos das telas (98.9598ms)
+  ✔ cadastro pela tela: instituição e doador recebem 201 e o login devolve o perfil usado no cabeçalho (249.0283ms)
+  ✔ listagem: sem sessão devolve 401 (a tela manda para o login); com sessão traz os campos dos cards (201.6509ms)
+  ✔ detalhe e doação: quantidade acima do saldo é recusada; doação válida reduz o que falta (213.0914ms)
+  ✔ instituição logada consulta o detalhe, mas a API recusa a doação (403) (133.1898ms)
+▶ CT-25: telas da Sprint 8 servidas e ligadas à API (5075.6213ms)
+
+ℹ tests 19
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 30637.7029
