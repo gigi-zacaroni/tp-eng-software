@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Criar conta · ConectaAção</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body data-pagina="cadastro">
+  <header class="cabecalho">
+    <div class="conteudo">
+      <a class="marca" href="/index.html"><span class="marca-icone">C</span>ConectaAção</a>
+
+      <nav class="menu" aria-label="Principal">
+        <a class="menu-item" href="/pages/login.html?volta=%2Fpages%2Finstituicoes.html" data-perfil="visitante">Instituições</a>
+        <a class="menu-item" href="/pages/instituicoes.html" data-perfil="doador" data-menu="instituicoes" hidden>Instituições</a>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Favoritos<small>em breve</small></span>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Minhas doações<small>em breve</small></span>
+        <a class="menu-item" href="/pages/instituicoes.html" data-perfil="instituicao" data-menu="instituicoes" hidden>Instituições</a>
+        <span class="menu-item em-breve" aria-disabled="true" data-perfil="instituicao" hidden>Painel da instituição<small>em breve</small></span>
+      </nav>
+
+      <div class="acoes-usuario" id="acoes-visitante">
+        <a class="link-forte" href="/pages/login.html">Entrar</a>
+        <a class="botao" href="/pages/cadastro.html">Criar conta</a>
+      </div>
+      <div class="acoes-usuario" id="acoes-logado" hidden>
+        <div class="usuario">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-texto">
+            <span class="usuario-nome" id="usuario-nome"></span>
+            <span class="usuario-papel" id="usuario-papel"></span>
+          </span>
+        </div>
+        <button type="button" class="botao-sair" id="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- RF-01, RF-02 e RF-14: cadastro de doador e de instituição -->
+  <main class="conteudo pagina">
+    <div class="pagina-titulo">
+      <h1>Criar conta</h1>
+      <p>Escolha como você vai participar da plataforma.</p>
+    </div>
+
+    <div class="abas" role="tablist" aria-label="Tipo de conta">
+      <button type="button" class="aba" role="tab" id="aba-doador" aria-controls="form-doador" aria-selected="true">Sou doador</button>
+      <button type="button" class="aba" role="tab" id="aba-instituicao" aria-controls="form-instituicao" aria-selected="false">Sou instituição</button>
+    </div>
+
+    <form class="cartao cadastro" id="form-doador" role="tabpanel" aria-labelledby="aba-doador" novalidate>
+      <div class="campo"><label for="d-nome">Nome</label><input id="d-nome" name="nome" autocomplete="name"></div>
+      <div class="campo"><label for="d-email">E-mail</label><input id="d-email" name="email" type="email" autocomplete="email"></div>
+      <div class="campo"><label for="d-senha">Senha</label><input id="d-senha" name="senha" type="password" autocomplete="new-password"></div>
+      <div class="campo"><label for="d-confirmar">Confirmar senha</label><input id="d-confirmar" name="confirmarSenha" type="password" autocomplete="new-password"></div>
+      <p class="mensagem-erro" role="alert"></p>
+      <button type="submit" class="botao botao-grande">Criar conta de doador</button>
+    </form>
+
+    <form class="cartao cadastro" id="form-instituicao" role="tabpanel" aria-labelledby="aba-instituicao" novalidate hidden>
+      <fieldset>
+        <legend>Acesso</legend>
+        <div class="campo"><label for="i-email">E-mail</label><input id="i-email" name="email" type="email" autocomplete="email"></div>
+        <div class="campo"><label for="i-senha">Senha</label><input id="i-senha" name="senha" type="password" autocomplete="new-password"></div>
+        <div class="campo"><label for="i-confirmar">Confirmar senha</label><input id="i-confirmar" name="confirmarSenha" type="password" autocomplete="new-password"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Sobre a instituição</legend>
+        <div class="campo"><label for="i-nome">Nome</label><input id="i-nome" name="nome" autocomplete="organization"></div>
+        <div class="campo"><label for="i-descricao">Descrição</label><textarea id="i-descricao" name="descricao" rows="3"></textarea></div>
+      </fieldset>
+      <fieldset>
+        <legend>Necessidades iniciais (opcional)</legend>
+        <div id="necessidades"></div>
+        <button type="button" class="botao botao-contorno" id="add-necessidade">+ Adicionar item</button>
+      </fieldset>
+      <p class="mensagem-erro" role="alert"></p>
+      <button type="submit" class="botao botao-grande">Cadastrar instituição</button>
+    </form>
+  </main>
+
+  <script type="module" src="/js/cabecalho.js"></script>
+  <script type="module" src="/js/cadastro.js"></script>
+</body>
+</html>
