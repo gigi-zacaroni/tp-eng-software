@@ -175,7 +175,13 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 
 - **Requisitos:** `RF-01`, `RF-02`, `RF-05`, `RF-06`, `RF-07`, `RF-10`, `RNF-04`
 - **Pré-condição:** app Express real em porta efêmera, com o banco em memória.
-- **Dados e resultado esperado:** cadastro válido devolve 201; nome, acesso, e-mail, senhas ou quantidade inválidos devolvem 400 sem gravar nada; nome com mais de 255 caracteres e descrição que não é texto devolvem 400, e não 500; e-mail repetido devolve 409; `GET /instituicoes` sem token ou com token inválido devolve 401; os destaques são públicos e trazem no máximo 4; o detalhe devolve 404 para id inexistente e 400 para id inválido.
+- **Resultado esperado:**
+  - Cadastro válido: 201.
+  - Dados inválidos, nome com mais de 255 caracteres ou descrição numérica: 400, sem gravar nada.
+  - E-mail repetido: 409.
+  - `GET /instituicoes` sem token ou com token inválido: 401.
+  - Destaques: públicos, no máximo 4.
+  - Detalhe: 404 para id inexistente e 400 para id inválido.
 - **Automação:** [`instituicoes-http.test.js`](../../src/back/tests/instituicoes-http.test.js) (20 testes), escrito por Geovana Zacaroni (@gigi-zacaroni).
 
 ### CT-21 Listagem, busca e acesso protegido (manual)
@@ -220,8 +226,13 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 
 - **Requisitos:** `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-18`, `RF-19`, `RN-02`
 - **Pré-condição:** app Express real em porta efêmera, com o banco em memória.
-- **Dados:** os mesmos corpos que `js/cadastro.js` e `js/instituicao.js` enviam: instituição `Casa Esperança` com `Cobertores` (quantidade `"40"`, como texto); doador `carla@email.com`; doações de `41` e `5`.
-- **Resultado esperado:** as 6 páginas e os módulos JS respondem 200; os cadastros respondem 201 e o login devolve `tipo` e `perfil.nome`; a listagem sem token responde 401 e, com token, traz os campos que os cards usam; doar 41 responde 400; doar 5 responde 201 com o número da doação, e o detalhe passa a mostrar falta `35` e 13%; a instituição consulta o detalhe, mas recebe 403 ao tentar doar.
+- **Dados:** os mesmos que as telas enviam. Instituição `Casa Esperança` com `Cobertores` (quantidade `"40"`), doador `carla@email.com` e doações de `41` e `5`.
+- **Resultado esperado:**
+  - Páginas e módulos JS: 200.
+  - Cadastros: 201. O login devolve `tipo` e `perfil.nome`.
+  - Listagem: 401 sem token. Com token, traz os campos dos cards.
+  - Doar 41: 400. Doar 5: 201, e o detalhe passa a mostrar falta `35` e 13%.
+  - Instituição: consulta o detalhe, mas recebe 403 ao tentar doar.
 - **Automação:** [`telas-http.test.js`](../../src/back/tests/telas-http.test.js) (5 testes). Não substitui o `CT-21` a `CT-23`, que olham a tela no navegador.
 
 ## 5. Matriz requisito × caso de teste
