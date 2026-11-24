@@ -8,9 +8,9 @@ Os testes usam o executor nativo do Node (`node:test`), sem Jest nem outras depe
 
 | Documento | Conteúdo |
 |---|---|
-| [`docs/testes/plano-de-testes.md`](../docs/testes/plano-de-testes.md) | Planejamento completo e casos de teste (`CT-01` a `CT-13`). |
-| [`docs/testes/evidencias-testes.md`](../docs/testes/evidencias-testes.md) | Registro das execuções. |
-| [`docs/testes/evidencias/`](../docs/testes/evidencias/) | Saídas do `npm test` salvas na Sprint 7. |
+| [`docs/testes/plano-de-testes.md`](../docs/testes/plano-de-testes.md) | Planejamento completo e casos de teste (`CT-01` a `CT-24`). |
+| [`docs/testes/evidencias-testes.md`](../docs/testes/evidencias-testes.md) | Resultados finais da Sprint 8: totais, defeitos e requisitos atendidos. |
+| [`docs/testes/evidencias/`](../docs/testes/evidencias/) | Saídas do `npm test` (Sprints 7 e 8) e capturas dos testes manuais. |
 | [`docs/sprints/sprint-07.md`](../docs/sprints/sprint-07.md) | Índice da Sprint 7: fluxo coberto, evidências e defeitos corrigidos. |
 | [`docs/rastreabilidade.md`](../docs/rastreabilidade.md) | Vínculo requisito → Issue → código → teste → evidência. |
 
@@ -70,20 +70,30 @@ Arquivo: `instituicoes-http.test.js`.
 | `CT-11` | `services.test.js`, `instituicoes-http.test.js` | `RF-06`, `RF-07`, `RF-10` |
 | `CT-12` | `repositories.test.js` | `RF-01`, `RF-02`, `RF-07`, `RF-19`, `RNF-06` |
 | `CT-13` | Manual, sem arquivo | `RF-01`, `RF-03`, `RF-19`, `RNF-01`, `RNF-03` |
+| `CT-14` a `CT-19` | `doacoes-integracao.test.js` (MySQL real) | `RF-18` a `RF-21`, `RNF-06` |
+| `CT-20` | `instituicoes-http.test.js` | `RF-01`, `RF-02`, `RF-05` a `RF-07`, `RF-10`, `RNF-04` |
+| `CT-21` a `CT-23` | Manual, telas do front-end | `RF-05`, `RF-07` a `RF-10`, `RF-18`, `RF-19`, `RNF-01` |
+| `CT-24` | `services.test.js`, `caracterizacao.test.js` | `RF-20`, `RF-21` |
 
-## Evidências da Sprint 7
+## Evidências
 
 | Execução | Arquivo | Resultado |
 |---|---|---|
-| Antes das correções | [`npm-test-sprint-07-antes.txt`](../docs/testes/evidencias/npm-test-sprint-07-antes.txt) | 75 testes, 69 aprovados, 6 falhas |
-| Depois das correções | [`npm-test-sprint-07-depois.txt`](../docs/testes/evidencias/npm-test-sprint-07-depois.txt) | 75 testes, 75 aprovados, 0 falhas |
+| Sprint 7, antes da correção do DEF-01 | [`execucao-sprint-07-antes.txt`](../docs/testes/evidencias/execucao-sprint-07-antes.txt) | 32 aprovados, 15 falhas |
+| Sprint 7, reteste | [`execucao-sprint-07-depois.txt`](../docs/testes/evidencias/execucao-sprint-07-depois.txt) | 47 aprovados, 0 falhas |
+| Sprint 8, sem MySQL | [`execucao-sprint-08-unitarios.txt`](../docs/testes/evidencias/execucao-sprint-08-unitarios.txt) | 75 aprovados, 0 falhas, integração MySQL pulada |
 
-## Defeitos encontrados na Sprint 7
+O resumo completo da Sprint 8 está em [`evidencias-testes.md`](../docs/testes/evidencias-testes.md).
+
+## Defeitos encontrados pelos testes automatizados
+
+A numeração segue a tabela de defeitos de [`evidencias-testes.md`](../docs/testes/evidencias-testes.md).
 
 | Defeito | Onde | Correção |
 |---|---|---|
-| `DEF-01`: a suíte `doacaoService.avancarDoacao e cancelarDoacao` ficou sem o hook da conexão falsa, e 4 testes tentavam conectar ao MySQL (`ECONNREFUSED`). | `src/back/tests/services.test.js` | `usarConexaoFalsa()` incluído no `describe`. |
-| O cadastro de instituição aceitava `descricao` que não é texto e nome com mais de 255 caracteres, respondendo `201` em vez de `400`. | `src/back/src/services/authService.js` | Validação do tipo da descrição e do tamanho do nome (limite da coluna `VARCHAR(255)`). Issue: `#XX`. |
+| `DEF-01`: hooks no nível do arquivo não rodavam dentro de `describe` no Node 18 e 15 testes falhavam (Sprint 7, Issue #35). | `caracterizacao.test.js`, `services.test.js` | Hooks registrados dentro de cada `describe`. |
+| `DEF-02`: a suíte `doacaoService.avancarDoacao e cancelarDoacao` ficou sem o hook da conexão falsa, e 4 testes tentavam conectar ao MySQL (`ECONNREFUSED`). | `src/back/tests/services.test.js` | `usarConexaoFalsa()` incluído no `describe`. |
+| `DEF-03`: o cadastro de instituição aceitava `descricao` que não é texto e nome com mais de 255 caracteres, respondendo `201` em vez de `400`. | `src/back/src/services/authService.js` | Validação do tipo da descrição e do tamanho do nome (limite da coluna `VARCHAR(255)`). |
 
 ## Limitações
 
