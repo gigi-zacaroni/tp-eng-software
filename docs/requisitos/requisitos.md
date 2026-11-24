@@ -100,6 +100,8 @@ Como **visitante**, quero **criar uma conta de doador**, para **poder ver as ins
 2. **Dado que** informo senha e confirmação diferentes, **quando** tento concluir, **então** o sistema exibe mensagem de erro e não cria a conta.
 3. **Dado que** informo um e-mail já cadastrado, **quando** tento concluir, **então** o sistema impede o cadastro e informa o motivo.
 
+**Verificação (Sprint 8):** critério 1 por `CT-01` e `CT-25`, critério 2 por `CT-03` e critério 3 por `CT-02`. Todos aprovados.
+
 **Issue:** [#2 — US-01 — Criar conta de doador](https://github.com/gigi-zacaroni/tp-eng-software/issues/2)
 
 ### US-02 — Cadastrar instituição
@@ -113,6 +115,8 @@ Como **responsável por uma instituição**, quero **cadastrar minha organizaç�
 1. **Dado que** preencho as três seções (identificação/acesso, sobre a instituição e ao menos uma necessidade inicial), **quando** concluo o cadastro, **então** o perfil da instituição é publicado.
 2. **Dado que** deixo um campo obrigatório em branco, **quando** tento avançar, **então** o sistema sinaliza o campo e impede a publicação.
 3. **Dado que** o perfil foi recém-criado, **quando** ele é publicado, **então** ele aparece **sem** o selo "Verificada" até a validação de um administrador.
+
+**Verificação (Sprint 8):** critério 1 por `CT-04` e `CT-20`, critério 2 por `CT-05` e `CT-20` (resposta 400 sem gravar) e critério 3 por `CT-04` e `CT-11`. Todos aprovados.
 
 **Issue:** [#5 — US-02 — Cadastrar instituição](https://github.com/gigi-zacaroni/tp-eng-software/issues/5)
 
@@ -129,6 +133,8 @@ Como **usuário cadastrado**, quero **entrar com e-mail e senha**, para **acessa
 3. **Dado que** não estou autenticado, **quando** tento acessar a lista de instituições ou uma página de detalhe, **então** o sistema solicita login antes de exibir os dados.
 4. **Dado que** estou autenticado, **quando** clico em "Sair", **então** a sessão é encerrada.
 
+**Verificação (Sprint 8):** critério 1 por `CT-06`, critério 2 por `CT-07` e critério 3 por `CT-20` e `CT-25`, todos aprovados. O critério 4 não tem caso de teste. O JWT continua válido até expirar.
+
 **Issue:** [#3 — US-03 — Entrar e acesso protegido](https://github.com/gigi-zacaroni/tp-eng-software/issues/3)
 
 ### US-04 — Encontrar instituições
@@ -143,6 +149,8 @@ Como **doador**, quero **buscar e filtrar instituições**, para **encontrar rap
 2. **Dado que** aplico filtros por causa, tipo de necessidade ou cidade, **quando** confirmo, **então** a lista mostra apenas as instituições correspondentes.
 3. **Dado que** os filtros não retornam resultados, **quando** a busca é executada, **então** o sistema exibe um estado vazio com a opção de limpar os filtros.
 
+**Verificação (Sprint 8):** critério 1 por `CT-11`, `CT-20` e `CT-25`, aprovado em parte, porque causa e cidade não existem no banco. Os critérios 2 e 3 dependem do `CT-21`, que não foi executado.
+
 **Issue:** [#6 — US-04 — Encontrar instituições](https://github.com/gigi-zacaroni/tp-eng-software/issues/6)
 
 ### US-05 — Ver o detalhe de uma instituição
@@ -156,6 +164,8 @@ Como **doador**, quero **ver a página de uma instituição**, para **entender o
 1. **Dado que** escolho uma instituição, **quando** abro o detalhe, **então** vejo o "sobre", as formas de contribuição, o contato e a lista de necessidades com seu progresso.
 2. **Dado que** a instituição foi validada por um administrador, **quando** vejo o detalhe, **então** o selo "Verificada" é exibido.
 3. **Dado que** uma necessidade está pausada, **quando** abro o detalhe da instituição, **então** essa necessidade não aparece na lista.
+
+**Verificação (Sprint 8):** critério 1 por `CT-11`, `CT-20` e `CT-25`, aprovado em parte, porque contato e formas de contribuição não existem no banco. Critério 2 por `CT-04` e `CT-11`, aprovado. O critério 3 não é atendido, porque não há necessidade pausada.
 
 **Issue:** [#7 — US-05 — Ver o detalhe de uma instituição](https://github.com/gigi-zacaroni/tp-eng-software/issues/7)
 
@@ -200,6 +210,8 @@ Como **doador**, quero **prometer uma doação para uma necessidade**, para **aj
 2. **Dado que** informo uma quantidade maior do que a que ainda falta, **quando** tento confirmar, **então** o sistema não permite e limita a quantidade ao que falta.
 3. **Dado que** a doação foi confirmada, **quando** ela é registrada, **então** o progresso da necessidade é atualizado e a instituição é notificada.
 
+**Verificação (Sprint 8):** critério 1 por `CT-08` e `CT-25`, e critério 2 por `CT-09` e `CT-10`, aprovados. O teste pela interface (`CT-23`) está pendente. No critério 3, o progresso é atualizado (`CT-08`), mas a notificação da instituição não existe.
+
 **Issue:** [#10 — US-08 — Prometer uma doação](https://github.com/gigi-zacaroni/tp-eng-software/issues/10)
 
 ### US-09 — Acompanhar e cancelar doações
@@ -214,6 +226,8 @@ Como **doador**, quero **acompanhar o status das minhas doações e cancelá-las
 2. **Dado que** uma doação está em "Prometida", **quando** avanço o status, **então** ela passa para "A caminho" e, em seguida, pode ir para "Entregue".
 3. **Dado que** uma doação está em "Prometida" ou "A caminho", **quando** eu a cancelo, **então** a quantidade volta a ficar pendente na necessidade e a instituição é avisada.
 4. **Dado que** uma doação já está em "Entregue", **quando** abro suas ações, **então** a opção de cancelar não está disponível.
+
+**Verificação (Sprint 8):** os critérios 2 e 3 são cobertos pelo `CT-24`, só pela API. O cancelamento devolve o saldo. O critério 1 não é atendido, porque não há tela "Minhas doações".
 
 **Issue:** [#11 — US-09 — Acompanhar e cancelar doações](https://github.com/gigi-zacaroni/tp-eng-software/issues/11)
 
@@ -268,3 +282,4 @@ Como **usuário autenticado**, quero **ser notificado sobre eventos relevantes**
 | Sprint 2 | `RF-01` a `RF-27` | Vínculo de todos os requisitos às onze Issues ([#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2), [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3), [#5](https://github.com/gigi-zacaroni/tp-eng-software/issues/5)–[#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13)), cada uma com os critérios de aceitação no corpo e a label de prioridade. | Fechar a rastreabilidade requisito → história → Issue exigida pela disciplina. | [Issues #2–#13](https://github.com/gigi-zacaroni/tp-eng-software/issues) · [`rastreabilidade.md`](../rastreabilidade.md) |
 | Sprint 2 | `docs/visao-geral.md` | Seção 4 (escopo inicial) atualizada para refletir o fluxo de doação refinado, os favoritos e as notificações; seção 2 ajustada na mesma linha. | Manter a visão do produto coerente com os requisitos definidos nesta sprint. | **Concluído** — [`visao-geral.md`](../visao-geral.md) · [ata de 12/09](../reunioes/2026-09-12-refinamento-requisitos.md) |
 | Sprint 2 | `RF-11`, `RF-17`, `RF-19`, `RF-21` | Registro das lacunas entre os critérios de aceitação e o comportamento do protótipo (limite de quantidade, devolução de saldo ao cancelar, ocultação de necessidade pausada e condição do selo "Verificada"). | Os critérios reprovaram o protótipo em quatro pontos; as pendências passam à implementação em vez de serem corrigidas no protótipo, que é descartável. | [seção 7 da Sprint 2](../sprints/sprint-02.md) · [#7](https://github.com/gigi-zacaroni/tp-eng-software/issues/7), [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10), [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) |
+| Sprint 8 | `US-01` a `US-05`, `US-08`, `US-09` | Inclusão da linha "Verificação (Sprint 8)" em cada história, com o caso de teste que verifica cada critério e o resultado. | Tornar os critérios verificáveis pelos casos do plano de testes e mostrar o que foi aprovado, o que está pendente e o que não foi atendido. | [`plano-de-testes.md`](../testes/plano-de-testes.md) · [`evidencias-testes.md`](../testes/evidencias-testes.md) |
