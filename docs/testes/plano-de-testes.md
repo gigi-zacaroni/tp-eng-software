@@ -32,7 +32,7 @@
 | Unidade (repositories) | Conferir o SQL, os parâmetros e os retornos de cada repository. | `node:test` com dublê do `pool` | [`repositories.test.js`](../../src/back/tests/repositories.test.js) | Saída do `npm test` |
 | Unidade (services) | Conferir as regras de negócio com os repositories substituídos por dublês. | `node:test` + `mock` | [`services.test.js`](../../src/back/tests/services.test.js) | Saída do `npm test` |
 | Integração (banco em memória) | Exercitar controller, service e repository juntos. | `node:test` + [`bancoFalso.js`](../../src/back/tests/helpers/bancoFalso.js) | [`caracterizacao.test.js`](../../src/back/tests/caracterizacao.test.js) | Saída do `npm test` |
-| Integração HTTP | Subir o Express real em porta efêmera e chamar as rotas, conferindo status e corpo. | `node:test` + `fetch` + banco em memória | [`instituicoes-http.test.js`](../../src/back/tests/instituicoes-http.test.js) | Saída do `npm test` |
+| Integração HTTP | Subir o Express real em porta efêmera e chamar as rotas, conferindo status e corpo. | `node:test` + `fetch` + banco em memória | [`instituicoes-http.test.js`](../../src/back/tests/instituicoes-http.test.js), [`telas-http.test.js`](../../src/back/tests/telas-http.test.js) | Saída do `npm test` |
 | Integração (MySQL real) | Validar chaves estrangeiras, `CHECK` e transações no MySQL 8. | `node:test` + `mysql2`, banco `conectaacao_test` | [`doacoes-integracao.test.js`](../../src/back/tests/doacoes-integracao.test.js) | Saída com `DB_INTEGRATION=1` |
 | Sistema (manual) | Percorrer as telas no navegador com MySQL real. | Roteiro manual | `CT-13`, `CT-21` a `CT-23` | Capturas em [`evidencias/sprint-08/`](evidencias/sprint-08/) |
 
@@ -216,21 +216,29 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 - **Resultado esperado:** avançar segue `Prometida -> A caminho -> Entregue` e depois devolve 409; outro doador recebe 403; cancelar grava `Cancelada` e devolve o saldo; doação `Entregue` não pode ser cancelada (409).
 - **Automação:** `services.test.js` e `caracterizacao.test.js` (6 testes), escritos por Maria Luiza Pestana.
 
+### CT-25 Páginas e chamadas das telas novas
+
+- **Requisitos:** `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-18`, `RF-19`, `RN-02`
+- **Pré-condição:** app Express real em porta efêmera, com o banco em memória.
+- **Dados:** os mesmos corpos que `js/cadastro.js` e `js/instituicao.js` enviam: instituição `Casa Esperança` com `Cobertores` (quantidade `"40"`, como texto); doador `carla@email.com`; doações de `41` e `5`.
+- **Resultado esperado:** as 6 páginas e os módulos JS respondem 200; os cadastros respondem 201 e o login devolve `tipo` e `perfil.nome`; a listagem sem token responde 401 e, com token, traz os campos que os cards usam; doar 41 responde 400; doar 5 responde 201 com o número da doação, e o detalhe passa a mostrar falta `35` e 13%; a instituição consulta o detalhe, mas recebe 403 ao tentar doar.
+- **Automação:** [`telas-http.test.js`](../../src/back/tests/telas-http.test.js) (5 testes). Não substitui o `CT-21` a `CT-23`, que olham a tela no navegador.
+
 ## 5. Matriz requisito × caso de teste
 
 | Requisito | Casos |
 |---|---|
-| `RF-01` | CT-01, CT-02, CT-03, CT-05, CT-12, CT-13, CT-20 |
-| `RF-02` | CT-04, CT-05, CT-12, CT-20 |
+| `RF-01` | CT-01, CT-02, CT-03, CT-05, CT-12, CT-13, CT-20, CT-25 |
+| `RF-02` | CT-04, CT-05, CT-12, CT-20, CT-25 |
 | `RF-03` | CT-06, CT-07, CT-13 |
-| `RF-05` | CT-20, CT-21 |
+| `RF-05` | CT-20, CT-21, CT-25 |
 | `RF-06` | CT-11, CT-20 |
-| `RF-07` | CT-11, CT-12, CT-20, CT-21 |
+| `RF-07` | CT-11, CT-12, CT-20, CT-21, CT-25 |
 | `RF-08`, `RF-09` | CT-21 |
-| `RF-10` | CT-11, CT-20, CT-22 |
+| `RF-10` | CT-11, CT-20, CT-22, CT-25 |
 | `RF-14` | CT-04 |
-| `RF-18` | CT-08, CT-14, CT-22 |
-| `RF-19` | CT-08, CT-09, CT-12, CT-13, CT-14 a CT-16, CT-18, CT-19, CT-23 |
+| `RF-18` | CT-08, CT-14, CT-22, CT-25 |
+| `RF-19` | CT-08, CT-09, CT-12, CT-13, CT-14 a CT-16, CT-18, CT-19, CT-23, CT-25 |
 | `RF-20` | CT-17, CT-24 |
 | `RF-21` | CT-19, CT-24 |
 | `RNF-01` | CT-13, CT-23 |

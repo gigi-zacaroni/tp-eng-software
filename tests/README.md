@@ -43,6 +43,7 @@ O arquivo `doacoes-integracao.test.js` só roda com `DB_INTEGRATION=1`; sem a va
 | `repositories.test.js` | SQL, parâmetros e retornos de cada repository. |
 | `services.test.js` | Regras dos services com os repositories substituídos por dublês. |
 | `doacoes-integracao.test.js` | Fluxo de doações contra MySQL real (opcional, ver acima). |
+| `telas-http.test.js` | Páginas e chamadas das telas da Sprint 8 (cadastro, listagem, detalhe, doação), na ordem em que o front as faz (`CT-25`). |
 | `helpers/bancoFalso.js` | Banco em memória usado pelos testes de caracterização e pelos testes HTTP. |
 
 ## Fluxo prioritário da Sprint 7: instituições
@@ -74,6 +75,7 @@ Arquivo: `instituicoes-http.test.js`.
 | `CT-20` | `instituicoes-http.test.js` | `RF-01`, `RF-02`, `RF-05` a `RF-07`, `RF-10`, `RNF-04` |
 | `CT-21` a `CT-23` | Manual, telas do front-end | `RF-05`, `RF-07` a `RF-10`, `RF-18`, `RF-19`, `RNF-01` |
 | `CT-24` | `services.test.js`, `caracterizacao.test.js` | `RF-20`, `RF-21` |
+| `CT-25` | `telas-http.test.js` | `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-18`, `RF-19` |
 
 ## Evidências
 
@@ -81,7 +83,7 @@ Arquivo: `instituicoes-http.test.js`.
 |---|---|---|
 | Sprint 7, antes da correção do DEF-01 | [`execucao-sprint-07-antes.txt`](../docs/testes/evidencias/execucao-sprint-07-antes.txt) | 32 aprovados, 15 falhas |
 | Sprint 7, reteste | [`execucao-sprint-07-depois.txt`](../docs/testes/evidencias/execucao-sprint-07-depois.txt) | 47 aprovados, 0 falhas |
-| Sprint 8, sem MySQL | [`execucao-sprint-08-unitarios.txt`](../docs/testes/evidencias/execucao-sprint-08-unitarios.txt) | 75 aprovados, 0 falhas, integração MySQL pulada |
+| Sprint 8, sem MySQL | [`execucao-sprint-08-unitarios.txt`](../docs/testes/evidencias/execucao-sprint-08-unitarios.txt) | 80 aprovados, 0 falhas, integração MySQL pulada |
 
 O resumo completo da Sprint 8 está em [`evidencias-testes.md`](../docs/testes/evidencias-testes.md).
 
