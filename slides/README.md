@@ -1,6 +1,6 @@
 # Slides da apresentação final
 
-Coloque nesta pasta os slides efetivamente utilizados no vídeo.
+Coloque nesta pasta os slides usados no vídeo.
 
 Recomendado:
 

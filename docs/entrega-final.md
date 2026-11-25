@@ -1,4 +1,4 @@
-# Entrega e apresentação final — 30/11/2026
+# Entrega e apresentação final (30/11/2026)
 
 - **Pontuação:** 5,0 pontos
 - **Tag obrigatória:** `versao-final`
@@ -8,11 +8,11 @@
 
 | Item | Local/link | Conferido? |
 |---|---|---|
-| Repositório consolidado | `[link para tag versao-final]` | [ ] |
-| Slides utilizados | `slides/[arquivo]` | [ ] |
-| Vídeo no YouTube | `[link público ou não listado]` | [ ] |
-| Aplicação publicada | `[link ou justificativa]` | [ ] |
-| Instruções de execução | `README.md` e `src/README.md` | [ ] |
+| Repositório consolidado | Pendente: criar a tag `versao-final` | [ ] |
+| Slides utilizados | Pendente: adicionar em `slides/` | [ ] |
+| Vídeo no YouTube | Pendente: link público ou não listado | [ ] |
+| Aplicação publicada | Pendente: link ou justificativa | [ ] |
+| Instruções de execução | [`README.md`](../README.md) e [`src/README.md`](../src/README.md) | [x] |
 
 ## 2. Estrutura obrigatória do vídeo
 
@@ -84,8 +84,8 @@ Executar as funcionalidades principais e explicar:
 
 ## 6. Registro final
 
-- **Link da tag `versao-final`:** `[PREENCHER]`
-- **Link do vídeo:** `[PREENCHER]`
-- **Duração:** `[MM:SS]`
-- **Aluno(s) apresentador(es):** `[PREENCHER]`
-- **Arquivo dos slides:** `[PREENCHER]`
+- **Link da tag `versao-final`:** pendente
+- **Link do vídeo:** pendente
+- **Duração:** pendente
+- **Aluno(s) apresentador(es):** pendente
+- **Arquivo dos slides:** pendente
