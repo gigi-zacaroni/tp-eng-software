@@ -1,109 +1,115 @@
-# Sprint 4 — Princípios de projeto e decisões locais
+# Sprint 4: Princípios de projeto e decisões locais
 
 - Data de entrega: 13/10/2026
 - Pontuação: 2,5 pontos
-- Tag obrigatória: sprint-04
-- Responsável por conferir este arquivo: Arthur Veiga
+- Tag obrigatória: `sprint-04`
+- Responsável por conferir este arquivo: Arthur Veiga (@ArtJamis1208)
 
 ## 1. Pergunta que esta sprint deve responder
+
 Como responsabilidades, módulos e interfaces locais serão organizados e justificados?
 
 ## 2. Objetivo e resultado da sprint
-Objetivo planejado: Refatorar a arquitetura interna do back-end para separar responsabilidades (padrão Routes-Controllers-Services), isolar regras de negócio e garantir a segurança de dados e autenticação JWT.
-Resultado efetivamente alcançado: Refatoração concluída com sucesso. O código foi modularizado, o fluxo de cadastro e doação foi testado e validado, e a documentação de decisões foi formalizada.
 
-## 3. Checklist do artefato central — 0,75 ponto
-Entrega esperada: docs/projeto/decisoes-de-projeto.md, decomposição e decisões relacionadas a coesão, acoplamento, responsabilidade e testabilidade.
-- [x] Responsabilidades de módulos/componentes locais identificadas.
+**Objetivo planejado:** separar o back-end em rotas, controllers e services, isolar as regras de negócio e manter a autenticação JWT.
+
+**Resultado alcançado:** o back-end foi dividido em camadas. Os fluxos de cadastro e doação foram testados no Postman, e as decisões foram registradas em `decisoes-de-projeto.md`.
+
+## 3. Checklist do artefato central (0,75 ponto)
+
+Entrega esperada: [`decisoes-de-projeto.md`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/docs/projeto/decisoes-de-projeto.md), com a decomposição e as decisões sobre coesão, acoplamento, responsabilidade e testabilidade.
+
+- [x] Responsabilidades dos módulos identificadas.
 - [x] Alternativas consideradas e decisão justificada.
-- [x] Trade-offs ou consequências registrados.
+- [x] Trade-offs e consequências registrados.
 - [x] Código afetado linkado.
-- [x] Backlog atualizado com débitos ou tarefas descobertas.
+- [x] Backlog atualizado com as tarefas descobertas (`T-15`, `T-16`, `T-17`).
 
 ### Links dos artefatos
-| Artefato criado/atualizado | Link na tag da sprint | O que mudou |
+
+| Artefato | Link na tag da sprint | O que mudou |
 |---|---|---|
-| `docs/projeto/decisoes-de-projeto.md` | [link para a tag sprint-04] | Criação do documento detalhando as decisões de coesão, acoplamento e refatoração. |
-| `docs/modelagem/modelagem.md` | [link para a tag sprint-04] | Atualização do modelo estrutural para diagrama de classes e inclusão das camadas de Controller/Service. |
+| `decisoes-de-projeto.md` | [tag `sprint-04`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/docs/projeto/decisoes-de-projeto.md) | Criação do documento com as decisões DP-01 a DP-03 e a análise de coesão e acoplamento. |
+| `modelagem.md` | [tag `sprint-04`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/docs/modelagem/modelagem.md) | O modelo estrutural virou diagrama de classes com controllers e services. |
 
-## 4. Incremento da aplicação web — 0,75 ponto
-Incremento mínimo esperado: Implementação/refatoração que demonstre a decisão, com comparação ou vínculo claro entre documento e código.
+## 4. Incremento da aplicação web (0,75 ponto)
 
-### O que foi implementado ou evoluído
-Implementação da arquitetura em camadas no back-end em Node.js. O sistema agora separa o roteamento HTTP (`routes`), a manipulação de requisições/respostas (`controllers`) e o processamento de regras de negócio e persistência transacional (`services`). Foram validados os fluxos de cadastro de doadores/instituições e a criação de doações com controle concorrente de saldo (`RF-01`, `RF-02`, `RF-19`).
+### O que foi implementado
+
+O back-end passou a separar o roteamento HTTP (`routes`), a leitura de requisições e respostas (`controllers`) e as regras de negócio com transações (`services`). Os fluxos de cadastro de doador e instituição e de doação com controle de saldo foram validados (`RF-01`, `RF-02`, `RF-19`).
 
 ### Como executar e verificar
+
 ```bash
 cd src/back
 npm install
-# Configurar o arquivo .env baseado no .env.example
+# Criar o .env a partir do .env.example
 node src/server.js
 ```
 
-| Requisito/Issue | Código ou protótipo | Evidência de execução |
+| Requisito/Issue | Código | Evidência |
 |---|---|---|
-| RF-01 / #2 | `src/back/src/services/authService.js` | [Print de sucesso do cadastro] |
-| RF-19 / #10 | `src/back/src/services/doacaoService.js` | [Print da doação registrada] |
+| `RF-01`, `RF-02` / #2, #5 | `src/back/src/services/authService.js` | [Cadastro no Postman](../evidencias/sprint-04/cadastro-instituicao.png) |
+| `RF-03` / #3 | `src/back/src/services/authService.js` | [Login no Postman](../evidencias/sprint-04/login.png) |
+| `RF-19` / #10 | `src/back/src/services/doacaoService.js` | [Doação no Postman](../evidencias/sprint-04/doacoes.png) |
 
-## 5. Scrum e gestão do trabalho - 0,50 ponto
+## 5. Scrum e gestão do trabalho (0,50 ponto)
 
 ### Sprint Backlog
 
-| Issue | Descrição | Responsável | Critério de aceitação/conclusão | Situação |
+| Issue | Descrição | Responsável | Critério de conclusão | Situação |
 |---|---|---|---|---|
-| #11 | Reestruturação Arquitetural em Camadas (Routes, Controllers, Services) | @malupestana | Código desacoplado e validado no Postman | Concluída |
-| #12 | Implementação de Segurança e Autenticação JWT | @malupestana | Geração de token e middleware funcionando | Concluída |
-| #13 | Isolamento da Regra de Negócio de Doações | @malupestana | Trava de concorrência e chave estrangeira validadas | Concluída |
-| #14 | Configuração de Variáveis de Ambiente (.env) | @malupestana | Credenciais protegidas via `dotenv` | Concluída |
-| #19 | T-09 — Remover a API legada src/server.js e consolidar o schema | @malupestana | Arquivo legado removido, DDL único consolidado e credencial inativa confirmada | Concluída |
+| [#21](https://github.com/gigi-zacaroni/tp-eng-software/issues/21) | `T-11` Reestruturação em camadas (routes, controllers, services) | @Malupestana | Código separado e validado no Postman | Concluída |
+| [#22](https://github.com/gigi-zacaroni/tp-eng-software/issues/22) | `T-12` Segurança e autenticação JWT | @Malupestana | Geração do token e middleware funcionando | Concluída |
+| [#23](https://github.com/gigi-zacaroni/tp-eng-software/issues/23) | `T-13` Regra de negócio de doações isolada | @Malupestana | Trava de concorrência e chave estrangeira validadas | Concluída |
+| [#24](https://github.com/gigi-zacaroni/tp-eng-software/issues/24) | `T-14` Variáveis de ambiente (`.env`) | @Malupestana | Credenciais fora do código, via `dotenv` | Concluída |
+| [#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19) | `T-09` Remover a API legada `src/server.js` e consolidar o schema | @Malupestana | Arquivo legado removido e DDL único | Concluída |
 
 ### Acompanhamento
 
-- GitHub Project: [Visão da Sprint no GitHub Projects]
-- Reuniões/decisões: [ Reunião de alinhamento com Arthur Veiga, Karol Guimarães, Geovana Zacaroni e Maria Luiza Pestana (10/10/2026)]. Pautas: [https://docs.google.com/document/d/14Y1gf8f7pjqbBQHvbMYr9fVZQDtJzDMAMNzbx1ArIMk/edit?usp=sharing]
-- Impedimentos: Divergência de agendas devido a semana do saco cheio.
-- Mudanças de escopo: Nenhuma.
+- GitHub Project: [ConectaAção: Backlog](https://github.com/users/gigi-zacaroni/projects/1)
+- Reunião: alinhamento em 10/10/2026 com Arthur Veiga, Karol Guimarães, Geovana Zacaroni e Maria Luiza Pestana. [Pauta no Google Docs](https://docs.google.com/document/d/14Y1gf8f7pjqbBQHvbMYr9fVZQDtJzDMAMNzbx1ArIMk/edit?usp=sharing).
+- Impedimentos: agendas divergentes na semana do saco cheio.
+- Mudanças de escopo: nenhuma.
 
-## 6. GitHub, documentação e rastreabilidade — 0,50 ponto
+## 6. GitHub, documentação e rastreabilidade (0,50 ponto)
 
-| Tipo de evidência | Link | O que comprova |
+| Evidência | Link | O que comprova |
 |---|---|---|
-| Issue | [https://github.com/gigi-zacaroni/tp-eng-software/issues/19] [https://github.com/gigi-zacaroni/tp-eng-software/issues/21] [https://github.com/gigi-zacaroni/tp-eng-software/issues/22] [https://github.com/gigi-zacaroni/tp-eng-software/issues/23] [https://github.com/gigi-zacaroni/tp-eng-software/issues/24] | Rastreabilidade das tarefas técnicas e refatorações da Sprint 4 ( issues # 9, #11, #12, #13, #14) |
-| Pull Request | N/A (commits feitos direto na main) | Revisão de código da reestruturação arquitetural em camadas e consolidação do DDL |
-| Commit | [https://github.com/gigi-zacaroni/tp-eng-software/compare/sprint-03...sprint-04] | Implementação das decisões de projeto e entrega oficial atrelada à tag `sprint-04` |
-| Código/arquivo | [https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/src/controllers] [https://github.com/gigi-zacaroni/tp-eng-software/tree/main/src/back/src/services]| Aplicação concreta do isolamento de regras de negócio e coesão  |
-| Teste/captura/relatório | [../evidencias/sprint-04] | Validação prática do funcionamento da API e da trava transacional no banco via Postman/DBeaver |
+| Issues | [#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19), [#21](https://github.com/gigi-zacaroni/tp-eng-software/issues/21), [#22](https://github.com/gigi-zacaroni/tp-eng-software/issues/22), [#23](https://github.com/gigi-zacaroni/tp-eng-software/issues/23), [#24](https://github.com/gigi-zacaroni/tp-eng-software/issues/24) | Tarefas técnicas da sprint |
+| Pull Request | Não houve: commits direto na `main` | |
+| Commits | [`sprint-03...sprint-04`](https://github.com/gigi-zacaroni/tp-eng-software/compare/sprint-03...sprint-04) | Implementação das decisões de projeto |
+| Código | [`controllers/`](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-04/src/back/src/controllers), [`services/`](https://github.com/gigi-zacaroni/tp-eng-software/tree/sprint-04/src/back/src/services) | Regras de negócio isoladas do HTTP |
+| Capturas | [`evidencias/sprint-04/`](../evidencias/sprint-04/) | API e trava de saldo verificadas no Postman |
 
 ### Rastreabilidade resumida
 
-| Requisito | Issue | Artefato/modelo/decisão | Código | Teste/evidência |
+| Requisito | Issue | Decisão | Código | Evidência |
 |---|---|---|---|---|
-| `RF-01` | `#2`, `#12` | `docs/projeto/decisoes-de-projeto.md` (DP-03) | `src/back/src/services/authService.js` | [Teste Cadastro Postman](../evidencias/sprint-04/cadastro-instituicao.png) |
-| `RF-02` | `#3`, `#12` | `docs/projeto/decisoes-de-projeto.md` (DP-03) | `src/back/src/services/authService.js` e `middleware/autenticacao.js` | [Teste Login Postman](../evidencias/sprint-04/login.png) |
-| `RF-19` | `#10`, `#13` | `docs/projeto/decisoes-de-projeto.md` (DP-02) | `src/back/src/services/doacaoService.js` e `src/back/sql/schema.sql` | [Teste Doação Postman](../evidencias/sprint-04/doacoes.png) |
+| `RF-01`, `RF-02` | #2, #5, #22 | DP-03 | `services/authService.js` | [Cadastro](../evidencias/sprint-04/cadastro-instituicao.png) |
+| `RF-03` | #3, #22 | DP-03 | `services/authService.js`, `middleware/autenticacao.js` | [Login](../evidencias/sprint-04/login.png) |
+| `RF-19` | #10, #23 | DP-02 | `services/doacaoService.js`, `sql/schema.sql` | [Doação](../evidencias/sprint-04/doacoes.png) |
 
 ## 7. Revisão do incremento
 
-- **O que foi demonstrado:** A separação limpa da arquitetura do back-end em camadas (Routes, Controllers, Services), garantindo que as regras de negócio de cadastro e doação estejam isoladas da lógica HTTP. Também foi demonstrada a resolução de dívida técnica com a remoção da API legada e a consolidação do arquivo único de schema do banco de dados (Issue #19).
-- **Critérios atendidos:** Arquitetura local documentada com trade-offs (DP-01, DP-02, DP-03), código desacoplado e validado, controle de concorrência em doações garantido, e rastreabilidade total via commits na tag `sprint-04`.
-- **Itens não concluídos:** Nenhum do escopo ativamente planejado (Sprint Backlog 4) ficou pendente.
-- **Motivo das pendências:** N/A – Todas as issues técnicas da Sprint 4 (#11, #12, #13, #14 e #19) foram entregues.
-- **Feedback recebido e ajustes:** A identificação de redundâncias e conflitos no banco de dados, que gerou a necessidade de consolidar os schemas (excluindo a versão que conflitava com as regras de exclusão em cascata das doações).
+- **O que foi demonstrado:** o back-end em camadas, com as regras de cadastro e doação separadas do HTTP. Também a remoção da API legada e o schema único (#19).
+- **Critérios atendidos:** decisões documentadas com trade-offs (DP-01 a DP-03), código separado e validado e controle de concorrência nas doações.
+- **Itens não concluídos:** nenhum do Sprint Backlog.
+- **Feedback e ajustes:** havia dois schemas em conflito, um deles com exclusão em cascata das doações. O grupo manteve só `src/back/sql/schema.sql`.
 
 ## 8. Retrospectiva e próxima sprint
 
-- **Funcionou bem:** A modularização ajudou a separar claramente as responsabilidades de validação de dados e comunicação com o banco, além do controle eficiente de dívidas técnicas via GitHub Issues.
-- **Precisa melhorar:** A prevenção de criação de arquivos duplicados no repositório (como ocorreu com o `schema.sql` e o arquivo `server.js` legado), garantindo que as regras fiquem centralizadas desde a criação.
-- **Ação concreta para a próxima sprint:** Iniciar a implementação das rotas de consulta (GET / endpoints de listagem do Issue #20)[cite: 1] para permitir a integração, e preparar o front-end para consumir a API com o novo padrão JWT[cite: 2].
+- **Funcionou bem:** a separação em camadas deixou claro onde fica a validação e onde fica o acesso ao banco. As dívidas técnicas viraram Issues.
+- **Precisa melhorar:** evitar arquivos duplicados no repositório, como aconteceu com o `schema.sql` e o `server.js` legado.
+- **Ação para a próxima sprint:** criar as rotas de consulta (#20) e preparar o front-end para usar a API com JWT.
 
 ## 9. O que não será considerado suficiente
 
 - Apenas listar princípios de projeto.
-- Descrever arquitetura global em vez de decisões locais.
+- Descrever a arquitetura global em vez das decisões locais.
 - Decisão sem alteração ou evidência no código.
 
 ## 10. Links enviados no UFLA Virtual
 
-- **Tag `sprint-04`:** [https://github.com/gigi-zacaroni/tp-eng-software/releases/tag/sprint-04]
-- **Este arquivo na tag:** [https://github.com/gigi-zacaroni/tp-eng-software/blob/main/docs/sprints/sprint-04.md]
-- **Observação adicional:** Refatoração arquitetural (Routes/Controllers/Services) concluída com sucesso. Dívidas técnicas do banco de dados e arquivos legados foram devidamente tratadas, e o fluxo validado localmente via Postman.
+- **Tag `sprint-04`:** [release `sprint-04`](https://github.com/gigi-zacaroni/tp-eng-software/releases/tag/sprint-04)
+- **Este arquivo na tag:** [`sprint-04.md`](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-04/docs/sprints/sprint-04.md)

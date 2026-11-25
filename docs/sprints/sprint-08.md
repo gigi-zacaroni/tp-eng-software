@@ -128,7 +128,9 @@ Para rodar com banco, siga a seção 6 de [`evidencias-testes.md`](https://githu
 - Executar `CT-13` a `CT-19` e `CT-21` a `CT-23` com MySQL e salvar as capturas.
 - Trocar a senha do MySQL e fechar a #42.
 - Conferir as telas no navegador e fechar a #41 e a #36.
-- Criar a tag `versao-final`, gravar o vídeo e salvar os slides em `docs/apresentacao/`.
+- Criar a tag `versao-final`, gravar o vídeo e salvar os slides em `slides/`.
+
+**Depois da Sprint 8 (25/11):** as telas do protótipo de alta fidelidade passaram a ser a interface oficial e foram ligadas à API, com minhas doações e o painel da instituição (`d393149`, `e65bceb`). As páginas de `src/front/pages/` foram apagadas. O doador deixou de poder marcar a doação como entregue (`3ba1f81`). A suíte passou para 88 testes. Os detalhes estão em [`evidencias-testes.md`](../testes/evidencias-testes.md) e no [backlog](../backlog-produto.md).
 
 ## 14. Checklist da entrega
 
