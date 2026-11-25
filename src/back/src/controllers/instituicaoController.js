@@ -18,8 +18,14 @@ async function detalhar(req, res) {
   res.json(await instituicaoService.detalhar(id));
 }
 
+async function criarNecessidade(req, res) {
+  const id = await instituicaoService.criarNecessidade(req.usuario.perfilId, req.body);
+  res.status(201).json({ id, mensagem: 'Necessidade cadastrada com sucesso.' });
+}
+
 module.exports = {
   destaques,
   listar,
-  detalhar
+  detalhar,
+  criarNecessidade
 };

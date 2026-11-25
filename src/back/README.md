@@ -97,6 +97,14 @@ testes com banco em memória são executados.
   os estados válidos seguem `Prometida -> A caminho -> Entregue`.
 - `PATCH /doacoes/:id/cancelar`: cancela uma doação em `Prometida` ou
   `A caminho` e devolve a quantidade ao saldo da necessidade.
+- `GET /doacoes/minhas`: lista as doações do doador autenticado.
+- `GET /doacoes/recebidas`: lista as doações associadas às necessidades da
+  instituição autenticada.
+- `PATCH /doacoes/:id/aceitar`, `/recusar` e `/receber`: a instituição atualiza
+  uma proposta própria, com validação de estado e restauração do saldo quando
+  recusada.
+- `POST /instituicoes/necessidades`: cadastra item e quantidade para a
+  instituição autenticada.
 
 Chaves estrangeiras e constraints invocadas por estas operações são convertidas
 em respostas HTTP claras pelo handler central de erros.

@@ -145,7 +145,7 @@ test.describe('doacaoRepository', () => {
     const doacao = await doacaoRepository.buscarPorIdComTrava(c, 21);
 
     assert.equal(doacao.status, 'Prometida');
-    assert.match(c.chamadas[0].sql, /FROM doacoes WHERE id = \? FOR UPDATE$/);
+    assert.match(c.chamadas[0].sql, /FROM doacoes d JOIN necessidades n ON n\.id = d\.necessidade_id WHERE d\.id = \? FOR UPDATE$/);
   });
 
   test('atualizarStatus grava o novo status pelo id', async () => {
@@ -153,5 +153,19 @@ test.describe('doacaoRepository', () => {
     await doacaoRepository.atualizarStatus(c, 21, 'A caminho');
     assert.equal(c.chamadas[0].sql, 'UPDATE doacoes SET status = ? WHERE id = ?');
     assert.deepEqual(c.chamadas[0].params, ['A caminho', 21]);
+  });
+
+  test('listarPorDoador e listarPorInstituicao aplicam o vínculo e ordenam pelo registro', async () => {
+    const linhas = [{ id: 21, status: 'Prometida' }];
+    const doador = conexaoFalsa([linhas]);
+    const instituicao = conexaoFalsa([linhas]);
+
+    assert.deepEqual(await doacaoRepository.listarPorDoador(doador, 4), linhas);
+    assert.match(doador.chamadas[0].sql, /WHERE d\.doador_id = \? ORDER BY d\.dataPromessa DESC, d\.id DESC$/);
+    assert.deepEqual(doador.chamadas[0].params, [4]);
+
+    assert.deepEqual(await doacaoRepository.listarPorInstituicao(instituicao, 9), linhas);
+    assert.match(instituicao.chamadas[0].sql, /WHERE n\.instituicao_id = \? ORDER BY d\.dataPromessa DESC, d\.id DESC$/);
+    assert.deepEqual(instituicao.chamadas[0].params, [9]);
   });
 });

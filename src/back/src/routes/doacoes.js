@@ -5,6 +5,27 @@ const doacaoController = require('../controllers/doacaoController');
 
 const router = express.Router();
 
+router.get(
+  '/minhas',
+  autenticar,
+  exigirTipo('doador'),
+  asyncHandler(doacaoController.listarMinhas)
+);
+
+router.get(
+  '/recebidas',
+  autenticar,
+  exigirTipo('instituicao'),
+  asyncHandler(doacaoController.listarRecebidas)
+);
+
+router.patch(
+  '/:id/:acao(aceitar|recusar|receber)',
+  autenticar,
+  exigirTipo('instituicao'),
+  asyncHandler(doacaoController.atualizarDaInstituicao)
+);
+
 // Receber uma nova doação (RF-19). Só doadores autenticados; o doador é
 // sempre o do token — nunca um id enviado no corpo da requisição.
 router.post(

@@ -1,5 +1,5 @@
 const express = require('express');
-const { autenticar } = require('../middleware/autenticacao');
+const { autenticar, exigirTipo } = require('../middleware/autenticacao');
 const { asyncHandler } = require('../utils/http');
 const instituicaoController = require('../controllers/instituicaoController');
 
@@ -11,5 +11,11 @@ router.get('/destaques', asyncHandler(instituicaoController.destaques));
 // RF-05 e RNF-04: listagem e detalhe só para usuários autenticados.
 router.get('/', autenticar, asyncHandler(instituicaoController.listar));
 router.get('/:id', autenticar, asyncHandler(instituicaoController.detalhar));
+router.post(
+  '/necessidades',
+  autenticar,
+  exigirTipo('instituicao'),
+  asyncHandler(instituicaoController.criarNecessidade)
+);
 
 module.exports = router;

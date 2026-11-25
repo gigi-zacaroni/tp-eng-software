@@ -12,8 +12,11 @@ async function criarPrometida(conexao, { doadorId, necessidadeId, quantidade }) 
 
 async function buscarPorIdComTrava(conexao, doacaoId) {
   const [linhas] = await conexao.execute(
-    `SELECT id, doador_id, necessidade_id, quantidade, status
-     FROM doacoes WHERE id = ? FOR UPDATE`,
+    `SELECT d.id, d.doador_id, d.necessidade_id, d.quantidade, d.status,
+       n.instituicao_id
+     FROM doacoes d
+     JOIN necessidades n ON n.id = d.necessidade_id
+     WHERE d.id = ? FOR UPDATE`,
     [doacaoId]
   );
   return linhas[0] || null;
@@ -27,8 +30,39 @@ async function atualizarStatus(conexao, doacaoId, status) {
   return resultado.affectedRows;
 }
 
+async function listarPorDoador(conexao, doadorId) {
+  const [linhas] = await conexao.execute(
+    `SELECT d.id, d.doador_id, d.necessidade_id, d.quantidade, d.status,
+       d.dataPromessa, n.item, n.quantidadeTotal, n.quantidadeFaltante,
+       i.id AS instituicao_id, i.nome AS instituicao_nome
+     FROM doacoes d
+     JOIN necessidades n ON n.id = d.necessidade_id
+     JOIN instituicoes i ON i.id = n.instituicao_id
+     WHERE d.doador_id = ?
+     ORDER BY d.dataPromessa DESC, d.id DESC`,
+    [doadorId]
+  );
+  return linhas;
+}
+
+async function listarPorInstituicao(conexao, instituicaoId) {
+  const [linhas] = await conexao.execute(
+    `SELECT d.id, d.doador_id, d.necessidade_id, d.quantidade, d.status,
+       d.dataPromessa, n.item, dr.nome AS doador_nome
+     FROM doacoes d
+     JOIN necessidades n ON n.id = d.necessidade_id
+     JOIN doadores dr ON dr.id = d.doador_id
+     WHERE n.instituicao_id = ?
+     ORDER BY d.dataPromessa DESC, d.id DESC`,
+    [instituicaoId]
+  );
+  return linhas;
+}
+
 module.exports = {
   criarPrometida,
   buscarPorIdComTrava,
-  atualizarStatus
+  atualizarStatus,
+  listarPorDoador,
+  listarPorInstituicao
 };

@@ -13,6 +13,7 @@ const instituicaoRepository = require('../src/repositories/instituicaoRepository
 const necessidadeRepository = require('../src/repositories/necessidadeRepository');
 const doacaoRepository = require('../src/repositories/doacaoRepository');
 const doacaoService = require('../src/services/doacaoService');
+const instituicaoService = require('../src/services/instituicaoService');
 const authService = require('../src/services/authService');
 
 const { mock } = test;
@@ -164,6 +165,61 @@ test.describe('doacaoService.avancarDoacao e cancelarDoacao', () => {
     const erro = await erroDe(doacaoService.cancelarDoacao(1, 5));
 
     assert.equal(erro.status, 409);
+  });
+
+  test('instituição aceita, confirma recebimento e recusa apenas suas próprias doações', async () => {
+    let statusAtual = 'Prometida';
+    const buscar = mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 4,
+      instituicao_id: 9,
+      status: statusAtual
+    }));
+    const atualizar = mock.method(doacaoRepository, 'atualizarStatus', async () => 1);
+    const restaurar = mock.method(necessidadeRepository, 'restaurarSaldo', async () => {});
+
+    assert.equal(await doacaoService.atualizarDoacaoDaInstituicao(9, 5, 'aceitar'), 'A caminho');
+    assert.deepEqual(atualizar.mock.calls[0].arguments.slice(1), [5, 'A caminho']);
+    assert.equal(buscar.mock.calls[0].arguments[1], 5);
+
+    statusAtual = 'A caminho';
+    assert.equal(await doacaoService.atualizarDoacaoDaInstituicao(9, 5, 'receber'), 'Entregue');
+    assert.deepEqual(atualizar.mock.calls[1].arguments.slice(1), [5, 'Entregue']);
+
+    statusAtual = 'Prometida';
+    assert.equal(await doacaoService.atualizarDoacaoDaInstituicao(9, 5, 'recusar'), 'Cancelada');
+    assert.deepEqual(restaurar.mock.calls[0].arguments.slice(1), [2, 4]);
+  });
+
+  test('instituição não consegue alterar doação de outra instituição', async () => {
+    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 4,
+      instituicao_id: 10,
+      status: 'Prometida'
+    }));
+
+    const erro = await erroDe(doacaoService.atualizarDoacaoDaInstituicao(9, 5, 'aceitar'));
+    assert.equal(erro.status, 403);
+  });
+});
+
+test.describe('instituicaoService.criarNecessidade', () => {
+  usarConexaoFalsa();
+
+  test('cria necessidade com o perfil da instituição e rejeita quantidade inválida', async () => {
+    const criar = mock.method(necessidadeRepository, 'criar', async () => 17);
+    assert.equal(await instituicaoService.criarNecessidade(9, { item: 'Arroz', quantidade: '5' }), 17);
+    assert.deepEqual(criar.mock.calls[0].arguments.slice(1), [
+      { instituicaoId: 9, item: 'Arroz', quantidade: 5 }
+    ]);
+
+    const erro = await erroDe(instituicaoService.criarNecessidade(9, { item: 'Arroz', quantidade: 0 }));
+    assert.equal(erro.status, 400);
   });
 });
 

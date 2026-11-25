@@ -77,7 +77,7 @@ function criarExecutor(banco, falhas) {
       if (n) n.quantidadeFaltante -= params[0];
       return [{ affectedRows: n ? 1 : 0 }];
     }
-    if (/^SELECT id, doador_id, necessidade_id, quantidade, status FROM doacoes WHERE id = \? FOR UPDATE$/.test(sql)) {
+    if (/^SELECT d\.id, d\.doador_id, d\.necessidade_id, d\.quantidade, d\.status, n\.instituicao_id FROM doacoes d JOIN necessidades n ON n\.id = d\.necessidade_id WHERE d\.id = \? FOR UPDATE$/.test(sql)) {
       return [banco.doacoes
         .filter((d) => d.id === params[0])
         .map((d) => ({
@@ -85,7 +85,8 @@ function criarExecutor(banco, falhas) {
           doador_id: d.doador_id,
           necessidade_id: d.necessidade_id,
           quantidade: d.quantidade,
-          status: d.status
+          status: d.status,
+          instituicao_id: banco.necessidades.find((n) => n.id === d.necessidade_id)?.instituicao_id
         }))];
     }
     if (/^UPDATE doacoes SET status = \? WHERE id = \?$/.test(sql)) {

@@ -1,7 +1,8 @@
-const { pool } = require('../config/db');
+const { pool, comTransacao } = require('../config/db');
 const { ErroHttp } = require('../utils/http');
 const instituicaoRepository = require('../repositories/instituicaoRepository');
 const necessidadeRepository = require('../repositories/necessidadeRepository');
+const { textoNaoVazio, inteiroPositivo } = require('../utils/validacao');
 
 const LIMITE_DESTAQUES = 4;
 
@@ -54,4 +55,22 @@ async function detalhar(id) {
   };
 }
 
-module.exports = { destaques, listar, detalhar };
+async function criarNecessidade(instituicaoId, { item, quantidade } = {}) {
+  if (!textoNaoVazio(item)) {
+    throw new ErroHttp(400, 'Informe o nome do item necessário.');
+  }
+  const qtd = inteiroPositivo(quantidade);
+  if (qtd === null) {
+    throw new ErroHttp(400, 'A quantidade deve ser um inteiro maior que zero.');
+  }
+
+  return comTransacao(async (conexao) => {
+    return necessidadeRepository.criar(conexao, {
+      instituicaoId,
+      item: item.trim(),
+      quantidade: qtd
+    });
+  });
+}
+
+module.exports = { destaques, listar, detalhar, criarNecessidade };

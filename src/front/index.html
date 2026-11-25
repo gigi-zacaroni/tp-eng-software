@@ -1,109 +1,16 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ConectaAção</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ConectaAção: conectando doadores e instituições.">
+<title>ConectaAção</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="cabecalho">
-    <div class="conteudo">
-      <a class="marca" href="/index.html"><span class="marca-icone">C</span>ConectaAção</a>
-
-      <nav class="menu" aria-label="Principal">
-        <a class="menu-item" href="/pages/login.html?volta=%2Fpages%2Finstituicoes.html" data-perfil="visitante">Instituições</a>
-        <a class="menu-item" href="/pages/instituicoes.html" data-perfil="doador" data-menu="instituicoes" hidden>Instituições</a>
-        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Favoritos<small>em breve</small></span>
-        <span class="menu-item em-breve" aria-disabled="true" data-perfil="doador" hidden>Minhas doações<small>em breve</small></span>
-        <a class="menu-item" href="/pages/instituicoes.html" data-perfil="instituicao" data-menu="instituicoes" hidden>Instituições</a>
-        <span class="menu-item em-breve" aria-disabled="true" data-perfil="instituicao" hidden>Painel da instituição<small>em breve</small></span>
-      </nav>
-
-      <div class="acoes-usuario" id="acoes-visitante">
-        <a class="link-forte" href="/pages/login.html">Entrar</a>
-        <a class="botao" href="/pages/cadastro.html">Criar conta</a>
-      </div>
-      <div class="acoes-usuario" id="acoes-logado" hidden>
-        <div class="usuario">
-          <span class="avatar" id="avatar" aria-hidden="true"></span>
-          <span class="usuario-texto">
-            <span class="usuario-nome" id="usuario-nome"></span>
-            <span class="usuario-papel" id="usuario-papel"></span>
-          </span>
-        </div>
-        <button type="button" class="botao-sair" id="sair">Sair</button>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <!-- RF-06: landing pública -->
-    <section class="conteudo hero">
-      <div class="hero-texto">
-        <span class="selo" id="selo-contagem">ConectaAção</span>
-        <h1>Quem quer ajudar, encontrando quem precisa.</h1>
-        <p>Veja exatamente do que cada instituição precisa hoje, prometa a doação que você pode fazer e acompanhe até a entrega. Sem intermediação de dinheiro: a conexão é direta.</p>
-        <div class="hero-botoes">
-          <a class="botao botao-grande" id="conhecer" href="/pages/login.html">Conhecer instituições</a>
-          <a class="botao botao-grande botao-contorno" href="/pages/cadastro.html#instituicao">Cadastrar instituição</a>
-        </div>
-      </div>
-      <img class="hero-foto" src="/img/voluntarios-doacoes.jpg" width="1400" height="781"
-        alt="Voluntários separando doações de roupas, alimentos, brinquedos e ração em um galpão">
-
-    </section>
-
-    <section class="secao-branca">
-      <div class="conteudo secao">
-        <div class="secao-titulo">
-          <h2>Como funciona</h2>
-          <p>Três passos, do primeiro clique até a doação entregue.</p>
-        </div>
-        <div class="passos">
-          <div class="passo">
-            <span class="passo-numero">1</span>
-            <h3>Descobrir</h3>
-            <p>Busque por causa, cidade ou tipo de necessidade e veja instituições com pedidos ativos.</p>
-          </div>
-          <div class="passo">
-            <span class="passo-numero">2</span>
-            <h3>Escolher como ajudar</h3>
-            <p>Escolha o item da lista de necessidades e a quantidade que consegue doar. A instituição é avisada na hora.</p>
-          </div>
-          <div class="passo">
-            <span class="passo-numero">3</span>
-            <h3>Acompanhar</h3>
-            <p>Siga sua doação de Prometida até Entregue, e veja a necessidade sendo preenchida.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="conteudo secao">
-      <div class="secao-titulo">
-        <h2>Instituições em destaque</h2>
-        <p>Precisam de apoio nesta semana.</p>
-      </div>
-      <p class="aviso" id="destaques-aviso" role="status" aria-live="polite">Carregando instituições...</p>
-      <div class="cards" id="destaques"></div>
-    </section>
-  </main>
-
-  <footer class="rodape">
-    <div class="conteudo">
-      <div class="rodape-marca">
-        <span class="marca-icone">C</span>
-        <strong>ConectaAção</strong>
-        <span>Conexão entre doadores e instituições. Não processamos pagamentos.</span>
-      </div>
-    </div>
-  </footer>
-
-  <script type="module" src="/js/cabecalho.js"></script>
-  <script type="module" src="/js/landing.js"></script>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+<script src="js/backend-integration.js"></script>
 </body>
 </html>

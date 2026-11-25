@@ -46,8 +46,32 @@ async function cancelarDoacao(req, res) {
   res.json({ mensagem: 'Doação cancelada e quantidade devolvida à necessidade.' });
 }
 
+async function listarMinhas(req, res) {
+  res.json(await doacaoService.listarDoacoesDoDoador(req.usuario.perfilId));
+}
+
+async function listarRecebidas(req, res) {
+  res.json(await doacaoService.listarDoacoesDaInstituicao(req.usuario.perfilId));
+}
+
+async function atualizarDaInstituicao(req, res) {
+  const doacaoId = inteiroPositivo(req.params.id);
+  if (doacaoId === null) {
+    throw new ErroHttp(400, 'id da doação inválido.');
+  }
+  const status = await doacaoService.atualizarDoacaoDaInstituicao(
+    req.usuario.perfilId,
+    doacaoId,
+    req.params.acao
+  );
+  res.json({ mensagem: 'Doação atualizada.', status });
+}
+
 module.exports = {
   criarDoacao,
   avancarDoacao,
-  cancelarDoacao
+  cancelarDoacao,
+  listarMinhas,
+  listarRecebidas,
+  atualizarDaInstituicao
 };
