@@ -1,9 +1,9 @@
 # Plano de testes
 
 > Criado na Sprint 7 e ampliado na Sprint 8. Responsável: Arthur Veiga (@ArtJamis1208), com Karol Guimarães (@KarolGSMiranda) na Sprint 7.
-> Última atualização: 23/11/2026.
+> Última atualização: 25/11/2026 (entrega final).
 >
-> Este arquivo diz **o que** testar e **como**. Os resultados da Sprint 8 ficam em [`evidencias-testes.md`](evidencias-testes.md).
+> Este arquivo diz **o que** testar e **como**. Os resultados ficam em [`evidencias-testes.md`](evidencias-testes.md).
 
 ## 1. Objetivos e escopo
 
@@ -19,11 +19,15 @@
 | Consulta de instituições (destaques, lista e detalhe) | `RF-06`, `RF-07`, `RF-10` | Sprint 7 |
 | Promessa de doação limitada ao saldo | `RF-18`, `RF-19`, `RNF-06` | Sprint 7 |
 | Acesso protegido às telas e à API | `RF-05`, `RNF-04` | Sprint 8 |
-| Avançar e cancelar doação (API) | `RF-20`, `RF-21`, `RN-03` | Sprint 8 |
-| Telas de listagem com busca, detalhe e doação em 3 passos | `RF-07` a `RF-10`, `RF-18`, `RF-19`, `RNF-01` | Sprint 8 |
+| Cancelar doação (doador) | `RF-20`, `RF-21`, `RN-03` | Sprint 8 |
+| Doações recebidas: aceitar, recusar e confirmar (instituição) | `RF-22`, `RF-23`, `RN-03`, `RN-04` | Entrega final |
+| Cadastro de necessidade pela instituição | `RF-14` | Entrega final |
+| Telas do `app.js` ligadas à API: explorar, detalhe, doação em 3 passos, minhas doações e painel | `RF-06` a `RF-10`, `RF-18` a `RF-23`, `RNF-01` | Entrega final |
 | Persistência real no MySQL 8 (chaves, `CHECK`, transações) | `RF-19` a `RF-21`, `RNF-06` | Sprint 8 |
 
-**Fora do escopo:** favoritos, gestão de necessidades pela instituição, confirmação de recebimento, notificações e validação por administrador (`RF-11` a `RF-13`, `RF-15` a `RF-17`, `RF-22` a `RF-27`). Esses requisitos não têm código na versão final. As telas de "Minhas doações" e do painel também não existem: `RF-20` e `RF-21` são testados só pela API.
+**Fora do escopo:** favoritos, editar, excluir e pausar necessidade, total recebido, notificações e validação por administrador (`RF-11` a `RF-13`, `RF-15` a `RF-17`, `RF-24` a `RF-27`). Esses requisitos não têm código na versão final.
+
+**Sem teste automatizado:** os filtros e os dados guardados no navegador (cidade, causa, tipo, prioridade e contato). Eles são verificados só no `CT-21`, que é manual.
 
 ## 2. Estratégia
 
@@ -34,7 +38,7 @@
 | Integração (banco em memória) | Exercitar controller, service e repository juntos. | `node:test` + [`bancoFalso.js`](../../src/back/tests/helpers/bancoFalso.js) | [`caracterizacao.test.js`](../../src/back/tests/caracterizacao.test.js) | Saída do `npm test` |
 | Integração HTTP | Subir o Express real em porta efêmera e chamar as rotas, conferindo status e corpo. | `node:test` + `fetch` + banco em memória | [`instituicoes-http.test.js`](../../src/back/tests/instituicoes-http.test.js), [`telas-http.test.js`](../../src/back/tests/telas-http.test.js) | Saída do `npm test` |
 | Integração (MySQL real) | Validar chaves estrangeiras, `CHECK` e transações no MySQL 8. | `node:test` + `mysql2`, banco `conectaacao_test` | [`doacoes-integracao.test.js`](../../src/back/tests/doacoes-integracao.test.js) | Saída com `DB_INTEGRATION=1` |
-| Sistema (manual) | Percorrer as telas no navegador com MySQL real. | Roteiro manual | `CT-13`, `CT-21` a `CT-23` | Capturas em [`evidencias/sprint-08/`](evidencias/sprint-08/) |
+| Sistema (manual) | Percorrer as telas no navegador com MySQL real. | Roteiro manual | `CT-13`, `CT-21` a `CT-23` | Capturas em `evidencias/`, quando executados |
 
 Sem `DB_INTEGRATION=1`, a suíte não precisa de MySQL e o arquivo de integração real aparece como pulado (`skipped`).
 
@@ -49,7 +53,8 @@ Sem `DB_INTEGRATION=1`, a suíte não precisa de MySQL e o arquivo de integraç�
 | Quebra de integridade referencial ou status inválido no MySQL | Baixa | Alta | 1 | `RF-19`, `RF-20` | `CT-15` a `CT-18` |
 | Senha gravada em texto puro | Baixa | Alta | 1 | `RNF-03` | `CT-01`, `CT-13` |
 | Visitante acessando dados protegidos | Média | Alta | 1 | `RF-05`, `RNF-04` | `CT-20`, `CT-21` |
-| Doação cancelada sem devolver o saldo | Média | Alta | 1 | `RF-21`, `RN-03` | `CT-19`, `CT-24` |
+| Doação cancelada ou recusada sem devolver o saldo | Média | Alta | 1 | `RF-21`, `RF-23`, `RN-03` | `CT-19`, `CT-24`, `CT-25` |
+| Doador marcando a própria doação como entregue | Baixa | Alta | 1 | `RN-04` | `CT-24`, `CT-25` |
 | Login revela se o e-mail existe | Média | Média | 2 | `RF-03` | `CT-07` |
 | E-mail duplicado ou dados inválidos aceitos | Média | Média | 2 | `RF-01`, `RF-02` | `CT-02` a `CT-04`, `CT-20` |
 | Busca ou filtros escondendo instituições | Média | Média | 2 | `RF-08`, `RF-09` | `CT-21` |
@@ -142,7 +147,7 @@ Todos os casos automatizados partem da mesma pré-condição: banco em memória 
 
 - **Requisitos:** `RF-01`, `RF-02`, `RF-07`, `RF-19`, `RNF-06`
 - **Resultado esperado:** cada repository envia o SQL e os parâmetros corretos. A busca de saldo usa `FOR UPDATE` e devolve 0, não `null`, quando o saldo está zerado.
-- **Automação:** `repositories.test.js` (14 testes).
+- **Automação:** `repositories.test.js` (17 testes).
 
 ### CT-13 Fluxo completo no navegador (manual)
 
@@ -150,12 +155,11 @@ Todos os casos automatizados partem da mesma pré-condição: banco em memória 
 - **Pré-condições:** banco `conectaacao_test` recriado com `reset_test.sql` e `seed_test.sql`; API rodando com `DB_NAME=conectaacao_test`.
 - **Dados:** doador novo `Carla Teste`, e-mail `carla@email.com`, senha `segredo123`; necessidade `Cobertores` (saldo 40) da `Casa Esperança`; quantidade `5`.
 - **Passos:**
-  1. Abrir `http://localhost:3000`, clicar em "Criar conta" e cadastrar o doador.
-  2. Entrar com a conta criada.
-  3. Abrir "Instituições", depois `Casa Esperança`.
-  4. Clicar em "Quero doar" em `Cobertores`, informar `5`, clicar em "Revisar" e em "Confirmar doação".
-  5. No MySQL, consultar `usuarios`, `doacoes` e `necessidades`.
-- **Resultado esperado:** a tela "Doação registrada como Prometida" aparece; a doação é gravada como `Prometida`; o saldo de `Cobertores` cai de 40 para 35; a senha de `carla@email.com` está como hash bcrypt (`$2a$...`); do botão "Quero doar" até a confirmação são 3 ações (`RNF-01`).
+  1. Abrir `http://localhost:3000`, clicar em "Entrar", depois na aba "Criar conta", e cadastrar o doador. O sistema entra na conta e abre "Explorar necessidades".
+  2. Abrir `Cobertores` e clicar em "Quero ajudar".
+  3. Informar `5`, marcar o consentimento e clicar em "Confirmar promessa de doação".
+  4. No MySQL, consultar `usuarios`, `doacoes` e `necessidades`.
+- **Resultado esperado:** "Minhas doações" abre com a doação `Prometida`; a doação é gravada como `Prometida`; o saldo de `Cobertores` cai de 40 para 35; a senha de `carla@email.com` está como hash bcrypt (`$2a$...`); de "Quero ajudar" até a confirmação são 3 ações (`RNF-01`).
 - **Automação:** não aplicável. O teste depende de navegador e banco real.
 
 ### CT-14 a CT-19 Persistência do fluxo de doações no MySQL 8
@@ -187,13 +191,15 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 ### CT-21 Listagem, busca e acesso protegido (manual)
 
 - **Requisitos:** `RF-05`, `RF-07`, `RF-08`, `RF-09`
-- **Pré-condições:** as mesmas do `CT-13`; navegador sem sessão.
+- **Pré-condições:** as mesmas do `CT-13`; navegador sem sessão e com o `localStorage` limpo.
 - **Passos e resultado esperado:**
-  1. Sem login, abrir `/pages/instituicoes.html`. **Esperado:** vai para o login; depois de entrar como `ana@email.com`, volta para a listagem.
-  2. Ver a listagem. **Esperado:** 2 instituições cadastradas, cada uma com o link "Ver detalhe".
-  3. Buscar `esperanca`, sem acento. **Esperado:** só `Casa Esperança`.
-  4. Limpar a busca e marcar "Só verificadas". **Esperado:** só `Casa Esperança`.
-  5. Buscar `xyz`. **Esperado:** estado vazio "Nenhuma instituição com esses filtros"; o botão "Limpar filtros" restaura as 2.
+  1. Sem login, clicar em "Instituições". **Esperado:** a tela "Entrar" abre com o aviso para entrar na conta.
+  2. Entrar como `esperanca@email.com`, abrir "Editar perfil", escolher a causa "Assistência social" e a cidade `Lavras, MG`, salvar e sair.
+  3. Entrar como `ana@email.com` e abrir "Instituições". **Esperado:** 2 instituições; `Casa Esperança` mostra `Lavras, MG · Assistência social`.
+  4. Buscar `Esperança`. **Esperado:** só `Casa Esperança`.
+  5. Limpar a busca e clicar na causa "Assistência social". **Esperado:** só `Casa Esperança`.
+  6. Em "Explorar necessidades", escolher a cidade `Lavras, MG`. **Esperado:** só as necessidades da `Casa Esperança`.
+  7. Buscar `xyz`. **Esperado:** estado vazio "Nenhum resultado encontrado"; "Limpar filtros" restaura a lista.
 - **Automação:** não aplicável.
 
 ### CT-22 Detalhe com progresso das necessidades (manual)
@@ -201,7 +207,7 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 - **Requisitos:** `RF-10`, `RF-18`
 - **Pré-condições:** as mesmas do `CT-13`; logado como `ana@email.com`.
 - **Passos:** abrir o detalhe da `Casa Esperança`.
-- **Resultado esperado:** selo "Verificada"; `Arroz 5kg` com "20 de 100 prometidos", 20% e status `Parcial`; `Cobertores` com "0 de 40 prometidos", 0% e status `Aberta`; abrir `/pages/instituicao.html?id=999` mostra "Instituição não encontrada.".
+- **Resultado esperado:** `Arroz 5kg` com "20 de 100 prometidos" e 20%; `Cobertores` com "0 de 40 prometidos" e 0%; o quadro "Informações da instituição" mostra o contato salvo no navegador ou "Não informado".
 - **Automação:** não aplicável.
 
 ### CT-23 Doação pela interface limitada ao saldo (manual)
@@ -209,31 +215,43 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 - **Requisitos:** `RF-19`, `RN-02`, `RNF-01`, `RNF-06`
 - **Pré-condições:** as mesmas do `CT-22`.
 - **Passos e resultado esperado:**
-  1. Em `Arroz 5kg` (falta 80), clicar em "Quero doar" e digitar `81`. **Esperado:** erro "O máximo para este item é 80." e o botão "Revisar" desabilitado.
-  2. Digitar `0`. **Esperado:** erro de número inteiro maior que zero.
-  3. Digitar `10`, revisar e confirmar. **Esperado:** tela de confirmação com item, quantidade e número da doação. Voltando ao detalhe, falta `70`.
-  4. Entrar como a instituição `esperanca@email.com` e abrir o próprio detalhe. **Esperado:** nenhum botão "Quero doar" (só doador doa).
+  1. Em `Arroz 5kg` (falta 80), clicar em "Quero ajudar", digitar `81` e confirmar. **Esperado:** o navegador recusa valores acima de 80.
+  2. Digitar `0`. **Esperado:** o navegador recusa valores menores que 1.
+  3. Digitar `10`, marcar o consentimento e confirmar. **Esperado:** "Minhas doações" abre com a doação `Prometida`. Voltando à necessidade, falta `70`.
+  4. Entrar como a instituição `esperanca@email.com`. **Esperado:** o sistema abre o painel da instituição, que não tem "Quero ajudar" (só doador doa).
 - **Automação:** não aplicável. A mesma regra no servidor é coberta por `CT-09` e `CT-14`.
 
-### CT-24 Avançar e cancelar doação pela API
+### CT-24 Cancelar doação e respostas da instituição
 
-- **Requisitos:** `RF-20`, `RF-21`, `RN-03`
-- **Dados:** doação `Prometida` do próprio doador; doação de outro doador; doação `Entregue`.
-- **Resultado esperado:** avançar segue `Prometida -> A caminho -> Entregue` e depois devolve 409; outro doador recebe 403; cancelar grava `Cancelada` e devolve o saldo; doação `Entregue` não pode ser cancelada (409).
-- **Automação:** `services.test.js` e `caracterizacao.test.js` (6 testes), escritos por Maria Luiza Pestana.
-
-### CT-25 Páginas e chamadas das telas novas
-
-- **Requisitos:** `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-18`, `RF-19`, `RN-02`
-- **Pré-condição:** app Express real em porta efêmera, com o banco em memória.
-- **Dados:** os mesmos que as telas enviam. Instituição `Casa Esperança` com `Cobertores` (quantidade `"40"`), doador `carla@email.com` e doações de `41` e `5`.
+- **Requisitos:** `RF-20` a `RF-23`, `RN-03`, `RN-04`
+- **Dados:** doação `Prometida` do próprio doador; doação de outro doador; doação `Entregue`; doação de outra instituição.
 - **Resultado esperado:**
-  - Páginas e módulos JS: 200.
+  - O doador cancela em `Prometida` ou `A caminho`: grava `Cancelada` e devolve o saldo. Outro doador recebe 403. Doação `Entregue` não pode ser cancelada (409).
+  - O doador não tem função para avançar o status.
+  - A instituição aceita (`Prometida -> A caminho`), confirma (`A caminho -> Entregue`) e recusa (`Prometida -> Cancelada`, com devolução do saldo). Confirmar uma doação ainda `Prometida` devolve 409. Doação de outra instituição devolve 403.
+- **Automação:** `services.test.js` (7 testes) e `caracterizacao.test.js` (3 testes). Casos de cancelamento escritos por Maria Luiza Pestana.
+
+### CT-25 Front servido e chamadas das telas à API
+
+- **Requisitos:** `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-14`, `RF-18` a `RF-23`, `RN-02`, `RN-04`
+- **Pré-condição:** app Express real em porta efêmera, com o banco em memória.
+- **Dados:** os mesmos que o `app.js` envia. Instituição `Casa Esperança` com `Cobertores` (quantidade `"40"`) e doador `carla@email.com`.
+- **Resultado esperado:**
+  - `/`, `/app.js`, `/style.css` e todo script carregado pelo `index.html`: 200.
   - Cadastros: 201. O login devolve `tipo` e `perfil.nome`.
   - Listagem: 401 sem token. Com token, traz os campos dos cards.
   - Doar 41: 400. Doar 5: 201, e o detalhe passa a mostrar falta `35` e 13%.
   - Instituição: consulta o detalhe, mas recebe 403 ao tentar doar.
-- **Automação:** [`telas-http.test.js`](../../src/back/tests/telas-http.test.js) (5 testes). Não substitui o `CT-21` a `CT-23`, que olham a tela no navegador.
+  - Minhas doações: lista a doação; `PATCH /doacoes/:id/avancar` devolve 404; cancelar devolve o saldo.
+  - Painel: recebidas em ordem; aceitar, receber e recusar mudam o status; nova necessidade aparece para o doador.
+- **Automação:** [`telas-http.test.js`](../../src/back/tests/telas-http.test.js) (7 testes). Não substitui o `CT-21` a `CT-23`, que olham a tela no navegador.
+
+### CT-26 Cadastrar necessidade pela instituição
+
+- **Requisitos:** `RF-14`
+- **Dados:** instituição autenticada; item `Leite em pó`, quantidade `12`; depois quantidade inválida.
+- **Resultado esperado:** resposta 201 com o id; a necessidade é gravada com o id da instituição do token e saldo igual à quantidade; quantidade inválida devolve 400.
+- **Automação:** `services.test.js` (1 teste) e o teste do painel em `telas-http.test.js`.
 
 ## 5. Matriz requisito × caso de teste
 
@@ -247,14 +265,16 @@ Casos escritos por Maria Luiza Pestana (@Malupestana) e automatizados em [`doaco
 | `RF-07` | CT-11, CT-12, CT-20, CT-21, CT-25 |
 | `RF-08`, `RF-09` | CT-21 |
 | `RF-10` | CT-11, CT-20, CT-22, CT-25 |
-| `RF-14` | CT-04 |
+| `RF-14` | CT-04, CT-26 |
 | `RF-18` | CT-08, CT-14, CT-22, CT-25 |
 | `RF-19` | CT-08, CT-09, CT-12, CT-13, CT-14 a CT-16, CT-18, CT-19, CT-23, CT-25 |
-| `RF-20` | CT-17, CT-24 |
-| `RF-21` | CT-19, CT-24 |
+| `RF-20` | CT-17, CT-24, CT-25 |
+| `RF-21` | CT-19, CT-24, CT-25 |
+| `RF-22`, `RF-23` | CT-24, CT-25 |
+| `RN-04` | CT-24, CT-25 |
 | `RNF-01` | CT-13, CT-23 |
 | `RNF-03` | CT-01, CT-13 |
-| `RNF-04` | CT-20 |
+| `RNF-04` | CT-20, CT-25 |
 | `RNF-06` | CT-09, CT-10, CT-12, CT-19, CT-23 |
 
 ## 6. Critérios de aprovação

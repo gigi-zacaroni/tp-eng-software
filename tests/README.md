@@ -8,9 +8,9 @@ Os testes usam o executor nativo do Node (`node:test`), sem Jest nem outras depe
 
 | Documento | Conteúdo |
 |---|---|
-| [`docs/testes/plano-de-testes.md`](../docs/testes/plano-de-testes.md) | Planejamento completo e casos de teste (`CT-01` a `CT-24`). |
-| [`docs/testes/evidencias-testes.md`](../docs/testes/evidencias-testes.md) | Resultados finais da Sprint 8: totais, defeitos e requisitos atendidos. |
-| [`docs/testes/evidencias/`](../docs/testes/evidencias/) | Saídas do `npm test` (Sprints 7 e 8) e capturas dos testes manuais. |
+| [`docs/testes/plano-de-testes.md`](../docs/testes/plano-de-testes.md) | Planejamento completo e casos de teste (`CT-01` a `CT-26`). |
+| [`docs/testes/evidencias-testes.md`](../docs/testes/evidencias-testes.md) | Resultados finais: totais, defeitos e requisitos atendidos. |
+| [`docs/testes/evidencias/`](../docs/testes/evidencias/) | Saídas do `npm test` (Sprints 7, 8 e entrega final). |
 | [`docs/sprints/sprint-07.md`](../docs/sprints/sprint-07.md) | Índice da Sprint 7: fluxo coberto, evidências e defeitos corrigidos. |
 | [`docs/rastreabilidade.md`](../docs/rastreabilidade.md) | Vínculo requisito → Issue → código → teste → evidência. |
 
@@ -39,11 +39,11 @@ O arquivo `doacoes-integracao.test.js` só roda com `DB_INTEGRATION=1`; sem a va
 | Arquivo (em `src/back/tests/`) | O que verifica |
 |---|---|
 | `instituicoes-http.test.js` | **Fluxo prioritário da Sprint 7.** Sobe o app Express real em uma porta efêmera e faz requisições HTTP: cadastro de doador e de instituição (201, 400 e 409), listagem e destaques, e detalhe da instituição (200, 400, 401 e 404). |
-| `caracterizacao.test.js` | Cadastro, login e doação de ponta a ponta (controller, service e repository) contra o banco em memória. |
+| `caracterizacao.test.js` | Cadastro, login, doação e respostas da instituição de ponta a ponta (controller, service e repository) contra o banco em memória. |
 | `repositories.test.js` | SQL, parâmetros e retornos de cada repository. |
 | `services.test.js` | Regras dos services com os repositories substituídos por dublês. |
 | `doacoes-integracao.test.js` | Fluxo de doações contra MySQL real (opcional, ver acima). |
-| `telas-http.test.js` | Páginas e chamadas das telas da Sprint 8 (cadastro, listagem, detalhe, doação), na ordem em que o front as faz (`CT-25`). |
+| `telas-http.test.js` | Arquivos do front (`index.html`, `app.js`, `style.css`) e as chamadas das telas à API, na ordem em que o `app.js` as faz: cadastro, listagem, detalhe, doação, minhas doações e painel da instituição (`CT-25`). |
 | `helpers/bancoFalso.js` | Banco em memória usado pelos testes de caracterização e pelos testes HTTP. |
 
 ## Fluxo prioritário da Sprint 7: instituições
@@ -74,8 +74,8 @@ Arquivo: `instituicoes-http.test.js`.
 | `CT-14` a `CT-19` | `doacoes-integracao.test.js` (MySQL real) | `RF-18` a `RF-21`, `RNF-06` |
 | `CT-20` | `instituicoes-http.test.js` | `RF-01`, `RF-02`, `RF-05` a `RF-07`, `RF-10`, `RNF-04` |
 | `CT-21` a `CT-23` | Manual, telas do front-end | `RF-05`, `RF-07` a `RF-10`, `RF-18`, `RF-19`, `RNF-01` |
-| `CT-24` | `services.test.js`, `caracterizacao.test.js` | `RF-20`, `RF-21` |
-| `CT-25` | `telas-http.test.js` | `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-18`, `RF-19` |
+| `CT-24` | `services.test.js`, `caracterizacao.test.js` | `RF-20` a `RF-23`, `RN-04` |
+| `CT-25` | `telas-http.test.js` | `RF-01`, `RF-02`, `RF-05`, `RF-07`, `RF-10`, `RF-14`, `RF-18` a `RF-23` |
 
 ## Evidências
 
@@ -85,7 +85,7 @@ Arquivo: `instituicoes-http.test.js`.
 | Sprint 7, reteste | [`execucao-sprint-07-depois.txt`](../docs/testes/evidencias/execucao-sprint-07-depois.txt) | 47 aprovados, 0 falhas |
 | Sprint 8, sem MySQL | [`execucao-sprint-08-unitarios.txt`](../docs/testes/evidencias/execucao-sprint-08-unitarios.txt) | 80 aprovados, 0 falhas, integração MySQL pulada |
 
-O resumo completo da Sprint 8 está em [`evidencias-testes.md`](../docs/testes/evidencias-testes.md).
+O resumo completo está em [`evidencias-testes.md`](../docs/testes/evidencias-testes.md).
 
 ## Defeitos encontrados pelos testes automatizados
 
@@ -94,7 +94,7 @@ A numeração segue a tabela de defeitos de [`evidencias-testes.md`](../docs/tes
 | Defeito | Onde | Correção |
 |---|---|---|
 | `DEF-01`: hooks no nível do arquivo não rodavam dentro de `describe` no Node 18 e 15 testes falhavam (Sprint 7, Issue #35). | `caracterizacao.test.js`, `services.test.js` | Hooks registrados dentro de cada `describe`. |
-| `DEF-02`: a suíte `doacaoService.avancarDoacao e cancelarDoacao` ficou sem o hook da conexão falsa, e 4 testes tentavam conectar ao MySQL (`ECONNREFUSED`). | `src/back/tests/services.test.js` | `usarConexaoFalsa()` incluído no `describe`. |
+| `DEF-02`: a suíte de avançar e cancelar doação ficou sem o hook da conexão falsa, e 4 testes tentavam conectar ao MySQL (`ECONNREFUSED`). | `src/back/tests/services.test.js` | `usarConexaoFalsa()` incluído no `describe`. |
 | `DEF-03`: o cadastro de instituição aceitava `descricao` que não é texto e nome com mais de 255 caracteres, respondendo `201` em vez de `400`. | `src/back/src/services/authService.js` | Validação do tipo da descrição e do tamanho do nome (limite da coluna `VARCHAR(255)`). |
 
 ## Limitações
