@@ -124,6 +124,32 @@ function criarExecutor(banco, falhas) {
         .sort((a, b) => a.id - b.id)
         .map((n) => ({ id: n.id, item: n.item, quantidadeTotal: n.quantidadeTotal, quantidadeFaltante: n.quantidadeFaltante }))];
     }
+    if (/^SELECT d\.id, d\.doador_id, d\.necessidade_id, d\.quantidade, d\.status, d\.dataPromessa, n\.item, n\.quantidadeTotal, n\.quantidadeFaltante, i\.id AS instituicao_id, i\.nome AS instituicao_nome FROM doacoes d JOIN necessidades n ON n\.id = d\.necessidade_id JOIN instituicoes i ON i\.id = n\.instituicao_id WHERE d\.doador_id = \? ORDER BY d\.dataPromessa DESC, d\.id DESC$/.test(sql)) {
+      return [banco.doacoes
+        .filter((d) => d.doador_id === params[0])
+        .sort((a, b) => b.id - a.id)
+        .map((d) => {
+          const n = banco.necessidades.find((x) => x.id === d.necessidade_id);
+          const i = banco.instituicoes.find((x) => x.id === n.instituicao_id);
+          return {
+            id: d.id, doador_id: d.doador_id, necessidade_id: d.necessidade_id,
+            quantidade: d.quantidade, status: d.status, dataPromessa: null, item: n.item,
+            quantidadeTotal: n.quantidadeTotal, quantidadeFaltante: n.quantidadeFaltante,
+            instituicao_id: i.id, instituicao_nome: i.nome
+          };
+        })];
+    }
+    if (/^SELECT d\.id, d\.doador_id, d\.necessidade_id, d\.quantidade, d\.status, d\.dataPromessa, n\.item, dr\.nome AS doador_nome FROM doacoes d JOIN necessidades n ON n\.id = d\.necessidade_id JOIN doadores dr ON dr\.id = d\.doador_id WHERE n\.instituicao_id = \? ORDER BY d\.dataPromessa DESC, d\.id DESC$/.test(sql)) {
+      return [banco.doacoes
+        .map((d) => ({ d, n: banco.necessidades.find((x) => x.id === d.necessidade_id) }))
+        .filter(({ n }) => n && n.instituicao_id === params[0])
+        .sort((a, b) => b.d.id - a.d.id)
+        .map(({ d, n }) => ({
+          id: d.id, doador_id: d.doador_id, necessidade_id: d.necessidade_id,
+          quantidade: d.quantidade, status: d.status, dataPromessa: null, item: n.item,
+          doador_nome: banco.doadores.find((x) => x.id === d.doador_id)?.nome
+        }))];
+    }
     throw new Error(`BancoFalso: instrução SQL não suportada: ${sql}`);
   };
 }

@@ -1,7 +1,7 @@
-// CT-25: páginas e chamadas das telas da Sprint 8 (cadastro, listagem,
-// detalhe e confirmação). Sobe o app Express real e repete, na mesma ordem,
-// as requisições que os módulos de src/front/js fazem. Só o MySQL é trocado
-// pelo banco em memória (helpers/bancoFalso.js). Não precisa de MySQL.
+// CT-25: o front (src/front/app.js) servido pelo Express e as chamadas que ele
+// faz à API. Sobe o app real e repete, na mesma ordem, as requisições das
+// telas de cadastro, explorar, doar, minhas doações e painel da instituição.
+// Só o MySQL é trocado pelo banco em memória (helpers/bancoFalso.js).
 // Os hooks ficam dentro do describe por causa do DEF-01 (Node 18).
 
 process.env.JWT_SECRET = 'segredo-de-teste';
@@ -27,7 +27,7 @@ async function requisitar(metodo, caminho, { corpo, token } = {}) {
   return { status: resposta.status, corpo: await resposta.json() };
 }
 
-// Mesmo corpo que js/cadastro.js monta a partir do formulário da instituição.
+// Mesmo corpo que a tela de cadastro do app.js monta para a instituição.
 // A quantidade chega como texto, como sai de um <input type="number">.
 async function cadastrarCasaEsperanca() {
   return requisitar('POST', '/cadastro/instituicao', {
@@ -39,7 +39,7 @@ async function cadastrarCasaEsperanca() {
   });
 }
 
-// Mesmo corpo que js/cadastro.js monta a partir do formulário do doador.
+// Mesmo corpo que a tela de cadastro do app.js monta para o doador.
 async function cadastrarEEntrarComoDoador() {
   await requisitar('POST', '/cadastro/doador', {
     corpo: { nome: 'Carla Teste', email: 'carla@email.com', senha: 'segredo123', confirmarSenha: 'segredo123' }
@@ -48,7 +48,7 @@ async function cadastrarEEntrarComoDoador() {
   return corpo;
 }
 
-test.describe('CT-25: telas da Sprint 8 servidas e ligadas à API', () => {
+test.describe('CT-25: front servido e ligado à API', () => {
   test.before(async () => {
     await new Promise((resolve) => {
       servidor = app.listen(0, '127.0.0.1', resolve);
@@ -61,16 +61,16 @@ test.describe('CT-25: telas da Sprint 8 servidas e ligadas à API', () => {
   test.beforeEach(() => { db = bancoFalso.instalar(); });
   test.afterEach(() => { db.restaurar(); });
 
-  test('o Express serve as páginas e os módulos das telas', async () => {
-    const arquivos = [
-      '/', '/pages/login.html', '/pages/cadastro.html', '/pages/instituicoes.html',
-      '/pages/instituicao.html', '/pages/confirmacao.html', '/style.css',
-      '/js/api.js', '/js/cards.js', '/js/cadastro.js', '/js/instituicoes.js',
-      '/js/instituicao.js', '/js/confirmacao.js'
-    ];
-    for (const arquivo of arquivos) {
+  test('o Express serve a página única do front e os arquivos que ela carrega', async () => {
+    for (const arquivo of ['/', '/index.html', '/app.js', '/style.css']) {
       const resposta = await fetch(base + arquivo);
       assert.equal(resposta.status, 200, arquivo);
+    }
+    const html = await (await fetch(base + '/')).text();
+    const scripts = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map((m) => m[1]);
+    for (const src of scripts) {
+      const resposta = await fetch(new URL(src, base + '/'));
+      assert.equal(resposta.status, 200, `script carregado pelo index.html: ${src}`);
     }
   });
 
@@ -138,5 +138,62 @@ test.describe('CT-25: telas da Sprint 8 servidas e ligadas à API', () => {
       corpo: { necessidade_id: detalhe.corpo.necessidades[0].id, quantidade: 1 }
     });
     assert.equal(doacao.status, 403);
+  });
+
+  test('minhas doações: o doador vê a doação e cancela; não existe rota para ele marcar como entregue', async () => {
+    await cadastrarCasaEsperanca();
+    const { token } = await cadastrarEEntrarComoDoador();
+    const [instituicao] = (await requisitar('GET', '/instituicoes', { token })).corpo;
+    const necessidade = (await requisitar('GET', `/instituicoes/${instituicao.id}`, { token })).corpo.necessidades[0];
+    const { corpo: criada } = await requisitar('POST', '/doacoes', { token, corpo: { necessidade_id: necessidade.id, quantidade: 4 } });
+
+    const minhas = await requisitar('GET', '/doacoes/minhas', { token });
+    assert.equal(minhas.status, 200);
+    assert.deepEqual(
+      minhas.corpo.map((d) => [d.id, d.status, d.item, d.instituicao_nome]),
+      [[criada.id, 'Prometida', 'Cobertores', 'Casa Esperança']]
+    );
+
+    const avancar = await requisitar('PATCH', `/doacoes/${criada.id}/avancar`, { token });
+    assert.equal(avancar.status, 404, 'RN-04: só a instituição confirma');
+
+    const cancelar = await requisitar('PATCH', `/doacoes/${criada.id}/cancelar`, { token });
+    assert.equal(cancelar.status, 200);
+    const depois = (await requisitar('GET', `/instituicoes/${instituicao.id}`, { token })).corpo.necessidades[0];
+    assert.equal(depois.faltante, 40);
+  });
+
+  test('painel da instituição: recebidas, aceitar, receber, recusar e nova necessidade', async () => {
+    await cadastrarCasaEsperanca();
+    const { token: tokenDoador } = await cadastrarEEntrarComoDoador();
+    const { corpo: inst } = await requisitar('POST', '/login', {
+      corpo: { email: 'esperanca@email.com', senha: 'segredo123' }
+    });
+    const necessidade = (await requisitar('GET', `/instituicoes/${inst.perfil.id}`, { token: inst.token })).corpo.necessidades[0];
+    const d1 = (await requisitar('POST', '/doacoes', { token: tokenDoador, corpo: { necessidade_id: necessidade.id, quantidade: 3 } })).corpo.id;
+    const d2 = (await requisitar('POST', '/doacoes', { token: tokenDoador, corpo: { necessidade_id: necessidade.id, quantidade: 2 } })).corpo.id;
+
+    const recebidas = await requisitar('GET', '/doacoes/recebidas', { token: inst.token });
+    assert.equal(recebidas.status, 200);
+    assert.deepEqual(recebidas.corpo.map((d) => [d.id, d.doador_nome, d.status]), [
+      [d2, 'Carla Teste', 'Prometida'],
+      [d1, 'Carla Teste', 'Prometida']
+    ]);
+
+    assert.equal((await requisitar('PATCH', `/doacoes/${d1}/receber`, { token: inst.token })).status, 409);
+    assert.equal((await requisitar('PATCH', `/doacoes/${d1}/aceitar`, { token: inst.token })).corpo.status, 'A caminho');
+    assert.equal((await requisitar('PATCH', `/doacoes/${d1}/receber`, { token: inst.token })).corpo.status, 'Entregue');
+    assert.equal((await requisitar('PATCH', `/doacoes/${d2}/recusar`, { token: inst.token })).corpo.status, 'Cancelada');
+
+    const aposRecusa = (await requisitar('GET', `/instituicoes/${inst.perfil.id}`, { token: inst.token })).corpo.necessidades[0];
+    assert.equal(aposRecusa.faltante, 37, 'a recusa devolve 2 ao saldo; a entrega mantém os 3 abatidos');
+
+    const nova = await requisitar('POST', '/instituicoes/necessidades', {
+      token: inst.token,
+      corpo: { item: 'Leite em pó', quantidade: 12 }
+    });
+    assert.equal(nova.status, 201);
+    const itens = (await requisitar('GET', `/instituicoes/${inst.perfil.id}`, { token: tokenDoador })).corpo.necessidades.map((n) => n.item);
+    assert.deepEqual(itens, ['Cobertores', 'Leite em pó']);
   });
 });

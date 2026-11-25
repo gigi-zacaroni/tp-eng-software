@@ -36,13 +36,6 @@ router.post(
 );
 
 router.patch(
-  '/:id/avancar',
-  autenticar,
-  exigirTipo('doador'),
-  asyncHandler(doacaoController.avancarDoacao)
-);
-
-router.patch(
   '/:id/cancelar',
   autenticar,
   exigirTipo('doador'),

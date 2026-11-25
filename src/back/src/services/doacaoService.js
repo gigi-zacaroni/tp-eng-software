@@ -35,31 +35,8 @@ async function registrarDoacao(doadorId, necessidadeId, quantidade) {
   });
 }
 
-async function avancarDoacao(doadorId, doacaoId) {
-  return comTransacao(async (conexao) => {
-    const doacao = await doacaoRepository.buscarPorIdComTrava(conexao, doacaoId);
-
-    if (!doacao) {
-      throw new ErroHttp(404, 'Doação não encontrada.');
-    }
-    if (doacao.doador_id !== doadorId) {
-      throw new ErroHttp(403, 'A doação pertence a outro doador.');
-    }
-
-    const proximoStatus = {
-      'Prometida': 'A caminho',
-      'A caminho': 'Entregue'
-    }[doacao.status];
-
-    if (!proximoStatus) {
-      throw new ErroHttp(409, 'O status da doação não permite novo avanço.');
-    }
-
-    await doacaoRepository.atualizarStatus(conexao, doacaoId, proximoStatus);
-    return proximoStatus;
-  });
-}
-
+// RF-21: o doador só cancela. Quem muda o status para A caminho e Entregue é a
+// instituição (RN-04), em atualizarDoacaoDaInstituicao.
 async function cancelarDoacao(doadorId, doacaoId) {
   return comTransacao(async (conexao) => {
     const doacao = await doacaoRepository.buscarPorIdComTrava(conexao, doacaoId);
@@ -137,7 +114,6 @@ async function atualizarDoacaoDaInstituicao(instituicaoId, doacaoId, acao) {
 
 module.exports = {
   registrarDoacao,
-  avancarDoacao,
   cancelarDoacao,
   listarDoacoesDoDoador,
   listarDoacoesDaInstituicao,

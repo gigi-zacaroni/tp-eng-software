@@ -105,24 +105,14 @@ test.describe('doacaoService.registrarDoacao', () => {
   });
 });
 
-test.describe('doacaoService.avancarDoacao e cancelarDoacao', () => {
+test.describe('doacaoService: cancelamento pelo doador e ações da instituição', () => {
   usarConexaoFalsa();
 
-  test('avança Prometida para A caminho e depois para Entregue', async () => {
-    const atualizar = mock.method(doacaoRepository, 'atualizarStatus', async () => 1);
-    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
-      id: 5,
-      doador_id: 1,
-      necessidade_id: 2,
-      quantidade: 4,
-      status: 'Prometida'
-    }));
-
-    assert.equal(await doacaoService.avancarDoacao(1, 5), 'A caminho');
-    assert.deepEqual(atualizar.mock.calls[0].arguments.slice(1), [5, 'A caminho']);
+  test('o doador não avança o status: só a instituição confirma (RN-04)', () => {
+    assert.equal(doacaoService.avancarDoacao, undefined);
   });
 
-  test('rejeita avanço de doação de outro doador', async () => {
+  test('rejeita cancelamento de doação de outro doador', async () => {
     mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
       id: 5,
       doador_id: 99,
@@ -131,9 +121,24 @@ test.describe('doacaoService.avancarDoacao e cancelarDoacao', () => {
       status: 'Prometida'
     }));
 
-    const erro = await erroDe(doacaoService.avancarDoacao(1, 5));
+    const erro = await erroDe(doacaoService.cancelarDoacao(1, 5));
 
     assert.equal(erro.status, 403);
+  });
+
+  test('instituição não confirma recebimento de doação ainda Prometida', async () => {
+    mock.method(doacaoRepository, 'buscarPorIdComTrava', async () => ({
+      id: 5,
+      doador_id: 1,
+      necessidade_id: 2,
+      quantidade: 4,
+      instituicao_id: 9,
+      status: 'Prometida'
+    }));
+
+    const erro = await erroDe(doacaoService.atualizarDoacaoDaInstituicao(9, 5, 'receber'));
+
+    assert.equal(erro.status, 409);
   });
 
   test('cancelar restaura o saldo e muda o status para Cancelada', async () => {

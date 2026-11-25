@@ -23,8 +23,12 @@ app.get('/teste-conexao', asyncHandler(async (req, res) => {
 }));
 
 app.use('/', authRoutes);              // /cadastro/doador, /cadastro/instituicao, /login, /logout
-app.use('/doacoes', doacoesRoutes);    // POST /doacoes
-app.use('/instituicoes', instituicoesRoutes); // GET /instituicoes, /instituicoes/destaques, /instituicoes/:id
+// POST /doacoes, GET /doacoes/minhas e /recebidas,
+// PATCH /doacoes/:id/cancelar e /doacoes/:id/aceitar|recusar|receber
+app.use('/doacoes', doacoesRoutes);
+// GET /instituicoes, /instituicoes/destaques e /instituicoes/:id,
+// POST /instituicoes/necessidades
+app.use('/instituicoes', instituicoesRoutes);
 
 // Front-end estático (src/front) servido pela mesma origem da API: o navegador
 // chama a API sem CORS e a aplicação sobe com um único processo.

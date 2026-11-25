@@ -26,16 +26,6 @@ async function criarDoacao(req, res) {
   });
 }
 
-async function avancarDoacao(req, res) {
-  const doacaoId = inteiroPositivo(req.params.id);
-  if (doacaoId === null) {
-    throw new ErroHttp(400, 'id da doação inválido.');
-  }
-
-  const status = await doacaoService.avancarDoacao(req.usuario.perfilId, doacaoId);
-  res.json({ mensagem: 'Status da doação atualizado.', status });
-}
-
 async function cancelarDoacao(req, res) {
   const doacaoId = inteiroPositivo(req.params.id);
   if (doacaoId === null) {
@@ -69,7 +59,6 @@ async function atualizarDaInstituicao(req, res) {
 
 module.exports = {
   criarDoacao,
-  avancarDoacao,
   cancelarDoacao,
   listarMinhas,
   listarRecebidas,
