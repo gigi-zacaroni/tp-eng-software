@@ -7,9 +7,9 @@
 
 | Ferramenta/modelo | Finalidade | Integrantes que utilizaram |
 |---|---|---|
-| Claude Code (Claude Opus 5.5), no VS Code | Documentos de teste, telas do front-end, integração final das telas com a API, revisão final da documentação e execução de `git` e `npm test` | Arthur Veiga (@ArtJamis1208), também na revisão final de 25/11 |
+| Claude Code (Claude Opus 5.5), no VS Code | Documentos de teste, telas do front-end, integração final das telas com a API, revisão final da documentação e execução de `git` e `npm test` | Arthur Veiga e Karol Guimarães|
 | GitHub Copilot | Correção da persistência de doações, scripts SQL e testes de integração | Maria Luiza Pestana (@Malupestana) |
-| Pendente | Geovana e Karol ainda não registraram o uso de IA | Geovana Zacaroni, Karol Guimarães |
+
 
 O uso do Copilot aparece no commit [`c2321b9`](https://github.com/gigi-zacaroni/tp-eng-software/commit/c2321b9). Falta a Maria Luiza confirmar e detalhar a linha dela.
 
