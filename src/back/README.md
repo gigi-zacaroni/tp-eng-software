@@ -90,27 +90,35 @@ Os testes de integração usam o banco `conectaacao_test`, recriam sua estrutura
 e recarregam a massa antes de cada cenário. Sem `DB_INTEGRATION=1`, apenas os
 testes com banco em memória são executados.
 
-## Rotas do fluxo de doações
+## Rotas
 
-- `POST /doacoes`: cria uma promessa e reduz o saldo da necessidade.
-- `PATCH /doacoes/:id/avancar`: avança apenas a doação do doador autenticado;
-  os estados válidos seguem `Prometida -> A caminho -> Entregue`.
-- `PATCH /doacoes/:id/cancelar`: cancela uma doação em `Prometida` ou
-  `A caminho` e devolve a quantidade ao saldo da necessidade.
-- `GET /doacoes/minhas`: lista as doações do doador autenticado.
-- `GET /doacoes/recebidas`: lista as doações associadas às necessidades da
-  instituição autenticada.
-- `PATCH /doacoes/:id/aceitar`, `/recusar` e `/receber`: a instituição atualiza
-  uma proposta própria, com validação de estado e restauração do saldo quando
-  recusada.
-- `POST /instituicoes/necessidades`: cadastra item e quantidade para a
-  instituição autenticada.
+| Método e rota | Quem pode chamar | O que faz |
+|---|---|---|
+| `GET /teste-conexao` | qualquer um | Confirma a ligação com o MySQL. |
+| `POST /cadastro/doador` | qualquer um | Cria usuário e doador. |
+| `POST /cadastro/instituicao` | qualquer um | Cria usuário, instituição e necessidades iniciais opcionais. |
+| `POST /login` | qualquer um | Devolve `{ token, tipo, perfil }`. |
+| `POST /logout` | qualquer um | Responde sucesso; o cliente descarta o token. |
+| `GET /instituicoes/destaques` | qualquer um | Até 4 instituições com mais necessidades abertas. |
+| `GET /instituicoes` | logado | Lista as instituições. |
+| `GET /instituicoes/:id` | logado | Detalhe com as necessidades e o progresso. |
+| `POST /instituicoes/necessidades` | instituição | Cadastra item e quantidade para a instituição do token. |
+| `POST /doacoes` | doador | Cria a doação `Prometida` e reduz o saldo da necessidade. |
+| `GET /doacoes/minhas` | doador | Lista as doações do doador do token. |
+| `PATCH /doacoes/:id/cancelar` | doador | Cancela uma doação própria em `Prometida` ou `A caminho` e devolve a quantidade. |
+| `GET /doacoes/recebidas` | instituição | Lista as doações das necessidades da instituição. |
+| `PATCH /doacoes/:id/aceitar` | instituição | `Prometida` para `A caminho`. |
+| `PATCH /doacoes/:id/recusar` | instituição | `Prometida` para `Cancelada`, com devolução do saldo. |
+| `PATCH /doacoes/:id/receber` | instituição | `A caminho` para `Entregue`. |
 
-Chaves estrangeiras e constraints invocadas por estas operações são convertidas
-em respostas HTTP claras pelo handler central de erros.
+O doador não muda o status para `A caminho` ou `Entregue`: só a instituição confirma o recebimento (`RN-04`). A instituição só altera doações das próprias necessidades (403 nas outras). Uma transição fora da ordem devolve 409.
+
+Chaves estrangeiras e `CHECK` violados viram respostas HTTP claras no handler central de erros.
 
 ## Testar
 
 ```powershell
 npm test
 ```
+
+São 88 testes com banco em memória. A lista de arquivos e casos está em [`tests/README.md`](../../tests/README.md).

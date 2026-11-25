@@ -68,16 +68,16 @@ Abrir `http://localhost:8000/ConectaAcao%20Prototipo.dc.html`. Os perfis são al
 | Requisito/Issue | Protótipo — tela | Evidência de execução |
 |---|---|---|
 | `RF-01` / [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) | `escolhaConta` → `cadDoador` | [Mapa de telas](../prototipo/README.md#4-mapa-tela--requisito--história) |
-| `RF-03`, `RF-04`, `RF-05` / [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | `login` + guardas de acesso | [Roteiro `US-03` CA-3](../prototipo/README.md#us-03-ca-3--acesso-protegido-rf-05-rn-01) |
+| `RF-03`, `RF-04`, `RF-05` / [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) | `login` + guardas de acesso | [Roteiro `US-03` CA-3](../prototipo/README.md#us-03-ca-3-acesso-protegido-rf-05-rn-01) |
 | `RF-02` / [#5](https://github.com/gigi-zacaroni/tp-eng-software/issues/5) | `cadInst` (três seções) | [Mapa de telas](../prototipo/README.md#4-mapa-tela--requisito--história) |
-| `RF-06`–`RF-09` / [#6](https://github.com/gigi-zacaroni/tp-eng-software/issues/6) | `landing` + `listagem` | [Roteiro `US-04` CA-2 e CA-3](../prototipo/README.md#us-04-ca-2-e-ca-3--busca-e-estado-vazio-rf-08-rf-09) |
-| `RF-10`, `RF-18` / [#7](https://github.com/gigi-zacaroni/tp-eng-software/issues/7) | `detalhe` | [Roteiro `US-05` CA-1](../prototipo/README.md#us-05-ca-1--us-10-ca-2-e-ca-3--progresso-e-confirmação-rf-18-rf-23-rn-04-rn-05) |
+| `RF-06`–`RF-09` / [#6](https://github.com/gigi-zacaroni/tp-eng-software/issues/6) | `landing` + `listagem` | [Roteiro `US-04` CA-2 e CA-3](../prototipo/README.md#us-04-ca-2-e-ca-3-busca-e-estado-vazio-rf-08-rf-09) |
+| `RF-10`, `RF-18` / [#7](https://github.com/gigi-zacaroni/tp-eng-software/issues/7) | `detalhe` | [Roteiro `US-05` CA-1](../prototipo/README.md#us-05-ca-1-e-us-10-ca-2-e-ca-3-progresso-e-confirmação-rf-18-rf-23-rn-04-rn-05) |
 | `RF-12`, `RF-13` / [#8](https://github.com/gigi-zacaroni/tp-eng-software/issues/8) | `favoritos` | [Mapa de telas](../prototipo/README.md#4-mapa-tela--requisito--história) |
-| `RF-14`–`RF-16` / [#9](https://github.com/gigi-zacaroni/tp-eng-software/issues/9) | `painel` → Minhas necessidades | [Roteiro `US-07` CA-3](../prototipo/README.md#us-07-ca-3--excluir-necessidade-preserva-doações-rf-16-rnf-07) |
-| `RF-19`, `RNF-01` / [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) | modal de doação → `confirmacao` | [Roteiro `US-08` CA-1](../prototipo/README.md#us-08-ca-1-e-rnf-01--doar-em-3-passos-rf-19) |
-| `RF-20`, `RF-21` / [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) | `minhasDoacoes` | [Roteiro `US-09` CA-2 e CA-4](../prototipo/README.md#us-09-ca-2-e-ca-4--avançar-e-cancelar-rf-20-rf-21-rn-03) |
-| `RF-22`–`RF-24` / [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) | `painel` → Doações a receber | [Roteiro `US-10` CA-2 e CA-3](../prototipo/README.md#us-05-ca-1--us-10-ca-2-e-ca-3--progresso-e-confirmação-rf-18-rf-23-rn-04-rn-05) |
-| `RF-25`, `RF-27` / [#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) | sino de notificações | [Roteiro `US-11` CA-1 e CA-2](../prototipo/README.md#us-11-ca-1-e-ca-2--notificações-rf-25-rf-27) |
+| `RF-14`–`RF-16` / [#9](https://github.com/gigi-zacaroni/tp-eng-software/issues/9) | `painel` → Minhas necessidades | [Roteiro `US-07` CA-3](../prototipo/README.md#us-07-ca-3-excluir-necessidade-preserva-doações-rf-16-rnf-07) |
+| `RF-19`, `RNF-01` / [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) | modal de doação → `confirmacao` | [Roteiro `US-08` CA-1](../prototipo/README.md#us-08-ca-1-e-rnf-01-doar-em-3-passos-rf-19) |
+| `RF-20`, `RF-21` / [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) | `minhasDoacoes` | [Roteiro `US-09` CA-2 e CA-4](../prototipo/README.md#us-09-ca-2-e-ca-4-avançar-e-cancelar-rf-20-rf-21-rn-03) |
+| `RF-22`–`RF-24` / [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) | `painel` → Doações a receber | [Roteiro `US-10` CA-2 e CA-3](../prototipo/README.md#us-05-ca-1-e-us-10-ca-2-e-ca-3-progresso-e-confirmação-rf-18-rf-23-rn-04-rn-05) |
+| `RF-25`, `RF-27` / [#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) | sino de notificações | [Roteiro `US-11` CA-1 e CA-2](../prototipo/README.md#us-11-ca-1-e-ca-2-notificações-rf-25-rf-27) |
 
 ## 5. Scrum e gestão do trabalho — 0,50 ponto
 
@@ -131,15 +131,15 @@ A tabela completa dos 27 requisitos está em [`docs/rastreabilidade.md`](../rast
 |---|---|---|---|---|
 | `RF-01` | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) — `US-01` | [`requisitos.md` §6](../requisitos/requisitos.md) | `cadDoador` | Roteiro §5 · testes a partir da Sprint 7 |
 | `RF-02`, `RF-11` | [#5](https://github.com/gigi-zacaroni/tp-eng-software/issues/5) — `US-02` | [`requisitos.md` §6](../requisitos/requisitos.md) | `cadInst` | Roteiro §5 · testes a partir da Sprint 7 |
-| `RF-03`, `RF-04`, `RF-05` | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) — `US-03` | [`requisitos.md` §6 · `RN-01`](../requisitos/requisitos.md) | `login` + guardas | [Roteiro `US-03`](../prototipo/README.md#us-03-ca-3--acesso-protegido-rf-05-rn-01) |
-| `RF-06`–`RF-09` | [#6](https://github.com/gigi-zacaroni/tp-eng-software/issues/6) — `US-04` | [`requisitos.md` §6](../requisitos/requisitos.md) | `landing`, `listagem` | [Roteiro `US-04`](../prototipo/README.md#us-04-ca-2-e-ca-3--busca-e-estado-vazio-rf-08-rf-09) |
+| `RF-03`, `RF-04`, `RF-05` | [#3](https://github.com/gigi-zacaroni/tp-eng-software/issues/3) — `US-03` | [`requisitos.md` §6 · `RN-01`](../requisitos/requisitos.md) | `login` + guardas | [Roteiro `US-03`](../prototipo/README.md#us-03-ca-3-acesso-protegido-rf-05-rn-01) |
+| `RF-06`–`RF-09` | [#6](https://github.com/gigi-zacaroni/tp-eng-software/issues/6) — `US-04` | [`requisitos.md` §6](../requisitos/requisitos.md) | `landing`, `listagem` | [Roteiro `US-04`](../prototipo/README.md#us-04-ca-2-e-ca-3-busca-e-estado-vazio-rf-08-rf-09) |
 | `RF-10`, `RF-18` | [#7](https://github.com/gigi-zacaroni/tp-eng-software/issues/7) — `US-05` | [`requisitos.md` §6 · `RN-05`](../requisitos/requisitos.md) | `detalhe` | Roteiro §5 · `RF-17` pendente (seção 7) |
 | `RF-12`, `RF-13` | [#8](https://github.com/gigi-zacaroni/tp-eng-software/issues/8) — `US-06` | [`requisitos.md` §6](../requisitos/requisitos.md) | `favoritos` | Roteiro §5 · testes a partir da Sprint 7 |
-| `RF-14`–`RF-17` | [#9](https://github.com/gigi-zacaroni/tp-eng-software/issues/9) — `US-07` | [`requisitos.md` §6 · `RN-06`, `RNF-07`](../requisitos/requisitos.md) | `painel` → Necessidades | [Roteiro `US-07`](../prototipo/README.md#us-07-ca-3--excluir-necessidade-preserva-doações-rf-16-rnf-07) |
-| `RF-19` | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) — `US-08` | [`requisitos.md` §6 · `RN-02`, `RNF-01`](../requisitos/requisitos.md) | modal → `confirmacao` | [Roteiro `US-08`](../prototipo/README.md#us-08-ca-1-e-rnf-01--doar-em-3-passos-rf-19) · `RNF-06` pendente |
-| `RF-20`, `RF-21` | [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) — `US-09` | [`requisitos.md` §6 · `RN-03`](../requisitos/requisitos.md) | `minhasDoacoes` | [Roteiro `US-09`](../prototipo/README.md#us-09-ca-2-e-ca-4--avançar-e-cancelar-rf-20-rf-21-rn-03) |
-| `RF-22`–`RF-24` | [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) — `US-10` | [`requisitos.md` §6 · `RN-04`](../requisitos/requisitos.md) | `painel` → A receber | [Roteiro `US-10`](../prototipo/README.md#us-05-ca-1--us-10-ca-2-e-ca-3--progresso-e-confirmação-rf-18-rf-23-rn-04-rn-05) |
-| `RF-25`–`RF-27` | [#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) — `US-11` | [`requisitos.md` §6](../requisitos/requisitos.md) | sino de notificações | [Roteiro `US-11`](../prototipo/README.md#us-11-ca-1-e-ca-2--notificações-rf-25-rf-27) |
+| `RF-14`–`RF-17` | [#9](https://github.com/gigi-zacaroni/tp-eng-software/issues/9) — `US-07` | [`requisitos.md` §6 · `RN-06`, `RNF-07`](../requisitos/requisitos.md) | `painel` → Necessidades | [Roteiro `US-07`](../prototipo/README.md#us-07-ca-3-excluir-necessidade-preserva-doações-rf-16-rnf-07) |
+| `RF-19` | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) — `US-08` | [`requisitos.md` §6 · `RN-02`, `RNF-01`](../requisitos/requisitos.md) | modal → `confirmacao` | [Roteiro `US-08`](../prototipo/README.md#us-08-ca-1-e-rnf-01-doar-em-3-passos-rf-19) · `RNF-06` pendente |
+| `RF-20`, `RF-21` | [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) — `US-09` | [`requisitos.md` §6 · `RN-03`](../requisitos/requisitos.md) | `minhasDoacoes` | [Roteiro `US-09`](../prototipo/README.md#us-09-ca-2-e-ca-4-avançar-e-cancelar-rf-20-rf-21-rn-03) |
+| `RF-22`–`RF-24` | [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) — `US-10` | [`requisitos.md` §6 · `RN-04`](../requisitos/requisitos.md) | `painel` → A receber | [Roteiro `US-10`](../prototipo/README.md#us-05-ca-1-e-us-10-ca-2-e-ca-3-progresso-e-confirmação-rf-18-rf-23-rn-04-rn-05) |
+| `RF-25`–`RF-27` | [#13](https://github.com/gigi-zacaroni/tp-eng-software/issues/13) — `US-11` | [`requisitos.md` §6](../requisitos/requisitos.md) | sino de notificações | [Roteiro `US-11`](../prototipo/README.md#us-11-ca-1-e-ca-2-notificações-rf-25-rf-27) |
 
 ## 7. Revisão do incremento
 
