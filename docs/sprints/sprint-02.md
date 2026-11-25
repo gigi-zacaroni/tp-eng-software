@@ -46,7 +46,7 @@ A sprint também produziu um resultado não previsto e relevante: a construção
 
 ### O que foi implementado ou evoluído
 
-O incremento desta sprint é o **protótipo navegável do ConectaAção**, em [`docs/prototipo/`](../prototipo/). A opção pelo protótipo, e não por código, segue a alternativa prevista para quando a implementação ainda depende de decisões técnicas posteriores: no caso, as decisões de modelagem (Sprint 3) e de projeto (Sprint 4). O stack da aplicação real já está definido: **Next.js/React** no front e **Java/Spring Boot** no back.
+O incremento desta sprint é o **protótipo navegável do ConectaAção**, em [`docs/prototipo/`](../prototipo/). A opção pelo protótipo, e não por código, segue a alternativa prevista para quando a implementação ainda depende de decisões técnicas posteriores: no caso, as decisões de modelagem (Sprint 3) e de projeto (Sprint 4). O stack da aplicação real já está definido: **Next.js/React** no front e **Java/Spring Boot** no back. Na Sprint 3 o grupo trocou essa stack por Node.js, Express e MySQL.
 
 O protótipo é dirigido por estado, com navegação real, validação de formulários, guardas de acesso e cálculo de progresso. Isso permite verificar critérios de aceitação por execução, e não por inspeção visual. Comportamentos demonstráveis:
 
