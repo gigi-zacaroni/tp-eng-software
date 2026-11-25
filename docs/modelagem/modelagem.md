@@ -1,17 +1,17 @@
 # Modelagem do sistema
 
-> **Artefato central da Sprint 3 (com atualizações de arquitetura na Sprint 4).** Os modelos devem explicar a estrutura e o comportamento da solução e corresponder aos requisitos e ao código.
+Artefato central da Sprint 3, atualizado nas Sprints 4 e 5 e na entrega final.
 
-Os dois modelos abaixo cobrem o **fluxo de doação** (comportamental) e o **domínio persistido e arquitetural** (estrutural). Eles não repetem a lista de requisitos — essa continua em [`docs/requisitos/requisitos.md`](../requisitos/requisitos.md), e o vínculo requisito → modelo → código está na [matriz de rastreabilidade](../rastreabilidade.md).
+Os dois modelos abaixo cobrem o **fluxo de doação** (comportamental) e o **domínio persistido com a organização do código** (estrutural). A lista de requisitos está em [`requisitos.md`](../requisitos/requisitos.md), e o vínculo requisito, modelo e código está na [matriz de rastreabilidade](../rastreabilidade.md).
 
 ## 1. Modelos selecionados
 
-| Modelo | Tipo | Pergunta que ele ajuda a responder | Requisitos relacionados |
+| Modelo | Tipo | Pergunta que responde | Requisitos |
 |---|---|---|---|
-| Fluxo de doação entre doador, aplicação e instituição | Comportamental | Como ocorre uma doação, do pedido do doador até a confirmação de recebimento? | `RF-19`–`RF-24` |
-| Modelo de classes (Domínio + Arquitetura) | Estrutural | Como as entidades se relacionam no banco e como o código se organiza para manipulá-las? | `RF-01`, `RF-02`, `RF-18`, `RF-19` |
+| Fluxo de doação entre doador, aplicação e instituição | Comportamental | Como uma doação vai da promessa do doador até a confirmação da instituição? | `RF-19` a `RF-24` |
+| Diagrama de classes (domínio e camadas) | Estrutural | Como as entidades se relacionam no banco e como o código se organiza para usá-las? | `RF-01`, `RF-02`, `RF-14`, `RF-18` a `RF-23` |
 
-O comportamental foi escolhido por ser o fluxo que dá nome ao produto e o único que atravessa os dois perfis de usuário. O estrutural (atualizado na Sprint 4) foi escolhido para documentar não apenas as restrições de dados (`RNF-06`), mas também a separação de responsabilidades da aplicação (rotas, controladores e serviços).
+O comportamental cobre o fluxo que dá nome ao produto e é o único que passa pelos dois perfis. O estrutural mostra as restrições de dados (`RNF-06`) e a separação entre rotas, controllers, services e repositories.
 
 ## 2. Modelo comportamental
 
@@ -24,69 +24,65 @@ flowchart LR
 
     D["DOADOR"]
 
-    subgraph FRONT["FRONT-END"]
-        FE["Interface Web<br/><br/>Cadastro / Login<br/>Escolha da necessidade<br/>Promessa de doação<br/>Acompanhamento"]
+    subgraph FRONT["FRONT-END (app.js)"]
+        FE["Explorar necessidades<br/>Doação<br/>Minhas doações"]
     end
 
-    subgraph API["API"]
-        AP["API REST<br/><br/>Recebe e envia requisições"]
+    subgraph API["API REST"]
+        AP["Rotas e controllers"]
     end
 
-    subgraph BACK["BACK-END"]
-        BE["Regras de Negócio<br/><br/>Busca necessidades<br/>Registra doações<br/>Atualiza status<br/>Controla quantidades"]
+    subgraph BACK["SERVICES"]
+        BE["Regras de negócio<br/>Valida saldo<br/>Muda status<br/>Devolve saldo"]
     end
 
     subgraph BD["BANCO DE DADOS"]
-        B["DOADORES<br/><br/>INSTITUIÇÕES<br/><br/>NECESSIDADES<br/><br/>DOAÇÕES"]
+        B["DOADORES<br/>INSTITUIÇÕES<br/>NECESSIDADES<br/>DOAÇÕES"]
     end
 
     subgraph INST["PAINEL DA INSTITUIÇÃO"]
-        I["Doações a receber<br/><br/>Confirmar recebimento<br/>Resumo das necessidades"]
+        I["Doações recebidas<br/>Aceitar, recusar, confirmar<br/>Nova necessidade"]
     end
 
-    D -->|"1. Escolhe necessidade, item e quantidade"| FE
-    FE -->|"2. Envia solicitação"| AP
+    D -->|"1. Escolhe necessidade e quantidade"| FE
+    FE -->|"2. POST /doacoes"| AP
     AP -->|"3. Encaminha"| BE
-    BE -->|"4. Consulta necessidade"| B
-    B -->|"5. Retorna quantidade disponível"| BE
+    BE -->|"4. Trava a necessidade e lê o saldo"| B
+    B -->|"5. Retorna o saldo"| BE
+    BE -->|"6. Grava doação Prometida e reduz o saldo"| B
+    BE -->|"7. Retorna o id"| AP
+    AP -->|"8. Mostra em Minhas doações"| FE
+    FE -->|"9. GET /doacoes/minhas"| D
 
-    BE -->|"6. Registra doação como Prometida"| B
-    BE -->|"7. Retorna confirmação"| AP
-    AP -->|"8. Exibe doação"| FE
-    FE -->|"9. Acompanha status"| D
-
-    I -->|"10. Consulta doações"| AP
-    AP -->|"11. Solicita dados"| BE
+    I -->|"10. GET /doacoes/recebidas"| AP
+    AP -->|"11. Encaminha"| BE
     BE -->|"12. Consulta"| B
     B -->|"13. Retorna doações"| BE
-    BE -->|"14. Exibe doações"| AP
+    BE -->|"14. Lista no painel"| AP
     AP --> I
 
-    D -.->|"15. Atualiza status"| FE
-    FE -.-> AP
-    AP -.-> BE
-    BE -.->|"Atualiza doação"| B
+    D -->|"15. Cancela (Prometida ou A caminho)"| FE
+    FE -->|"PATCH /doacoes/:id/cancelar"| AP
+    AP --> BE
+    BE -->|"Cancelada e devolve o saldo"| B
 
-    I -.->|"16. Confirma recebimento"| AP
-    AP -.-> BE
-    BE -.->|"Atualiza recebimento"| B
+    I -->|"16. Aceita, recusa ou confirma"| AP
+    AP -->|"PATCH /doacoes/:id/aceitar, recusar, receber"| BE
+    BE -->|"A caminho, Cancelada ou Entregue"| B
 ```
 
-**Descrição e decisões representadas**
+**Descrição**
 
-O diagrama mostra a comunicação entre doador, front-end, API, back-end, banco de dados e instituição durante o processo de doação.
+O doador escolhe uma necessidade e a quantidade. A API encaminha o pedido ao service, que trava a linha da necessidade, confere o saldo, grava a doação como `Prometida` e reduz o saldo na mesma transação. O doador acompanha a doação em "Minhas doações".
 
-O fluxo começa com o doador, que acessa a aplicação para escolher uma necessidade, o item que deseja doar e a quantidade. Essas informações são enviadas pela API REST ao back-end, responsável por aplicar as regras de negócio e consultar o banco para verificar a quantidade ainda necessária. Após a validação, o back-end registra a doação com o status Prometida e retorna a confirmação ao doador.
+A instituição vê as doações no painel. Ela aceita (`A caminho`), recusa (`Cancelada`, com devolução do saldo) ou confirma o recebimento (`Entregue`). O doador só cancela, e só em `Prometida` ou `A caminho`. Ele não muda o status para `A caminho` ou `Entregue` (`RN-04`).
 
-O doador acompanha a evolução da doação, que pode passar por Prometida → A caminho → Entregue (RN-03). Enquanto estiver nos estados permitidos, a doação pode ser cancelada, devolvendo a quantidade ao saldo da necessidade.
-
-Decisão representada no desenho: as arestas 1 a 14 são contínuas e as 15 e 16 são tracejadas porque marcam a fronteira entre o que está implementado e o que ficou para as seguintes sprints.
+Até a Sprint 8, as arestas 15 e 16 eram tracejadas porque não tinham código. Na entrega final as duas foram implementadas, e a aresta 15 passou a representar só o cancelamento.
 
 ## 3. Modelo estrutural
 
 ```mermaid
 classDiagram
-    %% 1. Camada de Controladores (Recebem a requisição)
     class AuthController {
         +cadastrarDoador(req, res)
         +cadastrarInstituicao(req, res)
@@ -94,22 +90,42 @@ classDiagram
         +logout(req, res)
     }
 
-    class DoacaoController {
-        +criarDoacao(req, res)
+    class InstituicaoController {
+        +destaques(req, res)
+        +listar(req, res)
+        +detalhar(req, res)
+        +criarNecessidade(req, res)
     }
 
-    %% 2. Camada de Serviços (Executam a regra de negócio)
+    class DoacaoController {
+        +criarDoacao(req, res)
+        +cancelarDoacao(req, res)
+        +listarMinhas(req, res)
+        +listarRecebidas(req, res)
+        +atualizarDaInstituicao(req, res)
+    }
+
     class AuthService {
         +cadastrarDoador(nome, email, senha, confirmarSenha)
         +cadastrarInstituicao(acesso, sobre, necessidadesIniciais)
         +autenticarLogin(email, senha)
     }
 
-    class DoacaoService {
-        +registrarDoacao(doadorId, necessidadeId, quantidade)
+    class InstituicaoService {
+        +destaques()
+        +listar()
+        +detalhar(id)
+        +criarNecessidade(instituicaoId, dados)
     }
 
-    %% 2b. Camada de Repositories (Sprint 5, padrão Repository: único lugar com SQL)
+    class DoacaoService {
+        +registrarDoacao(doadorId, necessidadeId, quantidade)
+        +cancelarDoacao(doadorId, doacaoId)
+        +listarDoacoesDoDoador(doadorId)
+        +listarDoacoesDaInstituicao(instituicaoId)
+        +atualizarDoacaoDaInstituicao(instituicaoId, doacaoId, acao)
+    }
+
     class UsuarioRepository {
         +buscarPorEmail(conexao, email)
         +criar(conexao, email, senhaHash)
@@ -123,24 +139,30 @@ classDiagram
     class InstituicaoRepository {
         +criar(conexao, dados)
         +buscarPorUsuarioId(conexao, usuarioId)
+        +listarResumo(conexao, limite)
+        +buscarPorId(conexao, id)
     }
 
     class NecessidadeRepository {
         +criar(conexao, dados)
         +buscarSaldoComTrava(conexao, necessidadeId)
         +reduzirSaldo(conexao, necessidadeId, quantidade)
+        +restaurarSaldo(conexao, necessidadeId, quantidade)
+        +listarPorInstituicao(conexao, instituicaoId)
     }
 
     class DoacaoRepository {
         +criarPrometida(conexao, dados)
+        +buscarPorIdComTrava(conexao, doacaoId)
+        +atualizarStatus(conexao, doacaoId, status)
+        +listarPorDoador(conexao, doadorId)
+        +listarPorInstituicao(conexao, instituicaoId)
     }
 
-    %% 3. Entidades do Banco de Dados 
     class USUARIO {
         +int id
         +string email
         +string senha
-        +string papel
     }
 
     class DOADOR {
@@ -174,105 +196,105 @@ classDiagram
         +datetime dataPromessa
     }
 
-    %% 4. Relacionamentos Arquiteturais (Baixo Acoplamento)
-    AuthController --> AuthService : delega requisição
-    DoacaoController --> DoacaoService : delega requisição
+    AuthController --> AuthService : delega
+    InstituicaoController --> InstituicaoService : delega
+    DoacaoController --> DoacaoService : delega
 
     AuthService --> UsuarioRepository : usa
     AuthService --> DoadorRepository : usa
     AuthService --> InstituicaoRepository : usa
     AuthService --> NecessidadeRepository : usa
+    InstituicaoService --> InstituicaoRepository : usa
+    InstituicaoService --> NecessidadeRepository : usa
     DoacaoService --> NecessidadeRepository : usa
     DoacaoService --> DoacaoRepository : usa
 
-    UsuarioRepository ..> USUARIO : insere/consulta
-    DoadorRepository ..> DOADOR : insere/consulta
-    InstituicaoRepository ..> INSTITUICAO : insere/consulta
+    UsuarioRepository ..> USUARIO : insere e consulta
+    DoadorRepository ..> DOADOR : insere e consulta
+    InstituicaoRepository ..> INSTITUICAO : insere e consulta
     NecessidadeRepository ..> NECESSIDADE : insere, trava e atualiza saldo
-    DoacaoRepository ..> DOACAO : insere
+    DoacaoRepository ..> DOACAO : insere, trava, atualiza status e lista
+
+    USUARIO "1" -- "0..1" DOADOR
+    USUARIO "1" -- "0..1" INSTITUICAO
+    INSTITUICAO "1" -- "0..*" NECESSIDADE
+    NECESSIDADE "1" -- "0..*" DOACAO
+    DOADOR "1" -- "0..*" DOACAO
 ```
 
-**Descrição e decisões representadas**
+**Descrição**
 
-O diagrama acima evoluiu de um simples modelo Entidade-Relacionamento (ER) para um diagrama de classes completo na Sprint 4, a fim de representar as decisões internas de arquitetura. Na Sprint 5 foi acrescentada a camada de `Repositories` ([`DP-04`](../projeto/decisoes-de-projeto.md#dp-04--camada-de-repositories-padrão-repository) e [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md)): os services deixaram de se ligar diretamente às entidades e passaram a usar os repositories, que concentram o SQL.
+O diagrama começou como um modelo ER na Sprint 3 e virou diagrama de classes na Sprint 4, para mostrar as camadas. A Sprint 5 acrescentou os repositories ([`DP-04`](../projeto/decisoes-de-projeto.md#dp-04-camada-de-repositories-padrão-repository) e [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md)). Na entrega final entraram o controller e o service de instituição e os métodos de listagem e mudança de status.
 
-`DOACAO` é a entidade associativa entre `DOADOR` e `NECESSIDADE`, registrando a quantidade comprometida, o estado do ciclo (`status`) e o carimbo de data/hora da promessa (`dataPromessa`).
+`DOACAO` liga `DOADOR` a `NECESSIDADE` e guarda a quantidade, o status e a data da promessa. O `status` aceita `Prometida`, `A caminho`, `Entregue` e `Cancelada` (`CHECK` no schema).
+
+Cidade, causa, contato, tipo e prioridade não aparecem no modelo porque não estão no banco. O front guarda esses dados no navegador (ver [`src/front/README.md`](../../src/front/README.md)).
 
 ### Quatro decisões de modelagem
 
-1. **Separação de interesses (Controllers e Services)**
-
-    A lógica de negócio foi isolada das rotas HTTP. Os Controllers lidam exclusivamente com os objetos `req` e `res`, enquanto os Services encapsulam as validações, regras de negócio e comunicação com o banco. Isso garante alta coesão e baixo acoplamento (decisão da Sprint 4).
-
-2. **Separação entre identidade e perfil**
-
-    `email` e `senha` ficam em `USUARIO`; `nome`, `descricao` e `verificada` ficam nos perfis. Sem essa separação, uma tabela única teria colunas permanentemente nulas para metade das linhas, e o login precisaria saber de antemão qual perfil consultar.
-
-3. **Armazenamento do saldo, em vez de seu cálculo**
-
-    `quantidadeFaltante` é um campo materializado, em vez de uma soma derivada de `DOACAO`. Isso permite travar a linha da necessidade durante a promessa e sustentar o `RNF-06` no próprio banco.
-
-4. **Modelagem do vínculo como entidade**
-
-    `DOACAO` carrega atributos próprios (`quantidade`, `status`, `dataPromessa`), então não podia ser uma tabela de junção simples.
-
+1. **Controllers separados dos services.** Os controllers só leem `req` e respondem com `res`. Os services têm as regras e controlam a transação.
+2. **Identidade separada do perfil.** `email` e `senha` ficam em `USUARIO`; `nome`, `descricao` e `verificada` ficam nos perfis. Uma tabela única teria colunas nulas em metade das linhas, e o login precisaria saber antes qual perfil consultar.
+3. **Saldo guardado, não calculado.** `quantidadeFaltante` é um campo, e não uma soma de `DOACAO`. Assim dá para travar a linha da necessidade na promessa e garantir o `RNF-06` no banco.
+4. **Vínculo como entidade.** `DOACAO` tem atributos próprios (`quantidade`, `status`, `dataPromessa`) e por isso não é uma tabela de junção simples.
 
 ## 4. Relação entre requisitos e modelos
 
-| Requisito | Elemento do modelo | Como está representado | Alteração provocada no backlog/código |
+| Requisito | Elemento do modelo | Como está representado | Código |
 |---|---|---|---|
-| `RF-01` | Entidades `USUARIO` e `DOADOR` | `DOADOR` guarda `nome` e referencia `USUARIO` por `usuario_id`; `email` e `senha` ficam só em `USUARIO`. | [#2](https://github.com/gigi-zacaroni/tp-eng-software/issues/2) · Implementado: `POST /cadastro/doador` refatorado para delegar a criação ao `AuthController` e `AuthService`. |
-| `RF-02` | `USUARIO`, `INSTITUICAO` e `NECESSIDADE` | A relação de um para muitos obrigatória entre instituição e necessidade exige ao menos uma necessidade inicial; `verificada` nasce `false`. | [#5](https://github.com/gigi-zacaroni/tp-eng-software/issues/5) · Implementado parcialmente: `POST /cadastro/instituicao` grava `nome` e `descricao`. Causa, cidade e contato ficaram fora do schema — registrado como pendência. |
-| `RF-18` | `NECESSIDADE.quantidadeTotal` e `quantidadeFaltante` | O progresso de uma necessidade é a diferença entre os dois campos. | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) · Os campos existem e são mantidos corretamente, mas não há endpoint que os exponha. |
-| `RF-19` | Fluxo comportamental, arestas 1 a 9 | O back-end valida o saldo antes de registrar a doação como `Prometida` e decrementar `quantidadeFaltante`. | [#10](https://github.com/gigi-zacaroni/tp-eng-software/issues/10) · Implementado: `POST /doacoes` refatorado para `DoacaoService`, mantendo a transação com `SELECT ... FOR UPDATE`. |
-| `RF-20` | `DOACAO.status` e aresta 15 | Ciclo `Prometida` → `A caminho` → `Entregue`. | [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) · Não implementado: o campo existe e nasce `Prometida`, mas não há rota de transição. |
-| `RF-21` | Aresta 15 + `NECESSIDADE.quantidadeFaltante` | Cancelar devolve a quantidade ao saldo pendente. | [#11](https://github.com/gigi-zacaroni/tp-eng-software/issues/11) · Não implementado. Depende da mesma rota de transição de status. |
-| `RF-22` | Arestas 10 a 14 (painel da instituição) | Consulta das doações destinadas à instituição, com doador, item, quantidade e status. | [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) · Não implementado: depende dos endpoints de consulta. |
-| `RF-23` | Aresta 16 | Confirmação de recebimento atualiza `DOACAO.status`. | [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) · Não implementado. |
-| `RF-24` | `NECESSIDADE` + agregação de `DOACAO` | Resumo por necessidade: desejada, prometida, recebida e percentual. | [#12](https://github.com/gigi-zacaroni/tp-eng-software/issues/12) · Não implementado: a agregação é derivável do modelo, mas não há consulta que a produza. |
+| `RF-01` | `USUARIO` e `DOADOR` | `DOADOR` guarda o nome e referencia `USUARIO`. | `POST /cadastro/doador` |
+| `RF-02` | `USUARIO`, `INSTITUICAO` e `NECESSIDADE` | A instituição nasce com `verificada = false` e zero ou mais necessidades. | `POST /cadastro/instituicao` |
+| `RF-14` | `NECESSIDADE` | Item, quantidade total e saldo igual ao total. | `POST /instituicoes/necessidades` |
+| `RF-18` | `NECESSIDADE.quantidadeTotal` e `quantidadeFaltante` | O prometido é a diferença entre os dois. | `GET /instituicoes/:id` |
+| `RF-19` | Arestas 1 a 9 | O service valida o saldo antes de gravar a doação e reduzir o saldo. | `POST /doacoes` |
+| `RF-20` | `DOACAO.status`, aresta 9 | O doador vê o status de cada doação. | `GET /doacoes/minhas` |
+| `RF-21` | Aresta 15 | Cancelar grava `Cancelada` e devolve a quantidade. | `PATCH /doacoes/:id/cancelar` |
+| `RF-22` | Arestas 10 a 14 | A instituição lista as doações das suas necessidades. | `GET /doacoes/recebidas` |
+| `RF-23` | Aresta 16 | Aceitar, recusar e confirmar mudam o `status`. | `PATCH /doacoes/:id/aceitar`, `/recusar`, `/receber` |
+| `RF-24` | `NECESSIDADE` e soma de `DOACAO` | O recebido seria a soma das doações `Entregue`. | Parcial: a soma não é calculada. |
 
 ## 5. Correspondência entre modelo e código
 
-Os caminhos abaixo refletem a refatoração arquitetural aplicada no projeto a partir da Sprint 4.
-
-| Elemento modelado | Arquivo correspondente | Observação |
+| Elemento | Arquivo | Observação |
 |---|---|---|
-| Modelo estrutural de banco (5 entidades) | [`src/back/sql/schema.sql`](../../src/back/sql/schema.sql) | DDL com as tabelas, FKs, `UNIQUE` e validação `CHECK (quantidadeFaltante <= quantidadeTotal)`. |
-| Camada `Controllers` (Recebimento) | [`src/back/src/controllers/authController.js`](../../src/back/src/controllers/authController.js) · [`doacaoController.js`](../../src/back/src/controllers/doacaoController.js) | Responsáveis exclusivos por extrair o payload (`req.body`) e devolver status HTTP (`res.status`). |
-| Camada `Services` (Regras de Negócio) | [`src/back/src/services/authService.js`](../../src/back/src/services/authService.js) · [`doacaoService.js`](../../src/back/src/services/doacaoService.js) | Contêm a validação de regras, a criptografia de senha, a geração do JWT e o controle da transação. Desde a Sprint 5 não escrevem SQL: persistem pelos repositories. |
-| Camada `Repositories` (acesso a dados, Sprint 5) | [`src/back/src/repositories/`](../../src/back/src/repositories/): [`usuarioRepository.js`](../../src/back/src/repositories/usuarioRepository.js) · [`doadorRepository.js`](../../src/back/src/repositories/doadorRepository.js) · [`instituicaoRepository.js`](../../src/back/src/repositories/instituicaoRepository.js) · [`necessidadeRepository.js`](../../src/back/src/repositories/necessidadeRepository.js) · [`doacaoRepository.js`](../../src/back/src/repositories/doacaoRepository.js) | Único lugar com SQL. Cada módulo corresponde a uma entidade do modelo estrutural. Recebem a conexão por parâmetro e não controlam transação. |
-| Roteamento (Endpoints) | [`src/back/src/routes/auth.js`](../../src/back/src/routes/auth.js) · [`doacoes.js`](../../src/back/src/routes/doacoes.js) | Apenas mapeiam a URL (ex: `/cadastro/doador`) para o respectivo Controller. |
-| Validações de Acesso | [`src/back/src/middleware/autenticacao.js`](../../src/back/src/middleware/autenticacao.js) | `autenticar` valida o JWT; `exigirTipo` separa doador de instituição. |
-| Nó "BANCO DE DADOS" do fluxo | [`src/back/src/config/db.js`](../../src/back/src/config/db.js) | Pool MySQL e o helper `comTransacao`, que concentra `begin`/`commit`/`rollback`. |
-| Centralização de Erros | [`src/back/src/server.js`](../../src/back/src/server.js) · [`http.js`](../../src/back/src/utils/http.js) | Configuração do Express com handler centralizado (`ErroHttp`) para blindar o retorno de erros ao front-end. |
+| Entidades | [`schema.sql`](../../src/back/sql/schema.sql) | Tabelas, chaves estrangeiras, `UNIQUE` e `CHECK` de saldo e status. |
+| Controllers | [`authController.js`](../../src/back/src/controllers/authController.js), [`instituicaoController.js`](../../src/back/src/controllers/instituicaoController.js), [`doacaoController.js`](../../src/back/src/controllers/doacaoController.js) | Leem o pedido, validam o formato e devolvem o status HTTP. |
+| Services | [`authService.js`](../../src/back/src/services/authService.js), [`instituicaoService.js`](../../src/back/src/services/instituicaoService.js), [`doacaoService.js`](../../src/back/src/services/doacaoService.js) | Regras, hash de senha, JWT e transações. Não escrevem SQL. |
+| Repositories | [`src/back/src/repositories/`](../../src/back/src/repositories/) | Único lugar com SQL. Um módulo por entidade. Recebem a conexão e não controlam transação. |
+| Rotas | [`auth.js`](../../src/back/src/routes/auth.js), [`instituicoes.js`](../../src/back/src/routes/instituicoes.js), [`doacoes.js`](../../src/back/src/routes/doacoes.js) | Ligam cada URL ao controller e ao middleware de acesso. |
+| Acesso | [`autenticacao.js`](../../src/back/src/middleware/autenticacao.js) | `autenticar` valida o JWT; `exigirTipo` separa doador de instituição. |
+| Banco | [`db.js`](../../src/back/src/config/db.js) | Pool MySQL e `comTransacao`, que concentra `begin`, `commit` e `rollback`. |
+| Erros | [`server.js`](../../src/back/src/server.js), [`http.js`](../../src/back/src/utils/http.js) | Handler central que converte `ErroHttp` e erros do MySQL em respostas JSON. |
+| Front do fluxo | [`app.js`](../../src/front/app.js) | Telas de doação, minhas doações e painel da instituição. |
 
-### Divergências conhecidas entre modelo e código
+### Divergências entre modelo e código
 
-| Divergência | Onde | Situação na Sprint 4 |
-|---|---|---|
-| `DOACAO.dataPromessa` existia no modelo estrutural, mas não na tabela `doacoes` do schema em uso. | [`src/back/sql/schema.sql`](../../src/back/sql/schema.sql) | Resolvida. A coluna entrou no schema em [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0). |
-| `INSTITUICAO` foi modelada com `nome` e `descricao` apenas; o `RF-02` e o protótipo preveem também causa, cidade e contato. | [`authService.js`](../../src/back/src/services/authService.js) | Aberta. Fica junto com os endpoints de consulta ([#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20)). |
-| Existiam dois arquivos de schema divergentes: `database/schema.sql` e `src/back/sql/schema.sql`. | `database/` e `src/back/sql/` | Resolvida. `database/schema.sql` foi removido e `src/back/sql/schema.sql` virou a fonte única ([#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19)). |
-| As arestas 10 a 16 do fluxo não têm código correspondente. Não existe endpoint de consulta na API. | | Aberta ([#20](https://github.com/gigi-zacaroni/tp-eng-software/issues/20)). |
+| Divergência | Situação |
+|---|---|
+| `DOACAO.dataPromessa` estava no modelo, mas não no schema. | Resolvida na Sprint 4 ([`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0)). |
+| Havia dois arquivos de schema diferentes. | Resolvida na Sprint 4 ([#19](https://github.com/gigi-zacaroni/tp-eng-software/issues/19)). |
+| As arestas 10 a 16 não tinham código. | Resolvida na entrega final. |
+| O protótipo prevê causa, cidade e contato da instituição, e o modelo não. | Aberta. O front guarda esses dados no navegador. |
+| O protótipo prevê total recebido por necessidade. | Aberta (`RF-24`). |
 
 ## 6. Refinamentos identificados
 
-- **Separação de Camadas (Sprint 4).** O código original concentrava a manipulação do banco de dados e a resposta HTTP no mesmo arquivo de rota. Isso foi refatorado criando os módulos de `Controllers` e `Services`, aplicando princípios de responsabilidade única, alta coesão e baixo acoplamento para facilitar a manutenção.
-- **Camada de acesso a dados (Sprint 5).** O modelo estrutural ligava os services diretamente às entidades, o que no código significava SQL dentro da regra de negócio. A camada `Repositories` (padrão Repository, `DP-04`) passou a mediar essa ligação. O fluxo de doação (§2) não mudou: os passos 4→6 continuam atômicos e agora aparecem no `DoacaoService` como chamadas a `NecessidadeRepository` e `DoacaoRepository`.
-- **Separação das entidades de usuário.** A modelagem estrutural evidenciou a necessidade de isolar `USUARIO` das tabelas de perfil, evitando atributos nulos recorrentes e simplificando o login: o token JWT, agora gerado pelo `AuthService`, passou a carregar `id`, `tipo` e `perfilId` (`RF-03`).
-- **Controle transacional no saldo da necessidade.** O diagrama comportamental deixou claro que os passos 4→6 precisam ser atômicos: dois doadores simultâneos poderiam prometer quantidades que, somadas, excedem o saldo. O controle via `SELECT ... FOR UPDATE` e o `CHECK` no banco foram mantidos e isolados no `DoacaoService` (`RF-19`, `RF-21`, `RNF-06`).
-- **Isolamento da etapa de acesso.** A verificação dos fluxos levou a rotas dedicadas de cadastro e login, gerando JWT e abstraindo a sessão, verificáveis antes de qualquer doação (`RF-05`).
-- **Lacuna descoberta na revisão: o modelo tem leitura, a API não.** As arestas 10 a 14 e os requisitos `RF-06`–`RF-10` descrevem consultas que nenhum endpoint atende. O produto resolve o problema de "descobrir quem ajudar", e essa metade do fluxo não saiu do diagrama. Virou item prioritário do backlog (`T-10`).
-- **Lacuna descoberta na revisão: duplicidade de schema.** A existência de dois arquivos DDL divergentes torna ambíguo o que o modelo estrutural representa. Virou item de dívida técnica (`T-09`), resolvido na Sprint 4.
+- **Camadas (Sprint 4).** O código misturava banco e resposta HTTP no arquivo de rota. A refatoração criou controllers e services.
+- **Acesso a dados (Sprint 5).** O modelo ligava os services direto às entidades, o que no código era SQL dentro da regra de negócio. Os repositories passaram a mediar essa ligação (`DP-04`). O fluxo de doação não mudou: os passos 4 a 6 continuam numa transação.
+- **Identidade e perfil.** Separar `USUARIO` dos perfis evitou colunas nulas e simplificou o login. O JWT leva `id`, `tipo` e `perfilId` (`RF-03`).
+- **Saldo com trava.** Os passos 4 a 6 precisam ser atômicos, senão dois doadores ao mesmo tempo poderiam passar do saldo. O `SELECT ... FOR UPDATE` e o `CHECK` no banco tratam isso (`RF-19`, `RF-21`, `RNF-06`).
+- **Lacuna de leitura (Sprint 3).** As arestas 10 a 14 e os `RF-06` a `RF-10` pediam consultas sem endpoint. Virou o item `T-10`, concluído na Sprint 8.
+- **Schema duplicado (Sprint 3).** Dois DDL diferentes deixavam ambíguo o que o modelo representava. Virou o item `T-09`, resolvido na Sprint 4.
+- **Quem confirma a entrega (entrega final).** O código permitia que o doador marcasse a própria doação como `Entregue`, o que contrariava o `RN-04`. A rota foi removida, e a aresta 15 passou a ser só o cancelamento.
 
 ## 7. Histórico de atualização
 
 | Sprint | Modelo alterado | Motivo | Evidência |
 |---|---|---|---|
-| Sprint 3 | Modelo estrutural — criação | Tradução do domínio para modelo físico MySQL, com a primeira versão da API e do DDL. | [`26b7fd1`](https://github.com/gigi-zacaroni/tp-eng-software/commit/26b7fd135624e5c47428425a190b44c7a0420c23) |
-| Sprint 3 | Modelo comportamental — etapa de acesso | Implementação isolada de `RF-01` a `RF-04` para validar cadastro e login antes de integrar o fluxo de doação. | [`f8a059c`](https://github.com/gigi-zacaroni/tp-eng-software/commit/f8a059ce6edf8a187866540f09f167f8134ebca2) · [`2e888a1`](https://github.com/gigi-zacaroni/tp-eng-software/commit/2e888a12a801469910edb78800ee6c6f49f32392) · [`a8c2ff2`](https://github.com/gigi-zacaroni/tp-eng-software/commit/a8c2ff26f4425aa24d986e1c4e7efe630b5d5ff7) · [`0a85290`](https://github.com/gigi-zacaroni/tp-eng-software/commit/0a852902cb4954238172f966bcd244479d22fbf6) |
-| Sprint 3 | Ambos — reorganização do back-end | O fluxo completo de doação foi implementado e o código reorganizado em `config/`, `middleware/`, `routes/` e `utils/`, substituindo a primeira versão monolítica. | [`d72574c`](https://github.com/gigi-zacaroni/tp-eng-software/commit/d72574c4cf49a529badbd6d8858ceec19492998f) |
-| Sprint 3 | §5 e §6 — correspondência e refinamentos | Revisão final: os caminhos de arquivo citados não existiam mais após a reorganização, e as divergências modelo × código foram registradas explicitamente. | [`ca58383`](https://github.com/gigi-zacaroni/tp-eng-software/commit/ca58383) |
-| Sprint 4 | Estrutural (Diagrama de Classes) e §4, §5, §6 | Atualização arquitetural para o padrão Routes/Controllers/Services, refletindo a aplicação dos princípios de responsabilidade única e separação de interesses. | [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0) · [`280e744`](https://github.com/gigi-zacaroni/tp-eng-software/commit/280e74448e844ec5549bf79638d6a03e3aa0ae62) |
-| Sprint 4 | §3 e §5, nomes e links | Os nomes das classes e os links da §5 não batiam com os arquivos reais (`doacaoController.js`, `doacaoService.js`). As divergências resolvidas na sprint foram marcadas. | [`sprint-04.md`](../sprints/sprint-04.md) |
-| Sprint 5 | Estrutural (Diagrama de Classes) e §3, §5, §6 | Inclusão da camada `Repositories` e dos relacionamentos `Service → Repository → Entidade`, refletindo a aplicação do padrão Repository. O modelo comportamental não mudou. | [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md) · [commit](https://github.com/johnatan-si/tp-eng-software/commit/fa515a9f36ab5306bf0011052301527ba26fae87) |
+| Sprint 3 | Estrutural: criação | Domínio traduzido para o modelo físico MySQL. | [`26b7fd1`](https://github.com/gigi-zacaroni/tp-eng-software/commit/26b7fd135624e5c47428425a190b44c7a0420c23) |
+| Sprint 3 | Comportamental: etapa de acesso | Cadastro e login validados antes do fluxo de doação. | [`f8a059c`](https://github.com/gigi-zacaroni/tp-eng-software/commit/f8a059ce6edf8a187866540f09f167f8134ebca2), [`2e888a1`](https://github.com/gigi-zacaroni/tp-eng-software/commit/2e888a12a801469910edb78800ee6c6f49f32392), [`a8c2ff2`](https://github.com/gigi-zacaroni/tp-eng-software/commit/a8c2ff26f4425aa24d986e1c4e7efe630b5d5ff7), [`0a85290`](https://github.com/gigi-zacaroni/tp-eng-software/commit/0a852902cb4954238172f966bcd244479d22fbf6) |
+| Sprint 3 | Ambos: reorganização do back-end | Código dividido em `config/`, `middleware/`, `routes/` e `utils/`. | [`d72574c`](https://github.com/gigi-zacaroni/tp-eng-software/commit/d72574c4cf49a529badbd6d8858ceec19492998f) |
+| Sprint 3 | §5 e §6 | Caminhos de arquivo corrigidos e divergências registradas. | [`ca58383`](https://github.com/gigi-zacaroni/tp-eng-software/commit/ca58383) |
+| Sprint 4 | Estrutural e §4 a §6 | Camadas de rotas, controllers e services. | [`086991a`](https://github.com/gigi-zacaroni/tp-eng-software/commit/086991a9e908c6b4229169ff140e15112611e1a0), [`280e744`](https://github.com/gigi-zacaroni/tp-eng-software/commit/280e74448e844ec5549bf79638d6a03e3aa0ae62) |
+| Sprint 4 | §3 e §5 | Nomes de classes e links ajustados aos arquivos reais. | [`sprint-04.md`](../sprints/sprint-04.md) |
+| Sprint 5 | Estrutural e §3, §5, §6 | Camada de repositories. | [`fa515a9`](https://github.com/gigi-zacaroni/tp-eng-software/commit/fa515a9f36ab5306bf0011052301527ba26fae87) |
+| Entrega final | Ambos e §4 a §6 | Arestas 10 a 16 implementadas; controller e service de instituição; métodos novos dos repositories; `USUARIO.papel` removido, porque não existe no schema; doador sem avanço de status. | `d393149`, `3ba1f81` |

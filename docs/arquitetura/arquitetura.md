@@ -1,25 +1,27 @@
 # Arquitetura de software
 
-> **Artefato central da Sprint 6.** Mostra como a aplicação se organiza como um todo: as partes, o que cada uma faz e como se comunicam. As decisões internas do back-end estão em [`decisoes-de-projeto.md`](../projeto/decisoes-de-projeto.md) e [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md).
+Artefato central da Sprint 6, atualizado na entrega final. Mostra as partes da aplicação, o que cada uma faz e como se comunicam. As decisões internas do back-end estão em [`decisoes-de-projeto.md`](../projeto/decisoes-de-projeto.md) e [`padroes-de-projeto.md`](../padroes/padroes-de-projeto.md).
 
 ## 1. Visão geral
 
-**Estilo arquitetural:** cliente-servidor com API REST/JSON; o back-end é organizado em **camadas** (rotas → controllers → services → repositories → banco).
+**Estilo:** cliente-servidor com API REST e JSON. O back-end é dividido em camadas: rotas, controllers, services, repositories e banco.
 
-**Justificativa:** o ConectaAção conecta doadores a necessidades de instituições. As regras que mais importam (não doar mais do que falta, saldo consistente com várias doações simultâneas, acesso restrito por tipo de usuário) ficam concentradas no back-end, e o front-end apenas consome a API. A separação em camadas isola cada responsabilidade: o SQL fica nos repositories, as regras de negócio e transações nos services, e o HTTP nos controllers. Isso facilita testar e alterar uma parte sem mexer nas outras. A escolha atende aos atributos de qualidade de **consistência dos dados** (transação com trava de linha), **segurança** (JWT, senha com hash) e **manutenibilidade** (camadas com responsabilidade única).
+**Por quê:** as regras que mais importam ficam no back-end: não doar mais do que falta, manter o saldo certo com doações simultâneas e restringir o acesso por tipo de usuário. O front-end só consome a API. Cada camada tem uma responsabilidade: o SQL fica nos repositories, as regras e transações nos services e o HTTP nos controllers. Assim dá para testar e mudar uma parte sem mexer nas outras.
+
+Atributos de qualidade atendidos: consistência dos dados (transação com trava de linha), segurança (JWT e senha com hash) e manutenibilidade (camadas com responsabilidade única).
 
 ## 2. Diagrama de contexto
 
 ```mermaid
 flowchart LR
-    D([Doador]) -->|cadastra-se, faz login, registra doações| S[ConectaAção]
-    I([Instituição]) -->|cadastra-se, faz login, cadastra necessidades| S
+    D([Doador]) -->|cria conta, busca necessidades, promete, acompanha e cancela doações| S[ConectaAção]
+    I([Instituição]) -->|cria conta, publica necessidades, aceita, recusa e confirma doações| S
 ```
 
-**Descrição:** o ConectaAção é o único sistema do escopo e não depende de nenhum serviço externo (e-mail, pagamento, mapas etc.). Existem dois tipos de usuário, ambos autenticados por e-mail e senha:
+O ConectaAção não depende de serviços externos (e-mail, pagamento ou mapas). Os dois tipos de usuário entram com e-mail e senha:
 
-- **Doador:** cria conta, faz login e registra doações para uma necessidade de uma instituição.
-- **Instituição:** cria conta com seus dados e uma lista inicial de necessidades (item e quantidade), e acompanha seu perfil, incluindo se está verificada.
+- **Doador:** cria conta, busca instituições e necessidades, promete doações, acompanha e cancela.
+- **Instituição:** cria conta, publica necessidades e responde às doações recebidas.
 
 ## 3. Diagrama de contêineres e componentes
 
@@ -27,145 +29,141 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    B([Navegador]) --> F[Front-end web<br/>HTML, CSS, JS]
+    B([Navegador]) --> F[Front-end<br/>index.html, app.js, style.css]
     F -->|HTTP + JSON| API[API REST<br/>Node.js, Express]
+    F -.->|dados extras| LS[(localStorage<br/>do navegador)]
     API -->|SQL via mysql2| DB[(MySQL<br/>conectaacao_db)]
 ```
+
+O `localStorage` guarda o token da sessão e os dados que o banco não tem: cidade, causa, contato, tipo, prioridade e descrição das necessidades. Esses dados valem só para o navegador onde foram salvos.
 
 ### 3.2 Componentes da API
 
 ```mermaid
 flowchart TB
-    R[routes<br/>auth.js, doacoes.js] --> M[middleware<br/>autenticar, exigirTipo]
-    M --> C[controllers<br/>authController, doacaoController]
-    C --> S[services<br/>authService, doacaoService]
+    R[routes<br/>auth, instituicoes, doacoes] --> M[middleware<br/>autenticar, exigirTipo]
+    M --> C[controllers<br/>auth, instituicao, doacao]
+    C --> S[services<br/>auth, instituicao, doacao]
     S --> P[repositories<br/>usuario, doador, instituicao,<br/>necessidade, doacao]
     P --> DB[(MySQL)]
     S -.-> T[config/db.js<br/>pool e comTransacao]
 ```
 
-> Cada elemento aponta para um diretório ou módulo existente; veja a seção 8.
+Cada elemento corresponde a um arquivo ou pasta da seção 9.
 
 ## 4. Componentes e responsabilidades
 
-| Componente | Responsabilidade | Tecnologia | Diretório real | Comunicação |
+| Componente | Responsabilidade | Tecnologia | Diretório | Comunicação |
 |---|---|---|---|---|
-| Front-end web | Telas de login, cadastro de doador e de instituição e registro de doação; guarda o token no navegador | HTML, CSS e JavaScript puro (`fetch`) | [`src/front/`](../src/front/) | HTTP + JSON com a API |
-| Rotas | Mapeiam URLs e métodos HTTP para os controllers (`/cadastro/doador`, `/cadastro/instituicao`, `/login`, `/logout`, `/doacoes`) | Express Router | [`src/back/src/routes/`](../src/back/src/routes/) | Chamam middleware e controllers |
-| Middleware de autenticação | Valida o token JWT e exige o tipo de usuário (`doador`) | `jsonwebtoken` | [`src/back/src/middleware/autenticacao.js`](../src/back/src/middleware/autenticacao.js) | Executa antes do controller |
-| Controllers | Lêem a requisição, validam o formato dos dados e montam a resposta HTTP | Node.js | [`src/back/src/controllers/`](../src/back/src/controllers/) | Chamam os services |
-| Services | Regras de negócio e controle de transação (cadastros, login, doação com validação de saldo) | Node.js, `bcryptjs`, `jsonwebtoken` | [`src/back/src/services/`](../src/back/src/services/) | Chamam os repositories |
-| Repositories | Único lugar com SQL; uma classe de acesso por tabela | `mysql2/promise` | [`src/back/src/repositories/`](../src/back/src/repositories/) | SQL para o MySQL |
-| Config e utilitários | Variáveis de ambiente, pool de conexões, helper de transação, tratamento de erros e validações | `dotenv`, `mysql2` | [`src/back/src/config/`](../src/back/src/config/), [`src/back/src/utils/`](../src/back/src/utils/) | Usados por todas as camadas |
-| Banco de dados | Persistência de usuários, doadores, instituições, necessidades e doações, com chaves estrangeiras e `CHECK` de saldo | MySQL 8.0.16+ (InnoDB) | [`src/back/sql/schema.sql`](../src/back/sql/schema.sql) | Conexões do pool (até 10) |
+| Front-end | Página única com as telas de doador e de instituição. Guarda o token e os dados extras no navegador. | HTML, CSS e JavaScript puro (`fetch`) | [`src/front/`](../../src/front/) | HTTP + JSON com a API |
+| Rotas | Ligam URL e método HTTP ao controller: `/cadastro/*`, `/login`, `/logout`, `/instituicoes/*` e `/doacoes/*` | Express Router | [`src/back/src/routes/`](../../src/back/src/routes/) | Chamam middleware e controllers |
+| Middleware | Valida o JWT e exige o tipo de usuário (`doador` ou `instituicao`) | `jsonwebtoken` | [`autenticacao.js`](../../src/back/src/middleware/autenticacao.js) | Roda antes do controller |
+| Controllers | Leem o pedido, validam o formato e montam a resposta | Node.js | [`src/back/src/controllers/`](../../src/back/src/controllers/) | Chamam os services |
+| Services | Regras de negócio e transações: cadastro, login, consulta de instituições, nova necessidade, doação, cancelamento e respostas da instituição | Node.js, `bcryptjs`, `jsonwebtoken` | [`src/back/src/services/`](../../src/back/src/services/) | Chamam os repositories |
+| Repositories | Único lugar com SQL; um módulo por tabela | `mysql2/promise` | [`src/back/src/repositories/`](../../src/back/src/repositories/) | SQL para o MySQL |
+| Config e utilitários | Variáveis de ambiente, pool, transação, erros e validações | `dotenv`, `mysql2` | [`config/`](../../src/back/src/config/), [`utils/`](../../src/back/src/utils/) | Usados por todas as camadas |
+| Banco | Usuários, doadores, instituições, necessidades e doações, com chaves estrangeiras e `CHECK` de saldo e status | MySQL 8.0.16+ (InnoDB) | [`schema.sql`](../../src/back/sql/schema.sql) | Pool de até 10 conexões |
 
 ## 5. Decisões arquiteturais
 
-### DA-01 — Arquitetura em camadas no back-end
+### DA-01: Camadas no back-end
 
-- **Contexto:** a API reúne HTTP, regras de negócio e acesso a dados; misturar tudo nos handlers dificultaria testes e manutenção.
-- **Decisão:** separar em rotas, controllers, services e repositories. Os services não conhecem `req`/`res` e não escrevem SQL; os repositories só executam SQL.
-- **Requisitos/atributos de qualidade:** `RNF-XX` (manutenibilidade, testabilidade).
-- **Consequências e trade-offs:** cada mudança fica localizada e as regras podem ser testadas sem subir o servidor; em compensação, há mais arquivos e uma chamada a mais por operação simples.
-- **Evidência no repositório:** [`src/back/src/`](../src/back/src/)
+- **Contexto:** a API reúne HTTP, regras e acesso a dados. Misturar tudo dificultaria testes e manutenção.
+- **Decisão:** separar em rotas, controllers, services e repositories. Os services não conhecem `req` e `res` e não escrevem SQL.
+- **Atributos:** manutenibilidade e testabilidade.
+- **Consequências:** cada mudança fica localizada, e as regras são testadas sem subir o servidor. Em troca, há mais arquivos.
+- **Evidência:** [`src/back/src/`](../../src/back/src/)
 
-### DA-02 — Cliente-servidor com API REST/JSON e front-end estático
+### DA-02: Cliente-servidor com API REST e front-end estático
 
-- **Contexto:** a aplicação precisa de uma interface web que use as mesmas regras da API, sem duplicá-las.
-- **Decisão:** o front-end é um conjunto de arquivos estáticos (HTML, CSS e JS puro) que conversa com a API por `fetch`, com respostas em JSON e erros no formato `{ "erro": "..." }`.
-- **Requisitos/atributos de qualidade:** `RNF-XX` (simplicidade, portabilidade).
-- **Consequências e trade-offs:** sem etapa de build, a implantação é simples; sem framework, telas maiores exigirão mais código manual.
-- **Evidência no repositório:** [`src/front/app.js`](../src/front/app.js)
+- **Contexto:** a interface precisa usar as mesmas regras da API, sem duplicá-las.
+- **Decisão:** o front-end é um conjunto de arquivos estáticos que chama a API com `fetch`. As respostas são JSON, e os erros vêm como `{ "erro": "..." }`.
+- **Atributos:** simplicidade e compatibilidade (`RNF-09`).
+- **Consequências:** não há etapa de build. Sem framework, o `app.js` monta o HTML à mão, com escape de todo texto.
+- **Evidência:** [`src/front/app.js`](../../src/front/app.js)
 
-### DA-03 — Autenticação stateless com JWT
+### DA-03: Autenticação sem estado com JWT
 
-- **Contexto:** a API precisa saber quem é o usuário e se ele é doador ou instituição, sem guardar sessão no servidor.
-- **Decisão:** o login devolve um token JWT (HS256, expiração padrão de 8 h) com `id`, `tipo` e `perfilId`. A rota de doação usa o `perfilId` do token e nunca um id enviado no corpo. As senhas são guardadas com hash `bcrypt`.
-- **Requisitos/atributos de qualidade:** `RNF-XX` (segurança).
-- **Consequências e trade-offs:** não há estado de sessão no servidor e a API escala facilmente; em contrapartida, o logout apenas descarta o token no cliente e um token roubado vale até expirar.
-- **Evidência no repositório:** [`src/back/src/services/authService.js`](../src/back/src/services/authService.js), [`src/back/src/middleware/autenticacao.js`](../src/back/src/middleware/autenticacao.js)
+- **Contexto:** a API precisa saber quem é o usuário e se ele é doador ou instituição, sem guardar sessão.
+- **Decisão:** o login devolve um JWT (HS256, 8 h por padrão) com `id`, `tipo` e `perfilId`. As rotas usam o `perfilId` do token, nunca um id do corpo. As senhas são gravadas com bcrypt.
+- **Requisitos:** `RF-05`, `RNF-03`, `RNF-04`.
+- **Consequências:** o servidor não guarda sessão. Em troca, o logout só descarta o token no navegador, e um token roubado vale até expirar.
+- **Evidência:** [`authService.js`](../../src/back/src/services/authService.js), [`autenticacao.js`](../../src/back/src/middleware/autenticacao.js)
 
-### DA-04 — Transação com trava de linha ao registrar doações
+### DA-04: Transação com trava de linha nas doações
 
-- **Contexto:** duas doações simultâneas para a mesma necessidade poderiam ultrapassar o saldo que falta.
-- **Decisão:** o `doacaoService` abre uma transação, lê o saldo com `SELECT ... FOR UPDATE`, valida a quantidade, cria a doação e reduz o saldo; qualquer falha desfaz tudo (rollback). O banco reforça a regra com `CHECK (quantidadeFaltante <= quantidadeTotal)`.
-- **Requisitos/atributos de qualidade:** `RNF-XX` (consistência e integridade dos dados), `RF-19`.
-- **Consequências e trade-offs:** garante saldo correto sob concorrência; doações para a mesma necessidade ficam enfileiradas durante a transação, o que é aceitável no volume esperado.
-- **Evidência no repositório:** [`src/back/src/services/doacaoService.js`](../src/back/src/services/doacaoService.js), [`src/back/src/repositories/necessidadeRepository.js`](../src/back/src/repositories/necessidadeRepository.js)
+- **Contexto:** duas doações ao mesmo tempo para a mesma necessidade poderiam passar do saldo.
+- **Decisão:** o `doacaoService` abre uma transação, lê o saldo com `SELECT ... FOR UPDATE`, valida, grava a doação e reduz o saldo. Cancelar e recusar também travam a doação e a necessidade antes de devolver o saldo. Qualquer falha desfaz tudo. O banco reforça a regra com `CHECK (quantidadeFaltante <= quantidadeTotal)`.
+- **Requisitos:** `RF-19`, `RF-21`, `RF-23`, `RNF-06`.
+- **Consequências:** o saldo fica certo com acessos simultâneos. Doações para a mesma necessidade esperam umas pelas outras, o que é aceitável no volume esperado.
+- **Evidência:** [`doacaoService.js`](../../src/back/src/services/doacaoService.js), [`necessidadeRepository.js`](../../src/back/src/repositories/necessidadeRepository.js), [`doacaoRepository.js`](../../src/back/src/repositories/doacaoRepository.js)
 
-### DA-05 — Front-end servido pelo próprio Express
+### DA-05: Front-end servido pelo Express
 
-- **Contexto:** o front-end e a API precisam se falar no navegador, e a API não habilita CORS.
-- **Decisão:** servir a pasta do front-end com `express.static`, para que front e API fiquem na mesma origem.
-- **Requisitos/atributos de qualidade:** `RNF-XX` (simplicidade de implantação).
-- **Consequências e trade-offs:** um único processo e uma única URL, sem configuração de CORS; front e back não escalam nem são publicados de forma independente.
-- **Evidência no repositório:** `app.use(express.static(...))` em [`src/back/src/server.js`](../src/back/src/server.js)
+- **Contexto:** front e API precisam conversar no navegador, e a API não habilita CORS.
+- **Decisão:** servir a pasta do front-end com `express.static`, na mesma origem da API.
+- **Atributos:** simplicidade de implantação.
+- **Consequências:** um processo e uma URL, sem CORS. Front e back não são publicados separadamente.
+- **Evidência:** `app.use(express.static(...))` em [`server.js`](../../src/back/src/server.js)
 
-- **Contexto:** doador e instituição fazem login, e as rotas precisam saber quem é o usuário.
-- **Decisão:** token JWT assinado, enviado no cabeçalho `Authorization`. O token informa o tipo de perfil, e o front usa isso para montar o menu de cada um.
-- **Requisitos:** `RNF-03`, `RNF-04`.
-- **Consequências:** o servidor não guarda sessão. Em troca, um token vazado vale até expirar (8h).
-- **Evidência:** [`autenticacao.js`](../../src/back/src/middleware/autenticacao.js), [`authService.js`](../../src/back/src/services/authService.js)
+### DA-06: Dados extras no navegador
 
-### DA-04: Banco relacional único com transação
-
-- **Contexto:** duas promessas ao mesmo tempo não podem passar do que falta.
-- **Decisão:** MySQL com transação e `SELECT ... FOR UPDATE` no saldo.
-- **Requisitos:** `RNF-06`, `RNF-07`.
-- **Consequências:** o banco garante a regra mesmo com acessos simultâneos. Em troca, a aplicação depende do MySQL para rodar.
-- **Evidência:** [`necessidadeRepository.js`](../../src/back/src/repositories/necessidadeRepository.js), [`doacaoService.js`](../../src/back/src/services/doacaoService.js)
+- **Contexto:** as telas do protótipo usam cidade, causa, contato, tipo e prioridade, mas o banco não tem essas colunas.
+- **Decisão:** o `app.js` guarda esses dados no `localStorage`, ligados ao id real da instituição ou da necessidade. Busca e filtros rodam no navegador.
+- **Requisitos:** `RF-07` a `RF-10`, `RF-14`.
+- **Consequências:** as telas funcionam sem mudar o banco. Em troca, os dados não são compartilhados entre navegadores e não têm teste automatizado.
+- **Evidência:** `lerExtras` e `salvarExtras` em [`app.js`](../../src/front/app.js)
 
 ## 6. Requisitos não funcionais e decisões
 
 | RNF | Como é atendido | Decisão |
 |---|---|---|
-| `RNF-02` Responsividade | Layout testado de 390 px a 1366 px; alvos de 44 px | `DA-02` |
 | `RNF-03` Segurança | Senha com bcrypt; JWT com segredo no `.env` | `DA-03` |
 | `RNF-04` Privacidade | Listagem e detalhe exigem token | `DA-03` |
-| `RNF-05` Sem pagamento | Nenhum serviço externo | `DA-01` |
+| `RNF-05` Sem pagamento | Nenhum serviço externo e nenhum campo de pagamento | `DA-01` |
 | `RNF-06` Integridade | Transação com trava de linha | `DA-04` |
-| `RNF-09` Compatibilidade | HTML, CSS e JS padrão, sem build | `DA-02` |
+| `RNF-09` Compatibilidade | HTML, CSS e JS padrão, sem build. Não verificado em vários navegadores. | `DA-02` |
+
+`RNF-02` (responsividade), `RNF-08` (desempenho) e `RNF-10` (acessibilidade) não foram verificados.
 
 ## 7. Implantação e execução
 
 ```mermaid
 flowchart TB
-    Cliente([Navegador]) -->|HTTP| Servidor[Servidor Node.js<br/>Express: front-end estático + API REST]
+    Cliente([Navegador]) -->|HTTP| Servidor[Servidor Node.js<br/>Express: front-end estático e API REST]
     Servidor -->|SQL, pool de conexões| Banco[(MySQL<br/>conectaacao_db)]
 ```
 
-**Configuração (arquivo `.env`):** `JWT_SECRET` (obrigatório), `PORT` (padrão 3000), `JWT_EXPIRES_IN` (padrão 8h), `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` (padrão `conectaacao_db`).
+**Configuração (`src/back/.env`):** `JWT_SECRET` (obrigatório), `PORT` (padrão 3000), `JWT_EXPIRES_IN` (padrão 8h), `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` (padrão `conectaacao_db`).
 
-**Ambientes:**
-
-| Ambiente | Comando ou endereço | Finalidade |
+| Ambiente | Como acessar | Finalidade |
 |---|---|---|
-| Local | Criar o banco com `sql/schema.sql`, configurar o `.env` e executar `node src/server.js` em `src/back`; acessar `http://localhost:3000` (a rota `/teste-conexao` confirma a ligação com o banco) | Desenvolvimento e testes |
-| Publicado | `[URL]` | Demonstração |
+| Local | Criar o banco com `sql/schema.sql`, configurar o `.env` e rodar `npm start` em `src/back`. Abrir `http://localhost:3000`. A rota `/teste-conexao` confirma a ligação com o banco. | Desenvolvimento e testes |
+| Publicado | Ver [`entrega-final.md`](../entrega-final.md) | Demonstração |
 
 ## 8. Riscos arquiteturais
 
 | Risco | Probabilidade | Impacto | Mitigação | Issue |
 |---|---|---|---|---|
-| A API não tem rotas de listagem (instituições e necessidades), então o doador precisa informar o código da necessidade manualmente | Alta | Alta | Criar `GET /necessidades` (com instituição, item e quantidade faltante) e ligar ao front-end | `#XX` |
-| Token guardado em `localStorage` fica exposto se houver falha de XSS | Média | Alta | Escapar todo texto exibido (já feito no front) e avaliar cookie `HttpOnly` | `#XX` |
-| Logout não invalida o token no servidor | Média | Média | Manter expiração curta; avaliar lista de tokens revogados | `#XX` |
-| `JWT_SECRET` fraco ou ausente compromete toda a autenticação | Baixa | Alta | A API se recusa a iniciar sem o segredo; usar valor longo e aleatório em produção | `#XX` |
-| `schema.sql` foi reconstruído a partir das consultas e pode divergir do banco real | Média | Média | Conferir com o banco antes de executar e versionar mudanças futuras em migrações | `#XX` |
-| Não existe fluxo para verificar uma instituição (`verificada` fica sempre falso) nem para confirmar o status da doação (`Prometida`) | Média | Média | Definir papel de administrador e rotas de verificação e confirmação | `#XX` |
-| Doações concorrentes na mesma necessidade ficam enfileiradas pela trava de linha | Baixa | Baixa | Aceitável no volume atual; reavaliar se houver alta concorrência | `#XX` |
+| Dados extras só no navegador: outro navegador não vê cidade, causa e contato | Alta | Média | Levar esses campos para o banco | sem Issue |
+| A tela "Explorar" busca o detalhe de cada instituição para montar a lista de necessidades | Média | Baixa | Criar uma rota que liste as necessidades | sem Issue |
+| Token no `localStorage` fica exposto se houver XSS | Média | Alta | Todo texto passa por `esc()` antes de entrar no HTML; avaliar cookie `HttpOnly` | sem Issue |
+| Logout não invalida o token no servidor | Média | Média | Expiração curta; avaliar lista de tokens revogados | sem Issue |
+| `JWT_SECRET` fraco ou ausente | Baixa | Alta | A API não inicia sem o segredo; usar valor longo e aleatório | sem Issue |
+| Não existe fluxo para verificar uma instituição (`verificada` fica sempre falso) | Média | Média | Criar papel de administrador | [#7](https://github.com/gigi-zacaroni/tp-eng-software/issues/7) |
+| Doações para a mesma necessidade esperam a trava de linha | Baixa | Baixa | Aceitável no volume atual | sem Issue |
 
 ## 9. Correspondência arquitetura × código
 
-| Elemento do diagrama | Evidência no código |
+| Elemento | Evidência |
 |---|---|
-| Front-end web | [`src/front/index.html`](../src/front/index.html), [`app.js`](../src/front/app.js), [`style.css`](../src/front/style.css) |
-| API REST (Express) | [`src/back/src/server.js`](../src/back/src/server.js) |
-| Rotas | [`routes/auth.js`](../src/back/src/routes/auth.js), [`routes/doacoes.js`](../src/back/src/routes/doacoes.js) |
-| Middleware de autenticação | [`middleware/autenticacao.js`](../src/back/src/middleware/autenticacao.js) |
-| Controllers | [`controllers/authController.js`](../src/back/src/controllers/authController.js), [`controllers/doacaoController.js`](../src/back/src/controllers/doacaoController.js) |
-| Services | [`services/authService.js`](../src/back/src/services/authService.js), [`services/doacaoService.js`](../src/back/src/services/doacaoService.js) |
-| Repositories | [`src/back/src/repositories/`](../src/back/src/repositories/) |
-| Pool e transações | [`config/db.js`](../src/back/src/config/db.js) |
-| Variáveis de ambiente | [`config/env.js`](../src/back/src/config/env.js) |
-| Banco MySQL | [`src/back/sql/schema.sql`](../src/back/sql/schema.sql) |
+| Front-end | [`index.html`](../../src/front/index.html), [`app.js`](../../src/front/app.js), [`style.css`](../../src/front/style.css) |
+| API REST (Express) | [`server.js`](../../src/back/src/server.js) |
+| Rotas | [`auth.js`](../../src/back/src/routes/auth.js), [`instituicoes.js`](../../src/back/src/routes/instituicoes.js), [`doacoes.js`](../../src/back/src/routes/doacoes.js) |
+| Middleware | [`autenticacao.js`](../../src/back/src/middleware/autenticacao.js) |
+| Controllers | [`authController.js`](../../src/back/src/controllers/authController.js), [`instituicaoController.js`](../../src/back/src/controllers/instituicaoController.js), [`doacaoController.js`](../../src/back/src/controllers/doacaoController.js) |
+| Services | [`authService.js`](../../src/back/src/services/authService.js), [`instituicaoService.js`](../../src/back/src/services/instituicaoService.js), [`doacaoService.js`](../../src/back/src/services/doacaoService.js) |
+| Repositories | [`src/back/src/repositories/`](../../src/back/src/repositories/) |
+| Pool e transações | [`db.js`](../../src/back/src/config/db.js) |
+| Variáveis de ambiente | [`env.js`](../../src/back/src/config/env.js) |
+| Banco MySQL | [`schema.sql`](../../src/back/sql/schema.sql) |

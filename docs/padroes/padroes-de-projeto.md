@@ -1,6 +1,6 @@
 # Padrões de projeto aplicados
 
-> **Artefato central da Sprint 5.** Padrão adotado: **Repository** (`PP-01`). Os links de código usam a tag `sprint-05`, que passa a existir quando o grupo publicar a tag. Itens que só o grupo pode preencher (número de Issue, hash de commit) estão marcados com `[PREENCHER]`.
+Artefato central da Sprint 5, revisado na entrega final. Padrão adotado: **Repository** (`PP-01`). Os links da §4 apontam para a tag `sprint-05`, que mostra o código da época.
 
 ## 1. Problema recorrente identificado
 
@@ -38,13 +38,13 @@ A regra de negócio ("não prometer mais do que falta") está misturada com o fo
 
 ## 2. Padrão aplicado
 
-### PP-01 — Repository
+### PP-01: Repository
 
 - **Problema que resolve:** regra de negócio dos services misturada com SQL e com o formato de resposta do driver (§1).
 - **Contexto no projeto:** camada de persistência entre os services e o MySQL, para as cinco tabelas do [schema](../../src/back/sql/schema.sql).
-- **Participantes do padrão no código:** ver §5.
+- **Participantes do padrão no código:** ver §4.
 - **Requisitos relacionados:** `RF-01`, `RF-02`, `RF-03`, `RF-14`, `RF-18`, `RF-19`, `RNF-06`.
-- **Decisão registrada em:** [`DP-04`](../projeto/decisoes-de-projeto.md#dp-04--camada-de-repositories-padrão-repository).
+- **Decisão registrada em:** [`DP-04`](../projeto/decisoes-de-projeto.md#dp-04-camada-de-repositories-padrão-repository).
 - **Issue/PR:** [`T-17`](https://github.com/gigi-zacaroni/tp-eng-software/issues/25) e [`T-18`](https://github.com/gigi-zacaroni/tp-eng-software/issues/26).
 
 **Como o padrão foi aplicado, sem mudar as responsabilidades já decididas:**
@@ -136,10 +136,12 @@ sequenceDiagram
 | Repository de `doacoes` | `repositories/doacaoRepository.js` | [código](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/src/back/src/repositories/doacaoRepository.js) |
 | Fonte de dados e controle de transação | `config/db.js` (`pool`, `comTransacao`), **sem alteração** | [código](https://github.com/gigi-zacaroni/tp-eng-software/blob/sprint-05/src/back/src/config/db.js) |
 
-Rotas, controllers, middleware, `server.js` e `schema.sql` **não foram alterados**. O comportamento externo da API é o mesmo.
+Na Sprint 5, rotas, controllers, middleware, `server.js` e `schema.sql` não mudaram, e o comportamento externo da API ficou o mesmo.
+
+Até a entrega final, os repositories ganharam novas operações no mesmo padrão: `listarResumo` e `buscarPorId` (instituições), `restaurarSaldo` e `listarPorInstituicao` (necessidades), `buscarPorIdComTrava`, `atualizarStatus`, `listarPorDoador` e `listarPorInstituicao` (doações). Elas atendem às consultas do `T-10`, ao cancelamento e às respostas da instituição. Os services `instituicaoService` e `doacaoService` usam essas operações sem escrever SQL.
 
 
-## 5. Alternativas e justificativas 
+## 5. Alternativas e justificativas
 
 | Alternativa | Vantagem | Limitação no contexto do projeto |
 |---|---|---|
@@ -147,7 +149,7 @@ Rotas, controllers, middleware, `server.js` e `schema.sql` **não foram alterado
 | **B. ORM ou query builder** (Sequelize, Knex) | Elimina SQL escrito à mão. | Nova dependência e nova curva de aprendizado a poucas semanas da entrega, depois de a stack já ter mudado na Sprint 3. O controle fino de `SELECT ... FOR UPDATE` e da transação ([DP-02](../projeto/decisoes-de-projeto.md#2-registro-de-decisões)) ficaria mais difícil de enxergar. |
 | **C. Um único `queries.js` com todas as consultas** | Tira o SQL dos services com pouco esforço. | Só muda o SQL de lugar. O service continuaria interpretando `[linhas]` e `insertId`, e o arquivo viraria um depósito sem fronteira por entidade. |
 | **D. Active Record** (persistência dentro das entidades) | Reúne dado e persistência. | O projeto não tem classes de entidade; os dados são objetos simples. Criaria uma camada de modelos só para esse fim. |
-| **E. Repository por entidade (escolhida)** | Um módulo por tabela, com operações nomeadas pela intenção de negócio, devolvendo valores simples. Cabe no código atual sem dependência nova. | Mais arquivos e uma indireção a mais (ver §6). |
+| **E. Repository por entidade (escolhida)** | Um módulo por tabela, com operações nomeadas pela intenção de negócio, devolvendo valores simples. Cabe no código atual sem dependência nova. | Mais arquivos e uma indireção a mais (ver custos na §6). |
 
 Em termos estritos, as funções criadas ficam entre um DAO e um Repository. Adotamos o nome **Repository** porque as operações são nomeadas pela intenção de domínio (`buscarSaldoComTrava`, `criarPrometida`) e entregam valores de domínio (`null`, um número, um perfil) em vez de linhas cruas do driver. Um DAO genérico (`select`, `insert`, `update`) não resolveria o problema 1.
 
@@ -156,9 +158,16 @@ Em termos estritos, as funções criadas ficam entre um DAO e um Repository. Ado
 **Benefícios**
 
 - Os services passaram a descrever só a regra: validar, decidir, chamar. A ordem "trava → confere → cria → abate" da `DP-02` fica legível em cinco linhas.
-- Cada tabela tem um único dono do SQL. Os endpoints `GET` do `T-10` entram em `instituicaoRepository` e `necessidadeRepository`, sem tocar nos services de escrita.
+- Cada tabela tem um único dono do SQL. As consultas do `T-10` e as operações de cancelamento e resposta da instituição entraram nos repositories existentes, sem SQL nos services.
 - O service deixou de depender do formato do `mysql2`.
 - Duas consultas duplicadas viraram uma.
+
+**Custos e limitações**
+
+- Há mais 5 arquivos e uma chamada a mais em cada operação.
+- O service ainda escolhe se passa o `pool` ou a conexão da transação.
+- `buscarSaldoComTrava` e `buscarPorIdComTrava` só são seguros dentro de uma transação. Isso depende de quem chama; nada no código impede o uso fora dela.
+- A verificação de e-mail do cadastro passou a ler também a coluna `senha`, porque usa a mesma consulta do login.
 
 
 ## 7. Padrões avaliados e não aplicados
@@ -167,7 +176,7 @@ Em termos estritos, as funções criadas ficam entre um DAO e um Repository. Ado
 |---|---|
 | Strategy | Não há variação de algoritmo em tempo de execução. O único ponto parecido (cadastro de doador × instituição) são dois fluxos com dados diferentes, não duas formas de fazer a mesma coisa. |
 | Factory Method | Não existe hierarquia de objetos a instanciar. Doador e instituição são linhas de tabelas diferentes, sem classes. |
-| Unit of Work | `comTransacao` já agrupa as operações em uma transação. Formalizar um Unit of Work só para esconder isso do service seria camada extra sem ganho hoje (limitação 1 da §7). Pode voltar a ser avaliado se a Sprint 6 mexer na arquitetura. |
-| Observer | Seria adequado para as notificações (`RF-25` a `RF-27`), mas esses requisitos ainda não têm código. Aplicá-lo agora seria um padrão sem problema real. |
+| Unit of Work | `comTransacao` já agrupa as operações em uma transação. Formalizar um Unit of Work só para esconder isso do service seria uma camada extra sem ganho. |
+| Observer | Seria adequado para as notificações (`RF-25` a `RF-27`), mas esses requisitos não têm código na versão final. Aplicá-lo sem eles seria um padrão sem problema real. |
 | Singleton | O `pool` de conexões já é compartilhado pelo cache de módulos do Node. Não foi implementado nada para isso, então não registramos como padrão aplicado. |
 
