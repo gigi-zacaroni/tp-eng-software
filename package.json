@@ -1,0 +1,9 @@
+{
+  "name": "conectaacao",
+  "private": true,
+  "engines": { "node": ">=18.11" },
+  "scripts": {
+    "build": "npm ci --prefix src/back",
+    "start": "npm start --prefix src/back"
+  }
+}
